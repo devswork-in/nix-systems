@@ -7,12 +7,28 @@
   };
 
   outputs = { self, nixpkgs, deploy-rs }: {
-    nixosConfigurations.phoenix = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [ ./phoenix/configuration.nix ];
+    nixosConfigurations = {
+      server = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ ./server/configuration.nix ];
+      };
+
+      phoenix = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ ./phoenix ];
+      };
     };
 
     deploy.nodes = {
+      server = {
+        hostname = "server"; #should be same in ~/.ssh/config
+        sshUser = "root"; #should be same in ~/.ssh/config
+        profiles.system = {
+          user = "root";
+          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.server;
+        };
+      };
+
       phoenix = {
         hostname = "phoenix"; #should be same in ~/.ssh/config
         sshUser = "root"; #should be same in ~/.ssh/config
