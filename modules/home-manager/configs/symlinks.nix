@@ -4,12 +4,12 @@ let
 in
 {
   home.file = {
-    ".config/nixpkgs/config.nix".source                   = link ./config.nix;
-    ".config/nixpkgs/home.nix".source                     = link ../home.nix;
-    ".config/fish".source                                 = link ./fish;
-    ".config/starship.toml".source                        = link ./starship.toml;
-    ".config/htop".source                                 = link ./htop;
-    ".tmux.conf".source                                   = link ./tmux.conf;
-    ".bashrc".source                                      = link ./bashrc;
+    ".config/nixpkgs/config.nix".source                   = ./config.nix;
+    ".config/nixpkgs/home.nix".source                     = ../home.nix;
+    ".config/fish".source                                 = ./fish;
+    ".config/starship.toml".source                        = ./starship.toml;
+    ".config/htop".source                                 = ./htop;
+    ".tmux.conf".source                                   = ./tmux.conf;
+    ".bashrc".source                                      = ./bashrc;
   };
 }
