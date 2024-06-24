@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -8,6 +8,7 @@
   boot.tmp.cleanOnBoot = true;
 
   networking = {
+    hostName = lib.mkDefault "server";
     nameservers = ["8.8.4.4" "8.8.8.8" "1.1.1.1" "9.9.9.9"];
     firewall.enable = true;
   };
