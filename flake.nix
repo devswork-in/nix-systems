@@ -1,8 +1,10 @@
 {
   description = "Simple flake to manage my NixOS Systems";
 
-  # For accessing `deploy-rs`'s utility Nix functions
-  inputs.deploy-rs.url = "github:serokell/deploy-rs";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
+    deploy-rs.url = "github:serokell/deploy-rs";
+  };
 
   outputs = { self, nixpkgs, deploy-rs }: {
     nixosConfigurations.phoenix = nixpkgs.lib.nixosSystem {
