@@ -2,6 +2,7 @@
 let
   user="creator54";
   userDomain="devswork.in";
+  userEmail = "hi.creator54@gmail.com";
   path = "/var/www/devswork.in";
 
   src = {
@@ -12,13 +13,14 @@ let
   config = {
     hostName = userDomain;
     userName = user;
+    userEmail = userEmail;
     path="${path}";
 
     hostSrc = if builtins.pathExists src.local_site then src.local_site else builtins.fetchTarball "https://github.com/creator54/creator54.me/tarball/main";
     blogSrc = if builtins.pathExists src.local_blog then src.local_blog else builtins.fetchTarball "https://github.com/creator54/blog.creator54.me/tarball/main/_site/";
     website = {
-      enable = true; # enables website, blog, docs, test
-      https = false;
+      enable = true; # enables website, blog
+      https = true;
       codeServer = {
         enable = false;
         host = "code.${userDomain}";

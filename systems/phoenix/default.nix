@@ -4,7 +4,7 @@
     ./../server/configuration.nix
     ./../server/hardware-configuration.nix
     ./../../modules/home-manager
-    ./../../modules/docker
+    ./../../modules/website
     inputs.home-manager.nixosModules.default
   ];
 
