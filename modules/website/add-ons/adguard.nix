@@ -1,6 +1,6 @@
 {...}:
 let
-  adguard = (import ./../../config.nix {}).web.adguard;
+  adguard = (import ./../../../config.nix {}).web.adguard;
 in
 {
   services = {

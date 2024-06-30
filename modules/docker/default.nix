@@ -1,6 +1,6 @@
 { ... }:
 let
-  userName = (import ./../config.nix {}).userName;
+  userName = (import ./../../config.nix {}).userName;
 in
 {
   virtualisation.docker = {

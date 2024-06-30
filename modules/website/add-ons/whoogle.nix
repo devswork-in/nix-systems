@@ -1,6 +1,6 @@
 { ... }:
 let
-  whoogle = (import ./../../config.nix {}).website.whoogle;
+  whoogle = (import ./../../../config.nix {}).website.whoogle;
   httpsSettings = import ./../https-settings.nix;
 in
 {

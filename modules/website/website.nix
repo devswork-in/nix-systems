@@ -1,5 +1,5 @@
 let
-  config = (import ./../config.nix {});
+  config = (import ./../../config.nix {});
   httpsSettings = import ./https-settings.nix;
 in
 {

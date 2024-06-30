@@ -1,5 +1,5 @@
 let
-  config = (import ./../config.nix {});
+  config = (import ./../../config.nix {});
 in
 {
   enableACME = config.website.https;
