@@ -20,6 +20,9 @@ in
         inherit (httpsSettings) enableACME forceSSL;
         root = "${config.hostSrc}";
         locations = {
+          "/".extraConfig = ''
+            rewrite ^/(.*)$ https://blog.${config.hostName} redirect;
+          '';
           "/blog".extraConfig = ''
             rewrite ^/(.*)$ https://blog.${config.hostName} redirect;
           '';
