@@ -30,7 +30,7 @@ in
       };
       "blog.${config.hostName}" = {
         inherit (httpsSettings) enableACME forceSSL;
-        root = "${config.blogSrc}";
+        root = "${config.blogSrc}/_site";
       };
     };
   };

@@ -7,7 +7,7 @@ let
 
   src = {
     local_site = "${path}/devswork.in";
-    local_blog = "${path}/blogger/_site";
+    local_blog = "${path}/blogger/";
   };
 
   config = {
@@ -17,7 +17,7 @@ let
     path="${path}";
 
     hostSrc = if builtins.pathExists src.local_site then src.local_site else builtins.fetchTarball "https://github.com/creator54/creator54.me/tarball/main";
-    blogSrc = if builtins.pathExists src.local_blog then src.local_blog else builtins.fetchTarball "https://github.com/creator54/blog.creator54.me/tarball/main/_site/";
+    blogSrc = if builtins.pathExists src.local_blog then src.local_blog else builtins.fetchTarball "https://github.com/creator54/blog.creator54.me/tarball/main";
     website = {
       enable = true; # enables website, blog
       https = true;
