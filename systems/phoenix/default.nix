@@ -3,8 +3,9 @@
   imports = [
     ./../server/configuration.nix
     ./../server/hardware-configuration.nix
-    ./../../modules/home-manager
+    ./../../modules/docker
     ./../../modules/website
+    ./../../modules/home-manager
     inputs.home-manager.nixosModules.default
   ];
 
