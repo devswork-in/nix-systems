@@ -33,12 +33,6 @@ let
       https = true;
     };
 
-    watchman = {
-      enable = false;
-      host = "watchman.${user.domain}";
-      port = 8004;
-    };
-
     codeServer = {
       enable = false;
       host = "code.${user.domain}";
