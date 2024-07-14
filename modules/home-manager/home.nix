@@ -1,16 +1,21 @@
 { ... }:
+let
+  config = (import ./../../config.nix {});
+  user = config.userName;
+  stateVersion = config.nixosReleaseVersion;
+in 
 {
   home-manager = {
-    users."creator54" = { ... }: {
+    users."${user}" = { ... }: {
       imports = [
         ./pkgs/general.nix
         ./configs/symlinks.nix
       ];
 
       home = {
-        username = "creator54";
-        homeDirectory = "/home/creator54";
-        stateVersion = "23.11";
+        username = "${user}";
+        homeDirectory = "/home/${user}";
+        stateVersion = "${stateVersion}";
       };
     };
 
