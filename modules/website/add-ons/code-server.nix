@@ -1,6 +1,6 @@
 { ... }:
 let
-  codeServer = (import ./../../../config.nix {}).web.codeServer;
+  codeServer = (import ./../../../config.nix {}).codeServer;
   httpsSettings = import ./../https-settings.nix;
 in
 {

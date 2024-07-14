@@ -1,6 +1,6 @@
 {...}:
 let
-  jellyfin = (import ./../../../config.nix {}).web.jellyfin;
+  jellyfin = (import ./../../../config.nix {}).jellyfin;
   httpsSettings = import ./../https-settings.nix;
 in
 {

@@ -1,6 +1,6 @@
 {...}:
 let
-  nextCloud = (import ./../../../config.nix {}).web.nextCloud;
+  nextCloud = (import ./../../../config.nix {}).nextCloud;
   httpsSettings = import ./../https-settings.nix;
 in
 {

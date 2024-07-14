@@ -1,6 +1,6 @@
 {...}:
 let
-  plex = (import ./../../../config.nix {}).web.plex;
+  plex = (import ./../../../config.nix {}).plex;
   httpsSettings = import ./../https-settings.nix;
 in
 {
