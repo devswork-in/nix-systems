@@ -24,6 +24,10 @@ let
       url = "https://github.com/creator54/blog.creator54.me";
       localPath = "${paths.base}/blog.${user.domain}";
     };
+    nvimSrc = {
+      url = "https://github.com/creator54/starter";
+      localPath = "/home/${user.name}/.config/nvim";
+    };
   };
 
   # Website services configuration

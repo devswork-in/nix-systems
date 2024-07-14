@@ -1,7 +1,8 @@
 { pkgs, ... }:
 
 let
-  syncRepos = (import ./../../config.nix {}).syncRepos;
+  config = (import ./../../config.nix {});
+  syncRepos = config.syncRepos;
 
   generateRepoSyncScript = pkgs.writeShellScript "repo-sync.sh" ''
     LOG_FILE="/var/log/repo-sync.log"
@@ -23,6 +24,7 @@ let
           ${pkgs.git}/bin/git clone $url $localPath && \
           echo "Cloning $url complete!" >> $LOG_FILE || \
           echo "Cloning $url failed with exit code $?" >> $LOG_FILE
+          chown -R ${config.userName}:users $localPath
         else
           echo "Directory $localPath already exists, pulling latest changes." >> $LOG_FILE
           cd $localPath && \
