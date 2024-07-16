@@ -26,6 +26,15 @@
           inputs.home-manager.nixosModules.default
         ];
       };
+
+      blade = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        system = "x86_64-linux";
+        modules = [
+          ./systems/blade
+          inputs.home-manager.nixosModules.default
+        ];
+      };
     };
 
     deploy.nodes = {
