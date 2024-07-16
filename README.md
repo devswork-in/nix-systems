@@ -3,11 +3,11 @@ Configures NixOS and Home-Manager as NixOS Module to manage user with my configs
 
 ## To build and test a demo-vm from this config on a Nix System
 ```
-nixos-rebuild build-vm --flake .#phoenix --fast --impure
+nixos-rebuild build-vm --flake .#phoenix --fast
 ```
 ## To deploy the config to cloud
 ```
-deploy --targets .#phoenix -- --impure
+deploy --targets .#phoenix
 ```
 
 ## Note you will need to add Host details in your `~/.ssh/config` file somewhat like this
