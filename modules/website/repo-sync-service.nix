@@ -19,6 +19,8 @@ let
         localPath=$(echo $repo | ${pkgs.jq}/bin/jq -r .localPath)
         echo "Processing repo $url to $localPath" >> $LOG_FILE
         mkdir -p $(dirname $localPath)
+        export HOME=$(mktemp -d)
+        ${pkgs.git}/bin/git config --global --add safe.directory $localPath
         if [ ! -d "$localPath/.git" ]; then
           echo "Cloning $url to $localPath" >> $LOG_FILE
           ${pkgs.git}/bin/git clone $url $localPath && \
@@ -40,6 +42,7 @@ let
 in
 {
   systemd.services.repo-sync = {
+    enable = true; #keep service enabled after reboot
     description = "Sync Repository Service";
     serviceConfig = {
       Type = "simple";
@@ -47,6 +50,7 @@ in
       Restart = "always";
       RestartSec = 5;
     };
+    wantedBy = [ "multi-user.target" ]; # specify the target to start the service
   };
 }
 
