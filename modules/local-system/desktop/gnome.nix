@@ -3,11 +3,11 @@
 {
   services = {
     xserver = {
-      displayManager = {
-        defaultSession = "gnome";
-	gdm.enable = true;
-      };
       desktopManager.gnome.enable = true;
+      displayManager.gdm.enable = true;
+    };
+    displayManager = {
+      defaultSession = "gnome";
     };
   };
 

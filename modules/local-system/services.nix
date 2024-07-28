@@ -4,11 +4,7 @@
   services = {
     xserver = {
       enable = true;
-      layout = "us";
-      libinput = {
-        enable = true; 				# touchpad support generally enabled by most display managers
-        touchpad.naturalScrolling = true;
-      };
+      xkb.layout = "us";
       displayManager.sx.enable = true;  #minimal replacement for startx
       videoDrivers = [ "amdgpu" ];
       deviceSection = ''
@@ -16,6 +12,12 @@
       '';
       excludePackages = [ pkgs.xterm ];
     };
+
+    libinput = {
+      enable = true; 				# touchpad support generally enabled by most display managers
+      touchpad.naturalScrolling = true;
+    };
+
 
     udev.extraRules = lib.mkMerge [
       # autosuspend USB devices
