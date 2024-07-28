@@ -12,7 +12,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -21,7 +21,10 @@
     nixosConfigurations = {
       server = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [ ./systems/server/configuration.nix ];
+        modules = [ 
+	  ./modules/home-manager
+          ./systems/server/configuration.nix
+        ];
       };
 
       phoenix = nixpkgs.lib.nixosSystem {
@@ -29,6 +32,7 @@
         system = "x86_64-linux";
         modules = [
           ./systems/phoenix
+	  ./modules/home-manager
           inputs.home-manager.nixosModules.default
         ];
       };
@@ -38,6 +42,7 @@
         system = "x86_64-linux";
         modules = [
           ./systems/blade
+	  ./modules/home-manager
           inputs.nix-snapd.nixosModules.default
           inputs.home-manager.nixosModules.default
 	  inputs.nix-flatpak.nixosModules.nix-flatpak
@@ -48,6 +53,7 @@
         system = "x86_64-linux";
         modules = [
           ./systems/cospi
+	  ./modules/home-manager
           inputs.nix-snapd.nixosModules.default
           inputs.home-manager.nixosModules.default
 	  inputs.nix-flatpak.nixosModules.nix-flatpak
