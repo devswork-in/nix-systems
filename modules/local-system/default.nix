@@ -4,6 +4,7 @@
     ./redshift.nix
     ./services.nix
     ./bluetooth.nix
+    ./fileSystems.nix
   ];
 }
 

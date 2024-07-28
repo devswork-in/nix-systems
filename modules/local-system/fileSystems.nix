@@ -1,18 +1,18 @@
 {
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/df4e12d1-ce05-4218-a103-fcaabddb01ab";
+	device = "/dev/sda2";
       fsType = "ext4";
       options = [ "noatime" ];
     };
 
     "/boot" = {
-      device = "/dev/disk/by-uuid/7EE7-7EF9";
+      device = "/dev/sda1";
       fsType = "vfat";
     };
 
     "/home" = {
-      device = "/dev/disk/by-uuid/b204f710-41af-41df-ac9d-3fd38147e0f3";
+      device = "/dev/sda3";
       fsType = "ext4";
     };
   };

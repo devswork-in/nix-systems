@@ -1,19 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
-let
-  nix-flatpak-src = builtins.fetchTarball {
-    url = "https://github.com/gmodena/nix-flatpak/archive/refs/tags/v0.4.1.tar.gz";
-    sha256 = "sha256:1drg6fjv7q0lpx5gmb6rda3l2f3b25fb200fh3dchqjm176p3g97";
-  };
-  nix-flatpak = import "${nix-flatpak-src}/modules/nixos.nix";
-in
 {
-  imports = [ nix-flatpak ];
-
   services.flatpak = {
     enable = true;
     remotes = [{
-      name = "flathub"; location = "https://flathub.org/repo/flathub.flatpakrepo";
+      name = "flathub";
+      location = "https://flathub.org/repo/flathub.flatpakrepo";
     }];
     packages = [
       { appId = "io.github.thetumultuousunicornofdarkness.cpu-x"; origin = "flathub"; }
@@ -27,9 +19,10 @@ in
   };
 
   xdg.portal = {
-    enable = true;
+    enable = lib.mkForce true;
     config.common.default = "*";
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    # Consider removing extraPortals if it causes conflicts
+    #extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
 environment.shellInit = ''

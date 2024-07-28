@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
     deploy-rs.url = "github:serokell/deploy-rs";
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
 
     #Always use the same nixpkgs for both system + <module>
     nix-snapd = {
@@ -39,6 +40,17 @@
           ./systems/blade
           inputs.nix-snapd.nixosModules.default
           inputs.home-manager.nixosModules.default
+	  inputs.nix-flatpak.nixosModules.nix-flatpak
+        ];
+      };
+      cospi = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        system = "x86_64-linux";
+        modules = [
+          ./systems/cospi
+          inputs.nix-snapd.nixosModules.default
+          inputs.home-manager.nixosModules.default
+	  inputs.nix-flatpak.nixosModules.nix-flatpak
         ];
       };
     };

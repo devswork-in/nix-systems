@@ -11,6 +11,7 @@ in
     ./../../modules/flatpak.nix
     ./../../modules/local-system
     ./../../modules/wireguard.nix
+    ./../../modules/local-system/desktop/gnome.nix
   ];
 
   boot = {
@@ -29,7 +30,7 @@ in
 
   networking = {
     networkmanager.enable = true;
-    hostName = lib.mkDefault "blade";
+    hostName = lib.mkDefault "cospi";
     nameservers = ["8.8.8.8" "9.9.9.9" "1.1.1.1" "8.8.4.4"];
   };
 
