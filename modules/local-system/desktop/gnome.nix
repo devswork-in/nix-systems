@@ -28,7 +28,7 @@
     gnome3.epiphany
   ];
   programs = {
-    gnome-terminal.enable = true;
+    gnome-terminal.enable = false;
     geary.enable = false;
   };
 
