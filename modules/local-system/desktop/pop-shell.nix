@@ -45,15 +45,17 @@ in
       };
     };
 
-    home.sessionVariables.GTK_THEME = "palenight";
+    home.sessionVariables.GTK_THEME = "default";
 
     dconf.settings = {
+      #check extensions uuids via gnome-extensions list
       "org/gnome/shell".enabled-extensions =
         (map (extension: extension.extensionUuid) gnomeExtensionsList)
         ++ [
           "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
           "unite-shell@gnome-shell-extensions.hardpixel.github.com"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
+	  "gsconnect@andyholmes.github.io"
 	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
@@ -191,13 +193,25 @@ in
         use-activities-text = false;     # Adjust based on preference
         enable-titlebar-actions = true; # Adjust based on preference
       };
+
+      # Disable Super key (Overlay Key)
+      "org/gnome/mutter" = {
+        overlay-key = "";
+      };
     };
   };
 
   # ---- System Configuration ----
   services.xserver = {
     enable = true;
-    desktopManager.gnome.enable = true;
+    desktopManager.gnome = {
+      enable = true;
+      extraGSettingsOverrides = ''
+        # Change default background
+        [org.gnome.desktop.background]
+        picture-uri='file://${pkgs.nixos-artwork.wallpapers.mosaic-blue.gnomeFilePath}'
+     '';
+    };
     displayManager.gdm = {
       enable = true;
       wayland = true;
@@ -210,7 +224,12 @@ in
   };
 
   programs.dconf.enable = true;
-  
+ 
+  programs.kdeconnect = {
+    enable = true;
+    package = pkgs.gnomeExtensions.gsconnect;
+  };
+
   # Dependency for Super+/ shortcut
   environment.systemPackages = [ pkgs.pop-launcher ];
 
