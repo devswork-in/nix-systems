@@ -18,6 +18,39 @@ in
 
     home.packages = gnomeExtensionsList;
 
+    gtk = {
+      enable = true;
+
+      iconTheme = {
+        name = "Papirus-Dark";
+        package = pkgs.papirus-icon-theme;
+      };
+
+      theme = {
+        name = "palenight";
+        package = pkgs.palenight-theme;
+      };
+
+      cursorTheme = {
+        name = "Numix-Cursor";
+        package = pkgs.numix-cursor-theme;
+      };
+
+      gtk3.extraConfig = {
+        Settings = ''
+          gtk-application-prefer-dark-theme=1
+        '';
+      };
+
+      gtk4.extraConfig = {
+        Settings = ''
+          gtk-application-prefer-dark-theme=1
+        '';
+      };
+    };
+
+    home.sessionVariables.GTK_THEME = "palenight";
+  
     dconf.settings = {
       "org/gnome/shell".enabled-extensions =
         (map (extension: extension.extensionUuid) gnomeExtensionsList)
@@ -31,14 +64,16 @@ in
       "org/gnome/shell".disabled-extensions = [ ];
 
       "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
         enable-hot-corners = false;
 
-        gtk-theme = "Nordic";
+        gtk-theme = "palenight";
 
         ## Clock
         clock-show-weekday = true;
         clock-show-date = true;
-
+	clock-show-seconds = true;
+	clock-format = "12h";
       };
 
       # Keybindings
@@ -60,9 +95,9 @@ in
 
       "org/gnome/desktop/wm/keybindings" = {
         toggle-message-tray = "disabled";
-        close = [ "<Super>w" ];
-        maximize = "disabled";
-        minimize = "disabled";
+        close = [ "<Super><Shift>c" ];
+        maximize = "<Super>f";
+        minimize = "<Super><Shift>f";
         move-to-monitor-down = "disabled";
         move-to-monitor-left = "disabled";
         move-to-monitor-right = "disabled";
@@ -116,10 +151,6 @@ in
         show-on-all-monitors = true;
         display-all-workspaces = true;
       };
-
-      "org/gnome/shell/extensions/user-theme" = {
-        name = "nordic";
-      };
     };
   };
 
@@ -138,8 +169,6 @@ in
   };
 
   programs.dconf.enable = true;
-
-  environment.systemPackages = with pkgs; [ nordic ];
 
   environment.gnome.excludePackages =
     (with pkgs; [
