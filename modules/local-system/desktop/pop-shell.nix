@@ -163,6 +163,25 @@ in
         ];
         night-light-temperature = 4000; # Adjust the color temperature as needed
       };
+
+      # Unite extension settings (if available via dconf)
+      # Check available extensions path via dconf list /org/gnome/shell/extensions/
+      # Check inside via dconf like dconf list /org/gnome/shell/extensions/unite/
+      "org/gnome/shell/extensions/unite" = {
+        hide-window-titlebars = true;
+        hide-activities-button = false;  # Adjust based on preference
+        hide-app-menu-icon = true;      # Adjust based on preference
+        show-appmenu-button = true;     # Adjust based on preference
+        show-window-title = true;       # Ensure window title is hidden
+        desktop-name-text = "";          # Optionally set the desktop name text
+        extend-left-box = true;          # Adjust based on preference
+        reduce-panel-spacing = true;     # Adjust based on preference
+        restrict-to-primary-screen = false; # Adjust based on preference
+        show-desktop-name = false;       # Adjust based on preference
+        show-legacy-tray = false;        # Adjust based on preference
+        use-activities-text = false;     # Adjust based on preference
+        enable-titlebar-actions = true; # Adjust based on preference
+      };
     };
   };
 
