@@ -83,7 +83,7 @@ let
     hostName = user.domain;
     userName = user.name;
     userEmail = user.email;
-    nixosReleaseVersion = "23.11";
+    nixosReleaseVersion = "24.05";
     hashedPassword = user.hashedPassword;
     sshKeys = user.sshKeys;
     path = paths.base;

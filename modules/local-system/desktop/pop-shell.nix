@@ -298,13 +298,14 @@ in
   };
 
   # Dependency for Super+/ shortcut
-  environment.systemPackages = [ pkgs.pop-launcher ];
+  environment.systemPackages = with pkgs; [ pop-launcher ];
 
   environment.gnome.excludePackages =
     (with pkgs; [
       gnome-photos
       gnome-tour
       gedit
+      gnome-console
     ])
     ++ (with pkgs.gnome; [
       gnome-music
