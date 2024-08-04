@@ -15,7 +15,7 @@
     smartmontools jq direnv
     eva unzip fd #faster find alternative
     progress lm_sensors duf gdu xclip
-    nix-output-monitor
+    nix-output-monitor comma
     dig pciutils nix-index #contains nix-locate
     entr imgp recode glow
     fff acpi axel python3 tree tmux
