@@ -166,6 +166,13 @@ in
         night-light-temperature = 4000; # Adjust the color temperature as needed
       };
 
+      # Pop Shell Extension settings
+      "org/gnome/shell/extensions/pop-shell" = {
+        active-hint = true;
+        active-hint-border-radius = 12;
+        tile-by-default = true;
+      };
+
       # Unite extension settings (if available via dconf)
       # Check available extensions path via dconf list /org/gnome/shell/extensions/
       # Check inside via dconf like dconf list /org/gnome/shell/extensions/unite/
