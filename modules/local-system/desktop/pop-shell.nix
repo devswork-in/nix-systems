@@ -210,6 +210,9 @@ in
   };
 
   programs.dconf.enable = true;
+  
+  # Dependency for Super+/ shortcut
+  environment.systemPackages = [ pkgs.pop-launcher ];
 
   environment.gnome.excludePackages =
     (with pkgs; [
