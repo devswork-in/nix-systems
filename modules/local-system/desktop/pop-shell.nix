@@ -7,6 +7,7 @@ let
     unite-shell
     blur-my-shell
     pop-shell
+    no-overview
   ];
 in
 {
@@ -56,6 +57,7 @@ in
           "unite-shell@gnome-shell-extensions.hardpixel.github.com"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
 	  "gsconnect@andyholmes.github.io"
+	  "no-overview@fthx"
 	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
