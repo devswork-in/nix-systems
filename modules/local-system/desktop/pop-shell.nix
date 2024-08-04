@@ -79,9 +79,9 @@ in
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-        binding = "<Super>q";
-        command = "foot  > /dev/null 2>&1 &";
-        name = "open-terminal";
+        binding = "<Super><Shift>Return";
+        command = "kitty";
+        name = "kitty-terminal";
       };
 
       "org/gnome/desktop/wm/keybindings" = {
@@ -108,10 +108,8 @@ in
         move-to-workspace-10 = [ "<Super><Shift>0" ];
 
         show-screenshot-ui = [ "<Shift><Super>s" ];
-      };
 
-      # Additional GNOME Shell Keybindings
-      "org/gnome/desktop/wm/keybindings" = {
+        # Additional GNOME Shell Keybindings
         toggle-message-tray = "disabled";
         close = [ "<Super><Shift>c" ];
         maximize = "<Super>f";
@@ -135,10 +133,6 @@ in
         unmaximize = "disabled";
       };
 
-      "org/gnome/shell/extensions/pop-shell" = {
-        tile-by-default = true;
-      };
-
       # Configure blur-my-shell
       "org/gnome/shell/extensions/blur-my-shell" = {
         brightness = 0.85;
@@ -150,17 +144,6 @@ in
       "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
         blur = true;
         style-dialogs = 0;
-      };
-
-      # Configure Pano
-      "org/gnome/shell/extensions/pano" = {
-        global-shortcut = [ "<Super>comma" ];
-        incognito-shortcut = [ "<Shift><Super>less" ];
-      };
-
-      # Set the default window for primary applications
-      "org/gnome/shell/extensions/auto-move-windows" = {
-        application-list = [ "firefox.desktop:1" ];
       };
 
       # The open applications bar
