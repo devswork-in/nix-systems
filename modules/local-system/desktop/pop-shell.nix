@@ -54,6 +54,8 @@ in
           "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
           "unite-shell@gnome-shell-extensions.hardpixel.github.com"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
+	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
+          "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
 
       "org/gnome/shell".disabled-extensions = [];
