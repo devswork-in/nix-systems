@@ -3,8 +3,15 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
-    deploy-rs.url = "github:serokell/deploy-rs";
-    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
+
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-flatpak = {
+      url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
+    };
 
     #Always use the same nixpkgs for both system + <module>
     nix-snapd = {

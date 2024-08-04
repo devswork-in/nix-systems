@@ -71,6 +71,7 @@ in
       "org/gnome/shell".disabled-extensions = [];
 
       "org/gnome/desktop/interface" = {
+        enable-animations = false;
         color-scheme = "prefer-dark";
         enable-hot-corners = false;
 
@@ -94,6 +95,8 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom8/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom9/"
         ];
 
 	# Set default screenshot keybindings to empty strings
@@ -153,6 +156,18 @@ in
         binding = "<Super>v";
         command = "bash -c 'pidof gromit-mpx && gromit-mpx -v'";
         name = "Gromit-mpx Vertical";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom8" = {
+        binding = "<Super><Control>r";
+        command = "reboot";
+        name = "Reboot";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom9" = {
+        binding = "<Super><Control>p";
+        command = "poweroff";
+        name = "Poweroff";
       };
 
       "org/gnome/desktop/wm/keybindings" = {
@@ -238,7 +253,7 @@ in
       # Pop Shell Extension settings
       "org/gnome/shell/extensions/pop-shell" = {
         active-hint = true;
-        active-hint-border-radius = 12;
+        active-hint-border-radius = "uint32 12";
         tile-by-default = true;
       };
 

@@ -11,7 +11,6 @@ in
     ./../../modules/flatpak.nix
     ./../../modules/local-system
     ./../../modules/wireguard.nix
-    ./../../modules/local-system/extras
     ./../../modules/local-system/desktop/pop-shell.nix
   ];
 
