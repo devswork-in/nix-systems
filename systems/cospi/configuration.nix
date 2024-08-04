@@ -11,7 +11,7 @@ in
     ./../../modules/flatpak.nix
     ./../../modules/local-system
     ./../../modules/wireguard.nix
-    ./../../modules/local-system/desktop/gnome.nix
+    ./../../modules/local-system/desktop/pop-shell.nix
   ];
 
   boot = {
