@@ -152,6 +152,17 @@ in
         show-on-all-monitors = true;
         display-all-workspaces = true;
       };
+
+      # Night Light Configuration
+      "org/gnome/settings-daemon/plugins/color" = {
+        night-light-enabled = true;
+        night-light-schedule = "custom";
+        night-light-schedule-custom = [
+          "18:00"
+          "06:00"
+        ];
+        night-light-temperature = 4000; # Adjust the color temperature as needed
+      };
     };
   };
 
