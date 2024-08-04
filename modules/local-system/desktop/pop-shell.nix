@@ -9,6 +9,12 @@ let
     pop-shell
     no-overview
   ];
+  # ref:
+  # https://github.com/flameshot-org/flameshot/issues/3365#issuecomment-1868580715
+  # https://flameshot.org/docs/guide/wayland-help/
+  flameshot-gui = pkgs.writeShellScriptBin "flameshot-gui" "${pkgs.flameshot}/bin/flameshot gui -c";
+  flameshot-gui-path = pkgs.writeShellScriptBin "flameshot-gui-path" "${pkgs.flameshot}/bin/flameshot gui -p /home/${user}/Screenshots/";
+  flameshot-full = pkgs.writeShellScriptBin "flameshot-full" "${pkgs.flameshot}/bin/flameshot full -p /home/${user}/Screenshots/";
 in
 {
   # ---- Home Configuration ----
@@ -81,13 +87,72 @@ in
       "org/gnome/settings-daemon/plugins/media-keys" = {
         custom-keybindings = [
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7/"
         ];
+
+	# Set default screenshot keybindings to empty strings
+        #screenshot = "";
+        #screenshot-window = "";
+        #screenshot-area = "";
+      };
+
+      # Disables the default screenshot interface
+      "org/gnome/shell/keybindings" = {
+        show-screenshot-ui = [ ];
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         binding = "<Super><Shift>Return";
         command = "kitty";
         name = "kitty-terminal";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+        binding = "Print";
+        command = "${flameshot-full}/bin/flameshot-full";
+        name = "Full Screenshot";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
+        binding = "<Super>Print";
+        command = "${flameshot-gui-path}/bin/flameshot-gui-path";
+        name = "GUI Screenshot";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3" = {
+        binding = "<Super><Shift>Print";
+        command = "${flameshot-gui}/bin/flameshot-gui";
+        name = "Clipboard Screenshot";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4" = {
+        binding = "<Super>x";
+        command = "bash -c 'pkill gromit-mpx || gromit-mpx -a'";
+        name = "Toggle Gromit-mpx";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5" = {
+        binding = "<Super>y";
+        command = "bash -c 'pidof gromit-mpx && gromit-mpx -y'";
+        name = "Gromit-mpx Yellow";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6" = {
+        binding = "<Super>z";
+        command = "bash -c 'pidof gromit-mpx && gromit-mpx -z'";
+        name = "Gromit-mpx Zoom";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7" = {
+        binding = "<Super>v";
+        command = "bash -c 'pidof gromit-mpx && gromit-mpx -v'";
+        name = "Gromit-mpx Vertical";
       };
 
       "org/gnome/desktop/wm/keybindings" = {
