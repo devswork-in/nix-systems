@@ -347,6 +347,12 @@ in
         enable-titlebar-actions = false; # Adjust based on preference
       };
 
+      # Disable automatic suspend
+      "org/gnome/settings-daemon/plugins/power" = {
+        sleep-inactive-ac-type = "nothing";
+        sleep-inactive-battery-type = "nothing";
+      };
+
       # Disable Super key (Overlay Key)
       "org/gnome/mutter" = {
         overlay-key = "";
@@ -368,6 +374,7 @@ in
     displayManager.gdm = {
       enable = true;
       wayland = true;
+      autoSuspend = false; # Disable automatic suspend
     };
   };
 
