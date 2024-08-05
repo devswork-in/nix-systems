@@ -33,6 +33,7 @@ let
     pop-shell
     panel-free
     no-overview
+    workspace-switcher-manager
   ];
 in
 {
@@ -97,6 +98,7 @@ in
 	  "gsconnect@andyholmes.github.io"
 	  "no-overview@fthx"
 	  "panel-free@fthx"
+	  "workspace-switcher-manager@G-dH.github.com"
 	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
@@ -289,6 +291,11 @@ in
           "06:00"
         ];
         night-light-temperature = 4000; # Adjust the color temperature as needed
+      };
+
+      # Workspace switch pop-up Configuration
+      "org/gnome/shell/extensions/workspace-switcher-manager" = {
+        popup-visibility = 0;
       };
 
       # Pop Shell Extension settings
