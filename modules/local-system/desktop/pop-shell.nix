@@ -106,7 +106,7 @@ in
       "org/gnome/shell".disabled-extensions = [];
 
       "org/gnome/desktop/interface" = {
-        enable-animations = false;
+        enable-animations = true;
         color-scheme = "prefer-dark";
         enable-hot-corners = false;
 
