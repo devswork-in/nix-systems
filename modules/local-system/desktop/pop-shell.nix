@@ -10,6 +10,9 @@ let
   flameshot-gui-path = pkgs.writeShellScriptBin "flameshot-gui-path" "${pkgs.flameshot}/bin/flameshot gui -p /home/${user}/Screenshots/";
   flameshot-full = pkgs.writeShellScriptBin "flameshot-full" "${pkgs.flameshot}/bin/flameshot full -p /home/${user}/Screenshots/";
 
+  kill-session = pkgs.writeShellScriptBin "kill-session" "${pkgs.systemd}/bin/loginctl kill-session $(${pkgs.systemd}/bin/loginctl | ${pkgs.coreutils}/bin/coreutils --coreutils-prog=tail -n +2| ${pkgs.findutils}/bin/xargs| ${pkgs.coreutils}/bin/coreutils --coreutils-prog=cut -d ' ' -f1)";
+  lock-session = pkgs.writeShellScriptBin "lock-session" "${pkgs.systemd}/bin/loginctl lock-session $(${pkgs.systemd}/bin/loginctl | ${pkgs.coreutils}/bin/coreutils --coreutils-prog=tail -n +2| ${pkgs.findutils}/bin/xargs| ${pkgs.coreutils}/bin/coreutils --coreutils-prog=cut -d ' ' -f1)";
+
   togglePanelFreeScript = pkgs.writeShellScriptBin "toggle-panel-free" ''
     #!/usr/bin/env bash
     
@@ -135,6 +138,8 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom8/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom9/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom10/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom11/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom12/"
         ];
 
 	# Set default screenshot keybindings to empty strings
@@ -213,6 +218,20 @@ in
         binding = "<Super>b";
         command = "${togglePanelFreeScript}/bin/toggle-panel-free";
         name = "Toggle Panel-Free";
+      };
+
+      # Keybind to Kill Session
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom11" = {
+        binding = "<Super><Shift>q";
+        command = "${kill-session}/bin/kill-session";
+        name = "Kill logged in session";
+      };
+
+      # Keybind to lock current session
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom12" = {
+        binding = "<Super>q";
+        command = "${lock-session}/bin/lock-session";
+        name = "Lock logged in session";
       };
 
       "org/gnome/desktop/wm/keybindings" = {
