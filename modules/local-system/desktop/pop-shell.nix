@@ -33,6 +33,7 @@ let
     pop-shell
     panel-free
     no-overview
+    window-title-is-back
     workspace-switcher-manager
   ];
 in
@@ -98,6 +99,7 @@ in
 	  "gsconnect@andyholmes.github.io"
 	  "no-overview@fthx"
 	  "panel-free@fthx"
+	  "window-title-is-back@fthx"
 	  "workspace-switcher-manager@G-dH.github.com"
 	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
@@ -312,9 +314,9 @@ in
       # Check inside via dconf like dconf list /org/gnome/shell/extensions/unite/
       "org/gnome/shell/extensions/unite" = {
         hide-window-titlebars = true;
-        hide-activities-button = false;  # Adjust based on preference
+        hide-activities-button = "never";  # Adjust based on preference
         hide-app-menu-icon = true;      # Adjust based on preference
-        show-appmenu-button = true;     # Adjust based on preference
+        show-appmenu-button = false;     # Adjust based on preference
         show-window-title = true;       # Ensure window title is hidden
         desktop-name-text = "";          # Optionally set the desktop name text
         extend-left-box = true;          # Adjust based on preference
@@ -323,7 +325,7 @@ in
         show-desktop-name = false;       # Adjust based on preference
         show-legacy-tray = false;        # Adjust based on preference
         use-activities-text = false;     # Adjust based on preference
-        enable-titlebar-actions = true; # Adjust based on preference
+        enable-titlebar-actions = false; # Adjust based on preference
       };
 
       # Disable Super key (Overlay Key)
