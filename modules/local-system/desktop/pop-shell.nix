@@ -2,24 +2,56 @@
 
 let
   user = (import ./../../../config.nix {}).userName;
-  gnomeExtensionsList = with pkgs.gnomeExtensions; [
-    user-themes
-    unite-shell
-    blur-my-shell
-    pop-shell
-    no-overview
-  ];
+
   # ref:
   # https://github.com/flameshot-org/flameshot/issues/3365#issuecomment-1868580715
   # https://flameshot.org/docs/guide/wayland-help/
   flameshot-gui = pkgs.writeShellScriptBin "flameshot-gui" "${pkgs.flameshot}/bin/flameshot gui -c";
   flameshot-gui-path = pkgs.writeShellScriptBin "flameshot-gui-path" "${pkgs.flameshot}/bin/flameshot gui -p /home/${user}/Screenshots/";
   flameshot-full = pkgs.writeShellScriptBin "flameshot-full" "${pkgs.flameshot}/bin/flameshot full -p /home/${user}/Screenshots/";
+
+  togglePanelFreeScript = pkgs.writeShellScriptBin "toggle-panel-free" ''
+    #!/usr/bin/env bash
+    
+    EXTENSION_ID="panel-free@fthx"
+    GNOME_EXTENSIONS_PATH="${pkgs.gnome.gnome-shell}/bin/gnome-extensions"
+    
+    # Check current state
+    if $GNOME_EXTENSIONS_PATH info "$EXTENSION_ID" | grep -q "Enabled: Yes"; then
+      # Disable the extension if it is enabled
+      $GNOME_EXTENSIONS_PATH disable "$EXTENSION_ID"
+    else
+      # Enable the extension if it is disabled
+      $GNOME_EXTENSIONS_PATH enable "$EXTENSION_ID"
+    fi
+  '';
+
+  gnomeExtensionsList = with pkgs.gnomeExtensions; [
+    user-themes
+    unite-shell
+    blur-my-shell
+    pop-shell
+    panel-free
+    no-overview
+  ];
 in
 {
   # ---- Home Configuration ----
   home-manager.users.${user} = {
     home.packages = gnomeExtensionsList;
+    home.file = {
+      # Create .desktop file for dconf settings to be applied at login
+      ".config/autostart/dconf-settings.desktop".text = ''
+        [Desktop Entry]
+        Type=Application
+        Exec=bash -c "dconf write /org/gnome/shell/extensions/pop-shell/active-hint-border-radius '@u 12'"
+        Hidden=false
+        NoDisplay=false
+        X-GNOME-Autostart-enabled=true
+        Name=dconf Settings
+        Comment=Apply dconf settings at login
+      '';
+    };
 
     gtk = {
       enable = true;
@@ -64,6 +96,7 @@ in
           "user-theme@gnome-shell-extensions.gcampax.github.com"
 	  "gsconnect@andyholmes.github.io"
 	  "no-overview@fthx"
+	  "panel-free@fthx"
 	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
@@ -97,6 +130,7 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom8/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom9/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom10/"
         ];
 
 	# Set default screenshot keybindings to empty strings
@@ -168,6 +202,13 @@ in
         binding = "<Super><Control>p";
         command = "poweroff";
         name = "Poweroff";
+      };
+
+      # Keybinding to toggle panel-free extension
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom10" = {
+        binding = "<Super>b";
+        command = "${togglePanelFreeScript}/bin/toggle-panel-free";
+        name = "Toggle Panel-Free";
       };
 
       "org/gnome/desktop/wm/keybindings" = {
@@ -253,7 +294,9 @@ in
       # Pop Shell Extension settings
       "org/gnome/shell/extensions/pop-shell" = {
         active-hint = true;
-        active-hint-border-radius = "uint32 12";
+        # does not work, ref: https://github.com/pop-os/shell/issues/1582
+	# as always gets formatted incorrectly
+	# active-hint-border-radius = 12;
         tile-by-default = true;
       };
 
@@ -313,7 +356,7 @@ in
   };
 
   # Dependency for Super+/ shortcut
-  environment.systemPackages = with pkgs; [ pop-launcher ];
+  environment.systemPackages = with pkgs; [ pop-launcher   gnome.gnome-tweaks ];
 
   environment.gnome.excludePackages =
     (with pkgs; [
