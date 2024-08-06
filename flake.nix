@@ -60,7 +60,7 @@
         system = "x86_64-linux";
         modules = [
           ./systems/cospi
-	  ./modules/configs/minimal
+	  ./modules/configs/full
           inputs.nix-snapd.nixosModules.default
           inputs.home-manager.nixosModules.default
 	  inputs.nix-flatpak.nixosModules.nix-flatpak

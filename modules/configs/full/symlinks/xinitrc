@@ -1,0 +1,41 @@
+systemctl --user start udiskie.service & #for automounting usb drives
+systemctl --user start redshift.service & #eyecare
+dbus-launch nm-applet &
+nmcli con up CoudBe & #try connecting to Coudbe if up
+blueman-applet &
+xrdb -load ~/.Xresources &
+numlockx on &
+feh --bg-fill --randomize ~/wallpapers/
+xset -b &
+picom &
+pkill clipit; clipit -n &
+#kdeconnect-indicator &
+
+#betterlockscreen -l blur --time-format "%I:%M %p"
+
+#Setting up the user's D-Bus Daemon from "https://nixos.wiki/wiki/Using_X_without_a_Display_Manager"
+if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+  eval $(dbus-launch --exit-with-session --sh-syntax)
+fi
+systemctl --user import-environment DISPLAY XAUTHORITY
+
+if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+  dbus-update-activation-environment DISPLAY XAUTHORITY
+fi
+
+#feh --bg-fill ~/.config/default.png
+
+if which xfce4-session; then
+  exec startxfce4
+elif which awesome; then
+  exec awesome
+elif which bspwm; then
+  exec bspwm
+elif which sway;then
+  sway --my-next-gpu-wont-be-nvidia
+elif which dwm;then
+  exec dwmblocks &
+  exec dbus-launch dwm #dbus-launch needed for notifications to work
+else
+  echo "No WM's Found !!"
+fi

@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+
+# Default settings
+readonly BIT_RATE="100M"
+readonly OUTPUT_FORMAT="h264"
+readonly SIZE="1920x1080"
+readonly FRAMERATE="60"
+OUTPUT_FILE=""
+DEBUG_MODE=0
+
+# Function to display help message
+function show_help() {
+	cat <<EOF
+Usage: $(basename "$0") [options] [start|stop]
+
+Options:
+  --bit-rate  Set the bit rate for the recording (default: $BIT_RATE)
+  --output-format  Set the output format (default: $OUTPUT_FORMAT)
+  --size  Set the video size (default: $SIZE)
+  --framerate  Set the frame rate (default: $FRAMERATE)
+  --output-file  Specify the output file name
+  --debug  Enable debug mode for additional output
+  --help  Display this help message and exit
+
+Commands:
+  start  Start screen recording in the background
+  stop   Stop screen recording
+EOF
+	exit 0
+}
+
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+	case $1 in
+	--bit-rate)
+		BIT_RATE="$2"
+		shift 2
+		;;
+	--output-format)
+		OUTPUT_FORMAT="$2"
+		shift 2
+		;;
+	--size)
+		SIZE="$2"
+		shift 2
+		;;
+	--framerate)
+		FRAMERATE="$2"
+		shift 2
+		;;
+	--output-file)
+		OUTPUT_FILE="$2"
+		shift 2
+		;;
+	--debug)
+		DEBUG_MODE=1
+		shift
+		;;
+	--help)
+		show_help
+		;;
+	start | stop)
+		ACTION="$1"
+		shift
+		;;
+	*)
+		echo "Unknown parameter: $1"
+		show_help >&2
+		exit 1
+		;;
+	esac
+done
+
+# Check if required option is missing
+if [[ -z "$ACTION" ]]; then
+	echo "Missing argument: start or stop is required."
+	show_help >&2
+	exit 1
+fi
+
+# Function to start screen recording
+function start_screen_recording() {
+	if [[ $DEBUG_MODE -eq 1 ]]; then
+		echo "Starting screen recording with debug mode enabled..."
+		echo "Size: $SIZE, Bit Rate: $BIT_RATE, Frame Rate: $FRAMERATE"
+	fi
+
+	if [[ -n "$OUTPUT_FILE" ]]; then
+		echo "Saving screen recording to $OUTPUT_FILE..."
+		adb exec-out screenrecord --bit-rate="$BIT_RATE" --output-format="$OUTPUT_FORMAT" --size="$SIZE" --time-limit 180 >"$OUTPUT_FILE" &
+	else
+		echo "Output file not specified. Only live viewing will be available."
+		adb exec-out screenrecord --bit-rate="$BIT_RATE" --output-format="$OUTPUT_FORMAT" --size="$SIZE" --time-limit 180 - | ffplay -framerate "$FRAMERATE" -framedrop -fflags nobuffer -flags low_delay \
+			-strict experimental -analyzeduration 100000 -probesize 64 -sync ext \
+			-vf setpts=0 -fflags discardcorrupt - >/dev/null 2>&1 &
+	fi
+}
+
+# Function to stop screen recording
+function stop_screen_recording() {
+	if [[ $DEBUG_MODE -eq 1 ]]; then
+		echo "Stopping screen recording..."
+	fi
+
+	adb shell pkill -INT screenrecord
+
+	pkill -f 'ffplay'
+}
+
+# Run the chosen action in the background
+case $ACTION in
+start)
+	start_screen_recording &
+	echo "Screen recording started in the background (size: $SIZE)."
+	;;
+stop)
+	stop_screen_recording
+	echo "Screen recording stopped."
+	;;
+*)
+	echo "Invalid action: $ACTION"
+	show_help >&2
+	exit 1
+	;;
+esac
+
+exit 0
