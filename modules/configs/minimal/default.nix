@@ -1,6 +1,6 @@
 { ... }:
 let
-  config = (import ./../../config.nix {});
+  config = (import ./../../../config.nix {});
   user = config.userName;
   stateVersion = config.nixosReleaseVersion;
 in 
@@ -8,8 +8,8 @@ in
   home-manager = {
     users."${user}" = { ... }: {
       imports = [
-        ./pkgs/general.nix
-        ./configs/symlinks.nix
+        ./pkgs
+        ./symlinks
       ];
 
       home = {

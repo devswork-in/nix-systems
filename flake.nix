@@ -29,7 +29,7 @@
       server = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [ 
-	  ./modules/home-manager
+	  ./modules/configs/minimal
           ./systems/server/configuration.nix
         ];
       };
@@ -39,7 +39,7 @@
         system = "x86_64-linux";
         modules = [
           ./systems/phoenix
-	  ./modules/home-manager
+	  ./modules/configs/minimal
           inputs.home-manager.nixosModules.default
         ];
       };
@@ -49,7 +49,7 @@
         system = "x86_64-linux";
         modules = [
           ./systems/blade
-	  ./modules/home-manager
+	  ./modules/configs/minimal
           inputs.nix-snapd.nixosModules.default
           inputs.home-manager.nixosModules.default
 	  inputs.nix-flatpak.nixosModules.nix-flatpak
@@ -60,7 +60,7 @@
         system = "x86_64-linux";
         modules = [
           ./systems/cospi
-	  ./modules/home-manager
+	  ./modules/configs/minimal
           inputs.nix-snapd.nixosModules.default
           inputs.home-manager.nixosModules.default
 	  inputs.nix-flatpak.nixosModules.nix-flatpak
