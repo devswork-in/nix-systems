@@ -99,16 +99,22 @@ in
           "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
           "unite-shell@gnome-shell-extensions.hardpixel.github.com"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
-	  "gsconnect@andyholmes.github.io"
-	  "no-overview@fthx"
-	  "panel-free@fthx"
-	  "window-title-is-back@fthx"
-	  "workspace-switcher-manager@G-dH.github.com"
-	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
+	        "gsconnect@andyholmes.github.io"
+	        "no-overview@fthx"
+	        "panel-free@fthx"
+	        "window-title-is-back@fthx"
+	        "workspace-switcher-manager@G-dH.github.com"
+	        "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
 
       "org/gnome/shell".disabled-extensions = [];
+
+      "org/gnome/desktop/background" = {
+        picture-uri = "file://${./../wallpaper.jpg}";
+        picture-uri-dark = "file://${./../wallpaper.jpg}";
+      };
+
 
       # If not disabled <Super>num keys will open pinned favourite applications
       "org/gnome/shell".favorite-apps = "@as []";
@@ -325,8 +331,8 @@ in
       "org/gnome/shell/extensions/pop-shell" = {
         active-hint = true;
         # does not work, ref: https://github.com/pop-os/shell/issues/1582
-	# as always gets formatted incorrectly
-	# active-hint-border-radius = 12;
+	      # as always gets formatted incorrectly
+	      # active-hint-border-radius = 12;
         tile-by-default = true;
       };
 
@@ -367,11 +373,6 @@ in
     enable = true;
     desktopManager.gnome = {
       enable = true;
-      extraGSettingsOverrides = ''
-        # Change default background
-        [org.gnome.desktop.background]
-        picture-uri='file://${pkgs.nixos-artwork.wallpapers.mosaic-blue.gnomeFilePath}'
-     '';
     };
     displayManager.gdm = {
       enable = true;
