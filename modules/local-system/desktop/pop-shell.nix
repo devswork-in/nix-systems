@@ -110,6 +110,9 @@ in
 
       "org/gnome/shell".disabled-extensions = [];
 
+      # If not disabled <Super>num keys will open pinned favourite applications
+      "org/gnome/shell".favorite-apps = "@as []";
+
       "org/gnome/desktop/interface" = {
         enable-animations = true;
         color-scheme = "prefer-dark";
@@ -262,8 +265,7 @@ in
         # Additional GNOME Shell Keybindings
         toggle-message-tray = "disabled";
         close = [ "<Super><Shift>c" ];
-        maximize = "<Super>f";
-        minimize = "<Super><Shift>f";
+        toggle-fullscreen = ["<Super>f"];
         move-to-monitor-down = "disabled";
         move-to-monitor-left = "disabled";
         move-to-monitor-right = "disabled";
