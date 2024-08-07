@@ -28,6 +28,19 @@ let
       $GNOME_EXTENSIONS_PATH enable "$EXTENSION_ID"
     fi
   '';
+  
+  disableFavoriteAppShortcuts = pkgs.writeShellScript "disable-favorite-app-shortcuts" ''
+    gsettings set org.gnome.shell.keybindings switch-to-application-1 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-2 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-3 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-4 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-5 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-6 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-7 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-8 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-9 "@as []"
+    gsettings set org.gnome.shell.keybindings switch-to-application-10 "@as []"
+  '';
 
   gnomeExtensionsList = with pkgs.gnomeExtensions; [
     user-themes
@@ -55,6 +68,16 @@ in
         X-GNOME-Autostart-enabled=true
         Name=dconf Settings
         Comment=Apply dconf settings at login
+      '';
+      ".config/autostart/disable-favorite-apps.desktop".text = ''
+        [Desktop Entry]
+        Type=Application
+        Exec=${disableFavoriteAppShortcuts}
+        Hidden=false
+        NoDisplay=false
+        X-GNOME-Autostart-enabled=true
+        Name=Disable Favorite App Shortcuts
+        Comment=Disable GNOME Shell favorite app shortcuts
       '';
     };
 
@@ -156,6 +179,20 @@ in
         #screenshot-window = "";
         #screenshot-area = "";
       };
+
+      # Disable the default <Super>num keybindings
+      # "org/gnome/shell.keybindings" = {
+      #   switch-to-application-1 = "@as []";
+      #   switch-to-application-2 = "@as []";
+      #   switch-to-application-3 = "@as []";
+      #   switch-to-application-4 = "@as []";
+      #   switch-to-application-5 = "@as []";
+      #   switch-to-application-6 = "@as []";
+      #   switch-to-application-7 = "@as []";
+      #   switch-to-application-8 = "@as []";
+      #   switch-to-application-9 = "@as []";
+      #   switch-to-application-10 = "@as []";  # Added for completeness
+      # };
 
       # Disables the default screenshot interface
       "org/gnome/shell/keybindings" = {
