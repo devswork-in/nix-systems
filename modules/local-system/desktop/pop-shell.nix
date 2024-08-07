@@ -330,10 +330,10 @@ in
 
       # Configure blur-my-shell
       "org/gnome/shell/extensions/blur-my-shell" = {
-        brightness = 0.85;
+        brightness = 1;
         dash-opacity = 0.25;
         sigma = 15; # Sigma means blur amount
-        static-blur = true;
+        dynamic-blur = true;
       };
       "org/gnome/shell/extensions/blur-my-shell/panel".blur = true;
       "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
