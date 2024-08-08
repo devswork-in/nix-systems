@@ -5,7 +5,6 @@
     ./../server/hardware-configuration.nix
     ./../../modules/docker
     ./../../modules/website
-    ./../../modules/home-manager
   ];
 
   #add on top of ./../server/configuration.nix

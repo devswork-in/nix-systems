@@ -72,7 +72,7 @@ let
     };
 
     whoogle = {
-      enable = false;
+      enable = true;
       host = "search.${user.domain}";
       port = "8050";
     };

@@ -27,10 +27,12 @@
   outputs = { self, nixpkgs, ... }@inputs: {
     nixosConfigurations = {
       server = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
         system = "x86_64-linux";
         modules = [ 
 	  ./modules/configs/minimal
           ./systems/server/configuration.nix
+          inputs.home-manager.nixosModules.default
         ];
       };
 
