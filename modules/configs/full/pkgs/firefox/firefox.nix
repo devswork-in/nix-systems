@@ -12,6 +12,7 @@ let
     darkreader
     sponsorblock
     ublock-origin
+    auto-tab-discard
     # https-everywhere
     facebook-container
     return-youtube-dislikes
