@@ -280,6 +280,8 @@ in
         name = "Lock logged in session";
       };
 
+      "org/gnome/desktop/wm/preferences".button-layout = ":";
+
       "org/gnome/desktop/wm/keybindings" = {
         switch-to-workspace-1 = [ "<Super>1" ];
         switch-to-workspace-2 = [ "<Super>2" ];
