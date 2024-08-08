@@ -55,6 +55,7 @@
         vaapiVdpau
         libvdpau-va-gl
         intel-media-driver
+	intel-media-sdk #switch to onevpl-intel-gpu or vpl-gpu-rt 
       ];
     };
     pulseaudio = {
