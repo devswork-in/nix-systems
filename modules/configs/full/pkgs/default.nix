@@ -36,6 +36,13 @@
     pandoc texlive.combined.scheme-small #for converting .md files to pdf
     ddgr ytfzf dua simplescreenrecorder nix-tree
     (kodi.withPackages (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ])) #kodi with jiotv, last is for drm
+    #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
+    (google-chrome.override {
+      commandLineArgs = [
+        "--enable-features=UseOzonePlatform"
+        "--ozone-platform=wayland"
+      ];
+    })
   ];
   nixpkgs.config.allowUnfree = true;
 }
