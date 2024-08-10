@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   scriptsDir = "${config.home.homeDirectory}/nix-systems/modules/configs/full/scripts";
@@ -15,44 +15,22 @@ let
   ghv = fetchScript "ghv" "https://raw.githubusercontent.com/Creator54/ghv/main/ghv";
   wifiInterface = pkgs.writeShellScriptBin "wifiInterface" ''ip a | grep wlp | cut -d':' -f2| head -n1 |xargs'';
 
-  symlinkScript = pkgs.writeShellScriptBin "symlinkScript" ''
-    while true; do
-      if [ ! -d "${binDir}" ]; then
-        mkdir -p "${binDir}" || echo "Failed to create directory: ${binDir}" >&2
-      fi
+  symlinkScripts = pkgs.writeShellScriptBin "symlinkScripts" ''
+    mkdir -p "${binDir}"
 
-      for script in "${scriptsDir}"/*; do
-        if [ ! -e "${binDir}/$(${pkgs.coreutils}/bin/basename "$script")" ]; then
-          echo "Symlinking $script ..."
-          ${pkgs.coreutils}/bin/ln -sf "$script" "${binDir}/$(${pkgs.coreutils}/bin/basename "$script")" || echo "Failed to symlink $script" >&2
-        fi
-      done
-
-      ${pkgs.coreutils}/bin/sleep 5  # Adjust the sleep duration as needed
+    for script in "${scriptsDir}"/*; do
+      ln -sf "$script" "${binDir}/$(basename "$script")"
     done
   '';
 in
 {
-  systemd.user.services.symlinkScripts = {
-    Unit = {
-      Description = "Symlink local scripts";
-      After = [ "network.target" ];
-    };
-    Service = {
-      Type = "simple";
-
-      ExecStart = "${pkgs.bash}/bin/bash -c '${symlinkScript}/bin/symlinkScript'";
-
-      Restart = "always";
-      RestartSec = 5;
-    };
-    Install = {
-      WantedBy = [ "multi-user.target" ];
-    };
-  };
-
   home.packages = [
-    ghv livewall wifiInterface
+    ghv livewall wifiInterface symlinkScripts
   ];
+
+  # Run the symlink script when home-manager is activated
+  home.activation.symlinkScripts = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    ${symlinkScripts}/bin/symlinkScripts
+  '';
 }
 

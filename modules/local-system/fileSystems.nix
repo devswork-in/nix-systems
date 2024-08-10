@@ -24,5 +24,5 @@
     priority = 5; #matters only when using multiple swap devices
   };
 
-  swapDevices = [ { device = "/swapfile"; size = 20480; } ];
+  swapDevices = [ { device = "/swapfile"; size = 5120; } ];
 }
