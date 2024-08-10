@@ -9,6 +9,14 @@ let
   flameshot-gui = pkgs.writeShellScriptBin "flameshot-gui" "${pkgs.flameshot}/bin/flameshot gui -c";
   flameshot-gui-path = pkgs.writeShellScriptBin "flameshot-gui-path" "${pkgs.flameshot}/bin/flameshot gui -p /home/${user}/Screenshots/";
   flameshot-full = pkgs.writeShellScriptBin "flameshot-full" "${pkgs.flameshot}/bin/flameshot full -p /home/${user}/Screenshots/";
+  local-scripts = pkgs.writeShellScriptBin "local-scripts" ''
+    selected_script=$(${pkgs.coreutils}/bin/ls /home/${user}/.local/bin | ${pkgs.wofi}/bin/wofi --dmenu)
+    if [ -n "$selected_script" ]; then
+      bash -c /home/${user}/.local/bin/"$selected_script"
+    else
+      echo "No script selected. Exiting."
+    fi
+  '';
 
   kill-session = pkgs.writeShellScriptBin "kill-session" "${pkgs.systemd}/bin/loginctl kill-session $(${pkgs.systemd}/bin/loginctl | ${pkgs.coreutils}/bin/coreutils --coreutils-prog=tail -n +2| ${pkgs.findutils}/bin/xargs| ${pkgs.coreutils}/bin/coreutils --coreutils-prog=cut -d ' ' -f1)";
   lock-session = pkgs.writeShellScriptBin "lock-session" "${pkgs.systemd}/bin/loginctl lock-session $(${pkgs.systemd}/bin/loginctl | ${pkgs.coreutils}/bin/coreutils --coreutils-prog=tail -n +2| ${pkgs.findutils}/bin/xargs| ${pkgs.coreutils}/bin/coreutils --coreutils-prog=cut -d ' ' -f1)";
@@ -122,12 +130,12 @@ in
           "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
           "unite-shell@gnome-shell-extensions.hardpixel.github.com"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
-	        "gsconnect@andyholmes.github.io"
-	        "no-overview@fthx"
-	        "panel-free@fthx"
-	        "window-title-is-back@fthx"
-	        "workspace-switcher-manager@G-dH.github.com"
-	        "system-monitor@gnome-shell-extensions.gcampax.github.com"
+	  "gsconnect@andyholmes.github.io"
+	  "no-overview@fthx"
+	  "panel-free@fthx"
+	  "window-title-is-back@fthx"
+	  "workspace-switcher-manager@G-dH.github.com"
+	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
 
@@ -172,6 +180,7 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom10/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom11/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom12/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom13/"
         ];
 
 	# Set default screenshot keybindings to empty strings
@@ -278,6 +287,12 @@ in
         binding = "<Super>q";
         command = "${lock-session}/bin/lock-session";
         name = "Lock logged in session";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom13" = {
+        name = "Run Wofi Script";
+        command = "${local-scripts}/bin/local-scripts";
+        binding = "<Alt>Return";
       };
 
       "org/gnome/desktop/wm/preferences".button-layout = ":";
@@ -433,7 +448,7 @@ in
   };
 
   # Dependency for Super+/ shortcut
-  environment.systemPackages = with pkgs; [ pop-launcher   gnome.gnome-tweaks ];
+  environment.systemPackages = with pkgs; [ wofi pop-launcher   gnome.gnome-tweaks ];
 
   environment.gnome.excludePackages =
     (with pkgs; [
