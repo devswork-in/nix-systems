@@ -1,5 +1,18 @@
 { pkgs, ... }:
 #using unstable means regular updates, ie more data usage
+let
+ google-chrome = (pkgs.google-chrome.override {
+    commandLineArgs = [
+      "--enable-features=UseOzonePlatform"
+      "--ozone-platform=wayland"
+      "--remote-debugging-port=9222"
+    ];
+  }).overrideAttrs (oldAttrs: {
+    postInstall = ''
+      mv $out/bin/google-chrome-stable $out/bin/google-chrome
+    '';
+  });
+in
 {
   imports = [
     ./git.nix
@@ -37,12 +50,14 @@
     ddgr ytfzf dua simplescreenrecorder nix-tree
     (kodi.withPackages (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ])) #kodi with jiotv, last is for drm
     #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
-    (google-chrome.override {
-      commandLineArgs = [
-        "--enable-features=UseOzonePlatform"
-        "--ozone-platform=wayland"
-      ];
-    })
+    google-chrome
+    #(google-chrome.override {
+    #  commandLineArgs = [
+    #    "--enable-features=UseOzonePlatform"
+    #    "--ozone-platform=wayland"
+    #    "--remote-debugging-port=9222"
+    #  ];
+    #})
   ];
   nixpkgs.config.allowUnfree = true;
 }
