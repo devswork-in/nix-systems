@@ -50,7 +50,7 @@ in
     ddgr ytfzf dua simplescreenrecorder nix-tree
     (kodi.withPackages (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ])) #kodi with jiotv, last is for drm
     #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
-    google-chrome websocat
+    google-chrome websocat warp#file-transfer
   ];
   nixpkgs.config.allowUnfree = true;
 }
