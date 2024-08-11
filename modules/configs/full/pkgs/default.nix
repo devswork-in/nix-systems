@@ -3,8 +3,8 @@
 let
  google-chrome = (pkgs.google-chrome.override {
     commandLineArgs = [
-      "--enable-features=UseOzonePlatform"
-      "--ozone-platform=wayland"
+      #"--enable-features=UseOzonePlatform"
+      #"--ozone-platform=wayland" #only for wayland
       "--remote-debugging-port=9222"
     ];
   }).overrideAttrs (oldAttrs: {
