@@ -181,6 +181,7 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom11/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom12/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom13/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom14/"
         ];
 
 	# Set default screenshot keybindings to empty strings
@@ -295,6 +296,23 @@ in
         binding = "<Alt>Return";
       };
 
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom14" = {
+        name = "Change Wallpapers";
+        command = ''
+          bash -c '
+            # Create temporary variables for the paths
+            WALLPAPER_PATH=$(${pkgs.findutils}/bin/find /home/${user}/Wallpapers -type f \( -name "*.jpg" -o -name "*.png" \) | ${pkgs.coreutils}/bin/shuf -n 1)
+            DARK_WALLPAPER_PATH=$(${pkgs.findutils}/bin/find /home/${user}/Wallpapers -type f \( -name "*.jpg" -o -name "*.png" \) | ${pkgs.coreutils}/bin/shuf -n 1)
+            
+            # Set the wallpapers
+            ${pkgs.glib.bin}/bin/gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER_PATH"
+            ${pkgs.glib.bin}/bin/gsettings set org.gnome.desktop.background picture-uri-dark "file://$DARK_WALLPAPER_PATH"
+          '
+        '';
+        binding = "<Super><Shift>w";
+      };
+
+
       "org/gnome/desktop/wm/preferences".button-layout = ":";
 
       "org/gnome/desktop/wm/keybindings" = {
@@ -385,8 +403,8 @@ in
       "org/gnome/shell/extensions/pop-shell" = {
         active-hint = true;
         # does not work, ref: https://github.com/pop-os/shell/issues/1582
-	      # as always gets formatted incorrectly
-	      # active-hint-border-radius = 12;
+	# as always gets formatted incorrectly
+	# active-hint-border-radius = 12;
         tile-by-default = true;
       };
 
@@ -453,7 +471,7 @@ in
   };
 
   # Dependency for Super+/ shortcut
-  environment.systemPackages = with pkgs; [ wofi pop-launcher   gnome.gnome-tweaks ];
+  environment.systemPackages = with pkgs; [ wofi pop-launcher gnome.gnome-tweaks ];
 
   environment.gnome.excludePackages =
     (with pkgs; [
