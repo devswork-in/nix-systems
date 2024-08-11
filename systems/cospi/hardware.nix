@@ -65,4 +65,6 @@
       extraConfig = "load-module module-switch-on-connect";
     };
   };
+
+  services.xserver.videoDrivers = [ "intel" ];
 }
