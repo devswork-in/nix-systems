@@ -6,7 +6,6 @@
       enable = true;
       xkb.layout = "us";
       displayManager.sx.enable = true;  #minimal replacement for startx
-      videoDrivers = [ "amdgpu" ];
       deviceSection = ''
         Option "TearFree" "true"
       '';
