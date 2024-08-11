@@ -8,9 +8,10 @@ let
       "--remote-debugging-port=9222"
     ];
   }).overrideAttrs (oldAttrs: {
-    postInstall = ''
-      mv $out/bin/google-chrome-stable $out/bin/google-chrome
-    '';
+    # Disable rename until fix available to make pop-launcher open google-chrome
+    #postInstall = oldAttrs.postInstall or "" + ''
+    #  mv $out/bin/google-chrome-stable $out/bin/google-chrome
+    #'';
   });
 in
 {
