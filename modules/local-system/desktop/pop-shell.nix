@@ -423,16 +423,21 @@ in
   };
 
   # ---- System Configuration ----
-  services.xserver = {
-    enable = true;
-    desktopManager.gnome = {
+  services = {
+    xserver = {
       enable = true;
+      desktopManager.gnome = {
+        enable = true;
+      };
+      displayManager = {
+        gdm = {
+          enable = true;
+          wayland = true;
+          autoSuspend = false; # Disable automatic suspend
+        };
+      };
     };
-    displayManager.gdm = {
-      enable = true;
-      wayland = true;
-      autoSuspend = false; # Disable automatic suspend
-    };
+    displayManager.defaultSession = "gnome-xorg";
   };
 
   services.gnome = {
