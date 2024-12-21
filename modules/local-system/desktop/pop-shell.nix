@@ -168,6 +168,10 @@ in
 	show-battery-percentage = true;
       };
 
+      "org/gnome/desktop/sound" = {
+        allow-volume-above-100-percent = true;
+      };
+
       # Keybindings
       "org/gnome/settings-daemon/plugins/media-keys" = {
         custom-keybindings = [
