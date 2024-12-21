@@ -146,10 +146,11 @@ in
         picture-uri-dark = "file://${./../wallpaper.jpg}";
       };
 
-
       # If not disabled <Super>num keys will open pinned favourite applications
       "org/gnome/shell".favorite-apps = "@as []";
 
+      # Checkout gsettings get org.gnome.desktop.interface <option>
+      # gsettings set org.gnome.desktop.interface <option> true/false
       "org/gnome/desktop/interface" = {
         enable-animations = true;
         color-scheme = "prefer-dark";
@@ -162,6 +163,9 @@ in
         clock-show-date = true;
         clock-show-seconds = true;
         clock-format = "12h";
+
+	# Battery
+	show-battery-percentage = true;
       };
 
       # Keybindings
@@ -458,9 +462,11 @@ in
     displayManager.defaultSession = "gnome-xorg";
   };
 
-  services.gnome = {
-    evolution-data-server.enable = true;
-    gnome-keyring.enable = true;
+  services = {
+    gnome = {
+      evolution-data-server.enable = true;
+      gnome-keyring.enable = true;
+    };
   };
 
   programs.dconf.enable = true;
