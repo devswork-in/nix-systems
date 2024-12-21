@@ -8,10 +8,14 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules =
-    [ "nvme" "xhci_pci" "usb_storage" "sd_mod" "sdhci_pci" ];
-  boot.initrd.kernelModules = [ "amdgpu" ];
-  boot.kernelModules = [ "kvm-amd" ];
+  boot = {
+    initrd = {
+      availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" "sdhci_pci" ];
+      kernelModules = [ "amdgpu" ];
+    };
+    kernelModules = [ "kvm-amd" ];
+    kernelParams = [ "amd_iommu=on" ]; #enable iGPU accelerated VMs
+  };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -23,8 +27,13 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {
-    cpu.amd.updateMicrocode =
-      lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    amdgpu = {
+      initrd.enable = true;  # Include AMD GPU drivers in the initrd
+      opencl.enable = true;  # For OpenCL support
+      amdvlk.enable = true;  # For AMD Vulkan driver
+    };
+
     #pulseaudio = {
     #  enable = true;
     #  support32Bit = true;

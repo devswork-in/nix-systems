@@ -12,6 +12,7 @@ in
     #./../../modules/flatpak.nix
     ./../../modules/local-system
     ./../../modules/wireguard.nix
+    ./../../modules/virtManager.nix
   ];
 
   boot = {
