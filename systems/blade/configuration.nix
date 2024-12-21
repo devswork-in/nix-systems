@@ -5,6 +5,7 @@ in
 {
   imports = [
     ./hardware.nix
+    ./fileSystems.nix
     ./../../modules/docker
     ./../../modules/hosts.nix
     ./../../modules/snaps.nix

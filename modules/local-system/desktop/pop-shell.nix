@@ -25,7 +25,7 @@ let
     #!/usr/bin/env bash
     
     EXTENSION_ID="panel-free@fthx"
-    GNOME_EXTENSIONS_PATH="${pkgs.gnome.gnome-shell}/bin/gnome-extensions"
+    GNOME_EXTENSIONS_PATH="${pkgs.gnome-shell}/bin/gnome-extensions"
     
     # Check current state
     if $GNOME_EXTENSIONS_PATH info "$EXTENSION_ID" | grep -q "Enabled: Yes"; then
@@ -471,7 +471,7 @@ in
   };
 
   # Dependency for Super+/ shortcut
-  environment.systemPackages = with pkgs; [ wofi pop-launcher gnome.gnome-tweaks ];
+  environment.systemPackages = with pkgs; [ wofi pop-launcher gnome-tweaks ];
 
   environment.gnome.excludePackages =
     (with pkgs; [
@@ -479,8 +479,6 @@ in
       gnome-tour
       gedit
       gnome-console
-    ])
-    ++ (with pkgs.gnome; [
       gnome-music
       epiphany
       geary

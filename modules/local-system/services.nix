@@ -5,7 +5,7 @@
     xserver = {
       enable = true;
       xkb.layout = "us";
-      displayManager.sx.enable = true;  #minimal replacement for startx
+      displayManager.sx.enable = true; # minimal replacement for startx
       deviceSection = ''
         Option "TearFree" "true"
       '';
@@ -13,29 +13,32 @@
     };
 
     libinput = {
-      enable = true; 				# touchpad support generally enabled by most display managers
+      enable =
+        true; # touchpad support generally enabled by most display managers
       touchpad.naturalScrolling = true;
     };
 
-
     udev.extraRules = lib.mkMerge [
       # autosuspend USB devices
-      ''ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"''
+      ''
+        ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"''
       # autosuspend PCI devices
-      ''ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"''
+      ''
+        ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"''
       # disable Ethernet Wake-on-LAN
-      ''ACTION=="add", SUBSYSTEM=="net", NAME=="enp*", RUN+="${pkgs.ethtool}/sbin/ethtool -s $name wol d"''
+      ''
+        ACTION=="add", SUBSYSTEM=="net", NAME=="enp*", RUN+="${pkgs.ethtool}/sbin/ethtool -s $name wol d"''
     ];
 
     tlp = {
       enable = true;
       settings = {
-        START_CHARGE_THRESH_BAT0=95;
-        STOP_CHARGE_THRESH_BAT0=100;
-        CPU_MAX_PERF_ON_AC=100;
-        CPU_MAX_PERF_ON_BAT=100;
-        SOUND_POWER_SAVE_ON_AC=0;
-        SOUND_POWER_SAVE_ON_BAT=1;
+        START_CHARGE_THRESH_BAT0 = 95;
+        STOP_CHARGE_THRESH_BAT0 = 100;
+        CPU_MAX_PERF_ON_AC = 100;
+        CPU_MAX_PERF_ON_BAT = 100;
+        SOUND_POWER_SAVE_ON_AC = 0;
+        SOUND_POWER_SAVE_ON_BAT = 1;
       };
     };
 
@@ -56,7 +59,8 @@
     # and sftp on cli was failing
     gvfs.enable = true;
     preload.enable = true;
-    gnome.gnome-keyring.enable = true; #fails to save if enabled via home-manager
+    gnome.gnome-keyring.enable =
+      true; # fails to save if enabled via home-manager
     cachix-agent = {
       # needs /etc/cachix-agent.token fix to have CACHIX_AGENT_TOKEN=<CACHIX_AUTH_TOKEN>
       enable = true;
@@ -92,8 +96,8 @@
   programs = {
     ccache.enable = true;
     light.enable = true;
-    nix-ld.enable = true; #Run unpatched dynamic binaries on NixOS., check : https://github.com/Mic92/nix-ld
+    nix-ld.enable =
+      true; # Run unpatched dynamic binaries on NixOS., check : https://github.com/Mic92/nix-ld
   };
-  sound.enable = true;
 }
 

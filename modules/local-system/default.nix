@@ -5,7 +5,7 @@
     ./redshift.nix
     ./services.nix
     ./bluetooth.nix
-    ./fileSystems.nix
+    ./desktop/pop-shell.nix
   ];
 }
 
