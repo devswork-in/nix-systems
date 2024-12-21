@@ -103,6 +103,12 @@
   #};
 
   programs = {
+    # https://wiki.nixos.org/wiki/Appimage
+    appimage = {
+      enable = true;
+      binfmt = true;
+    };
+
     ccache.enable = true;
     light.enable = true;
     nix-ld.enable =
