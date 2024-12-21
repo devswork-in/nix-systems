@@ -8,11 +8,10 @@ in
     ./fileSystems.nix
     ./../../modules/docker
     ./../../modules/hosts.nix
-    ./../../modules/snaps.nix
-    ./../../modules/flatpak.nix
+    #./../../modules/snaps.nix
+    #./../../modules/flatpak.nix
     ./../../modules/local-system
     ./../../modules/wireguard.nix
-    ./../../modules/local-system/desktop/pop-shell.nix
   ];
 
   boot = {
@@ -31,7 +30,7 @@ in
 
   networking = {
     networkmanager.enable = true;
-    hostName = lib.mkDefault "cospi";
+    hostName = lib.mkDefault "omnix";
     nameservers = ["8.8.8.8" "9.9.9.9" "1.1.1.1" "8.8.4.4"];
   };
 

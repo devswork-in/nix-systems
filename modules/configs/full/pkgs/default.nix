@@ -35,16 +35,16 @@ in
 
   home.packages = with pkgs; [
     bc wget htop github-cli nnn openssl xplr
-    aria2 nodejs libclang gcc gparted
+    aria2 nodejs libclang gcc gparted pre-commit
     gnumake fzf vlc tdesktop ncftp comma
-    capitaine-cursors fortune file gnome.nautilus
-    colorpicker smartmontools jq kitty
+    capitaine-cursors fortune file nautilus
+    xcolor smartmontools jq kitty
     yt-dlp eva ueberzug tree qbittorrent
     unzip picom cmus conky fd #faster find alternative
     gromit-mpx pup progress starship nixos-option
     anydesk lm_sensors screenkey android-tools
     efibootmgr duf gdu xclip direnv clipit
-    dig ffmpeg_5-full pciutils nix-index #contains nix-locate
+    dig ffmpeg pciutils nix-index #contains nix-locate
     entr googler imgp recode glow yazi
     papirus-maia-icon-theme fff acpi sxiv axel python39 groff #for ms macros to pdf
     pandoc texlive.combined.scheme-small #for converting .md files to pdf
