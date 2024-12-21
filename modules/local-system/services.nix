@@ -42,6 +42,15 @@
       };
     };
 
+    openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = "yes";
+      };
+    };
+    journald.extraConfig = "SystemMaxUse=100M";
+
     # No need to autologin as ony one tty is active now, works as logic screen
     #getty = {
     #  greetingLine = "";
