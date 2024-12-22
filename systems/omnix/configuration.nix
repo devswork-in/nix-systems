@@ -8,8 +8,8 @@ in
     ./fileSystems.nix
     ./../../modules/docker
     ./../../modules/hosts.nix
-    #./../../modules/snaps.nix
-    #./../../modules/flatpak.nix
+    ./../../modules/snaps.nix
+    ./../../modules/flatpak.nix
     ./../../modules/local-system
     ./../../modules/wireguard.nix
     ./../../modules/virtManager.nix
