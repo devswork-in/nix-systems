@@ -190,6 +190,8 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom12/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom13/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom14/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom15/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom16/"
         ];
 
 	# Set default screenshot keybindings to empty strings
@@ -320,6 +322,17 @@ in
         binding = "<Super><Shift>w";
       };
 
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom15" = {
+        name = "Run Screenkeys";
+        command = "screenkey --no-systray -t 0.4 --opacity 0.0";
+        binding = "<Alt>k";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom16" = {
+        name = "Kill Screenkeys";
+        command = "pkill screenkey";
+        binding = "<Alt><Shift>k";
+      };
 
       "org/gnome/desktop/wm/preferences".button-layout = ":";
 
