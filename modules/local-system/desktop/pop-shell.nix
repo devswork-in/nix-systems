@@ -507,6 +507,7 @@ in
       geary
       evince
       gnome-characters
+      gnome-maps
       totem
       tali
       iagno
