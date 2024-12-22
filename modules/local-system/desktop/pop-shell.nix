@@ -244,25 +244,25 @@ in
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4" = {
-        binding = "<Super>x";
+        binding = "<Alt>x";
         command = "bash -c 'pkill gromit-mpx || gromit-mpx -a'";
         name = "Toggle Gromit-mpx";
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5" = {
-        binding = "<Super>y";
+        binding = "<Alt>y";
         command = "bash -c 'pidof gromit-mpx && gromit-mpx -y'";
         name = "Gromit-mpx Yellow";
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6" = {
-        binding = "<Super>z";
+        binding = "<Alt>z";
         command = "bash -c 'pidof gromit-mpx && gromit-mpx -z'";
         name = "Gromit-mpx Zoom";
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7" = {
-        binding = "<Super>v";
+        binding = "<Alt>v";
         command = "bash -c 'pidof gromit-mpx && gromit-mpx -v'";
         name = "Gromit-mpx Vertical";
       };
