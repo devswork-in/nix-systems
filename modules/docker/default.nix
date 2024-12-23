@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 let
   userName = (import ./../../config.nix {}).userName;
 in
@@ -12,4 +12,5 @@ in
     };
   };
   users.users."${userName}".extraGroups = ["docker"];
+  environment.systemPackages = with pkgs; [ docker-compose ];
 }
