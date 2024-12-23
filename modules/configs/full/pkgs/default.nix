@@ -38,7 +38,7 @@ in
     aria2 nodejs libclang gcc gparted pre-commit
     gnumake fzf vlc tdesktop ncftp comma
     capitaine-cursors fortune file nautilus
-    xcolor smartmontools jq kitty
+    xcolor smartmontools jq kitty remmina
     yt-dlp eva ueberzug tree qbittorrent
     unzip picom cmus conky fd #faster find alternative
     gromit-mpx pup progress starship nixos-option
