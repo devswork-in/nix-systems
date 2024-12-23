@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    winapps = {
+      url = "github:winapps-org/winapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-flatpak = { url = "github:gmodena/nix-flatpak/?ref=v0.5.2"; };
 
     #Always use the same nixpkgs for both system + <module>
@@ -22,7 +27,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nix-flatpak, nix-snapd, ... }@inputs: {
+  outputs = { self, nixpkgs, nix-flatpak, nix-snapd, winapps, ... }@inputs: {
     nixosConfigurations = {
       server = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
@@ -63,6 +68,15 @@
           inputs.home-manager.nixosModules.default
 	  inputs.nix-flatpak.nixosModules.nix-flatpak
 	  inputs.nix-snapd.nixosModules.default
+          (
+            { pkgs, ... }:
+            {
+              environment.systemPackages = [
+                winapps.packages.${system}.winapps
+                winapps.packages.${system}.winapps-launcher # optional
+              ];
+            }
+          )
         ];
       };
 
