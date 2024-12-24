@@ -25,6 +25,7 @@ fish_add_path -g $HOME/.config/rofi/bin
 
 # Add the .venv/bin directory to the $PATH
 set -gx PATH $HOME/.venv/bin $PATH
+set -gx PATH $HOME/.local/bin $PATH
 
 # Set the LD_LIBRARY_PATH
 set -gx LD_LIBRARY_PATH $LD_LIBRARY_PATH $HOME/.nix-profile/lib
