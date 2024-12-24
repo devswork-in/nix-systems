@@ -2,6 +2,13 @@
 
 Configures NixOS and Home-Manager as NixOS Module to manage user with my configs across systems which I use.
 
+## One Step Setup
+Live boot a NixOS USB and run
+
+```sh
+sudo sh -c 'curl -sSL https://raw.githubusercontent.com/Creator54/nix-systems/refs/heads/main/setup.sh | bash -s /dev/nvme0n1 omnix'
+```
+
 ## Building and Testing a Demo-VM
 
 To build and test a demo-VM from this config on a Nix System:
