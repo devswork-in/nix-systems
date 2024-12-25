@@ -510,7 +510,7 @@ in
       gnome-maps
       gnome-software
       gnome-contacts
-      gnome-help
+      yelp #gnome-help
       totem
       tali
       iagno
