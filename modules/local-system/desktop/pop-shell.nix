@@ -510,6 +510,7 @@ in
       gnome-maps
       gnome-software
       gnome-contacts
+      gnome-help
       totem
       tali
       iagno
