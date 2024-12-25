@@ -508,6 +508,8 @@ in
       evince
       gnome-characters
       gnome-maps
+      gnome-software
+      gnome-contacts
       totem
       tali
       iagno
