@@ -70,10 +70,10 @@
     preload.enable = true;
     gnome.gnome-keyring.enable =
       true; # fails to save if enabled via home-manager
-    cachix-agent = {
-      # needs /etc/cachix-agent.token fix to have CACHIX_AGENT_TOKEN=<CACHIX_AUTH_TOKEN>
-      enable = true;
-    };
+    #cachix-agent = {
+    #  # needs /etc/cachix-agent.token fix to have CACHIX_AGENT_TOKEN=<CACHIX_AUTH_TOKEN>
+    #  enable = true;
+    #};
 
     logind = {
       lidSwitch = "suspend";
