@@ -34,7 +34,7 @@ in
 #  };
 
   home.packages = with pkgs; [
-    bc wget htop github-cli nnn openssl xplr
+    bc wget htop github-cli nnn openssl xplr koji
     aria2 nodejs libclang gcc gparted pre-commit
     gnumake fzf vlc tdesktop ncftp comma
     capitaine-cursors fortune file nautilus

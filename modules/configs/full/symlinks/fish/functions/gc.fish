@@ -1,6 +1,6 @@
 function gc
   if [ -z $argv[1] ]
-    git commit
+    koji
   else if [ $argv[1] = "-c" ];or [ $argv[1] = "--clone" ]
     git clone git@github.com:$argv[2]
     echo
