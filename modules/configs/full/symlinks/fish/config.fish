@@ -1,7 +1,7 @@
 set -gx TERM kitty
 set -gx TERMINAL $TERM
 set -gx BROWSER firefox
-set -gx WALLPAPERS $HOME/wallpapers
+set -gx WALLPAPERS $HOME/Wallpapers
 set -gx DOCUMENTS $HOME/Documents
 set -gx PAGER bat
 set -gx NNN_PLUG 'f:finder;o:fzopen;p:preview-tui;d:diffs;t:nmount;v:imgview;g:!git log;'

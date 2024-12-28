@@ -5,7 +5,7 @@ nmcli con up CoudBe & #try connecting to Coudbe if up
 blueman-applet &
 xrdb -load ~/.Xresources &
 numlockx on &
-feh --bg-fill --randomize ~/wallpapers/
+feh --bg-fill --randomize ~/Wallpapers/
 xset -b &
 picom &
 pkill clipit; clipit -n &
