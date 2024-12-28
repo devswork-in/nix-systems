@@ -51,7 +51,7 @@ in
   users.users.${config.userName} = {
     shell = pkgs.fish;
     isNormalUser = true;
-    extraGroups = [ "power" "storage" "wheel" "audio" "video" "networkmanager" ];
+    extraGroups = [ "input" "power" "storage" "wheel" "audio" "video" "networkmanager" ];
     hashedPassword = config.hashedPassword;
   };
 
