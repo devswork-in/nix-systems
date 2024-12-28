@@ -192,6 +192,7 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom14/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom15/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom16/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom17/"
         ];
 
 	# Set default screenshot keybindings to empty strings
@@ -332,6 +333,14 @@ in
         name = "Kill Screenkeys";
         command = "pkill screenkey";
         binding = "<Alt><Shift>k";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom17" = {
+        name = "Refresh Page on Browser";
+        command = ''
+          bash -c '${pkgs.xdotool}/bin/xdotool key ctrl+r'
+        '';
+        binding = "<Super>r";
       };
 
       "org/gnome/desktop/wm/preferences".button-layout = ":";
@@ -529,5 +538,8 @@ in
     ]);
 
   services.power-profiles-daemon.enable = false;
+  environment.variables = {
+    GNOME_SHELL_SLOWDOWN_FACTOR="0.8";
+  };
 }
 
