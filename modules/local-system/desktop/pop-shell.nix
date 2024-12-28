@@ -347,6 +347,10 @@ in
         switch-to-workspace-8 = [ "<Super>8" ];
         switch-to-workspace-9 = [ "<Super>9" ];
         switch-to-workspace-10 = [ "<Super>0" ];
+	switch-to-workspace-left = [ "<Control>Left" ];
+	switch-to-workspace-right = [ "<Control>Right" ];
+	switch-to-workspace-up = [ "<Control>Page_Up" ];
+	switch-to-workspace-down = [ "<Control>Page_Down" ];
 
         move-to-workspace-1 = [ "<Super><Shift>1" ];
         move-to-workspace-2 = [ "<Super><Shift>2" ];
@@ -382,6 +386,12 @@ in
         move-to-center = "disabled";
         toggle-maximized = "disabled";
         unmaximize = "disabled";
+      };
+
+      # Disable mutter keybinds
+      "org/gnome/mutter/keybindings" = {
+        toggle-tiled-left = [];
+	toggle-tiled-right = [];
       };
 
       # Configure blur-my-shell
