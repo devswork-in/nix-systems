@@ -7,6 +7,7 @@ in
     ./hardware.nix
     ./fileSystems.nix
     ./../../modules/docker
+    ./../../modules/steam.nix
     ./../../modules/hosts.nix
     ./../../modules/snaps.nix
     ./../../modules/flatpak.nix
@@ -39,7 +40,7 @@ in
   documentation.man.generateCaches = true;
 
   environment = {
-    systemPackages = [ pkgs.home-manager ];
+    systemPackages = with pkgs; [ home-manager amdgpu_top ];
     pathsToLink = [ "/share/fish" ];
   };
 
