@@ -1,3 +1,8 @@
+{ pkgs,... }:
+
+let
+  cursorApp = import ./cursor.nix { inherit pkgs; };
+in
 {
   imports = [
     ./extras
@@ -7,5 +12,7 @@
     ./kernels/xanmod.nix
     ./desktop/pop-shell.nix
   ];
+
+  environment.systemPackages = with pkgs; [ cursorApp ];
 }
 
