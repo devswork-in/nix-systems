@@ -43,7 +43,7 @@ in
     yt-dlp eva ueberzug tree qbittorrent
     unzip picom cmus conky fd #faster find alternative
     gromit-mpx pup progress starship nixos-option
-    anydesk lm_sensors screenkey android-tools
+    rustdesk lm_sensors screenkey android-tools
     efibootmgr duf gdu xclip direnv clipit
     dig ffmpeg pciutils nix-index #contains nix-locate
     entr googler imgp recode glow yazi
@@ -53,6 +53,7 @@ in
     (kodi.withPackages (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ])) #kodi with jiotv, last is for drm
     #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
     google-chrome websocat warp#file-transfer
+    jetbrains.pycharm-community-bin jetbrains.idea-community-bin
   ];
   nixpkgs.config.allowUnfree = true;
 }
