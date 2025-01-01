@@ -59,11 +59,12 @@ in
   security.allowSimultaneousMultithreading = true;
 
   nix = {
-    gc = {
-      automatic = false; 				# runs nix-collect-garbage which removes old unrefrenced packages
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
+    # Keep garbage collection disabled until ! pure
+    #gc = {
+    #  automatic = false; 				# runs nix-collect-garbage which removes old unrefrenced packages
+    #  dates = "weekly";
+    #  options = "--delete-older-than 7d";
+    #};
     settings = {
       experimental-features = [ "nix-command" "flakes" ]; #enable flakes
       substituters = [
