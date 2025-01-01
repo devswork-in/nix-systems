@@ -47,7 +47,7 @@ in
     efibootmgr duf gdu xclip direnv clipit
     dig ffmpeg pciutils nix-index #contains nix-locate
     entr googler imgp recode glow yazi
-    papirus-maia-icon-theme fff acpi sxiv axel python39 groff #for ms macros to pdf
+    papirus-maia-icon-theme fff acpi sxiv axel python3 groff #for ms macros to pdf
     pandoc texlive.combined.scheme-small #for converting .md files to pdf
     ddgr ytfzf dua simplescreenrecorder nix-tree
     (kodi.withPackages (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ])) #kodi with jiotv, last is for drm
