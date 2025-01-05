@@ -14,7 +14,7 @@
       kernelModules = [ "amdgpu" ];
     };
     kernelModules = [ "kvm-amd" ];
-    kernelParams = [ "amd_iommu=on" ]; #enable iGPU accelerated VMs
+    kernelParams = [ "amd_iommu=on" "amd_pstate=guided" ]; # enable iGPU accelerated VMs and schedutil governor
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

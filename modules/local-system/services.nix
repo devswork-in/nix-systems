@@ -35,10 +35,12 @@
       settings = {
         START_CHARGE_THRESH_BAT0 = 95;
         STOP_CHARGE_THRESH_BAT0 = 100;
-        CPU_MAX_PERF_ON_AC = 100;
-        CPU_MAX_PERF_ON_BAT = 100;
+        CPU_MAX_PERF_ON_AC = 80;
+        CPU_MAX_PERF_ON_BAT = 60;
         SOUND_POWER_SAVE_ON_AC = 0;
         SOUND_POWER_SAVE_ON_BAT = 1;
+	CPU_SCALING_GOVERNOR_ON_AC = "schedutil"; #to enable schedutil enable it in kernel params also
+        CPU_SCALING_GOVERNOR_ON_BAT = "schedutil";
       };
     };
 
