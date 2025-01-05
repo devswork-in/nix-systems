@@ -79,21 +79,21 @@
     #  enable = true;
     #};
 
-    logind = {
-      lidSwitch = "suspend";
-      lidSwitchDocked = "suspend";
-      lidSwitchExternalPower = "suspend";
-      powerKey = "suspend";
+    #logind = {
+    #  lidSwitch = "suspend";
+    #  lidSwitchDocked = "suspend";
+    #  lidSwitchExternalPower = "suspend";
+    #  powerKey = "suspend";
 
-      #https://wiki.archlinux.org/title/getty
-      #NAutoVTs specifys no of tty's we can have
-      extraConfig = ''
-        HandlePowerKey=suspend
-        NAutoVTs=1
-      '';
-      # Kill all user-processes after logout
-      killUserProcesses = true;
-    };
+    #  #https://wiki.archlinux.org/title/getty
+    #  #NAutoVTs specifys no of tty's we can have
+    #  extraConfig = ''
+    #    HandlePowerKey=suspend
+    #    NAutoVTs=1
+    #  '';
+    #  # Kill all user-processes after logout
+    #  killUserProcesses = true;
+    #};
   };
 
   # systemd services which i dont like/use mostly cuz increases boot time and i find no issues not having them

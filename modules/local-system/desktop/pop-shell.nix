@@ -491,7 +491,7 @@ in
         gdm = {
           enable = true;
           wayland = true;
-          autoSuspend = false; # Disable automatic suspend
+          autoSuspend = true;
         };
       };
     };
