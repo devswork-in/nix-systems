@@ -36,7 +36,7 @@ in
 
   home.packages = with pkgs; [
     bc wget htop github-cli nnn openssl xplr koji
-    aria2 nodejs libclang gcc gparted pre-commit
+    aria2 nodejs libclang gcc pre-commit
     gnumake fzf vlc tdesktop ncftp comma zed-editor postman
     capitaine-cursors fortune file nautilus go
     xcolor smartmontools jq kitty remmina jmeter

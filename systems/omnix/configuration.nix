@@ -41,7 +41,7 @@ in
   documentation.man.generateCaches = true;
 
   environment = {
-    systemPackages = with pkgs; [ home-manager amdgpu_top ];
+    systemPackages = with pkgs; [ home-manager amdgpu_top gparted ];
     pathsToLink = [ "/share/fish" ];
   };
 
