@@ -35,6 +35,8 @@
       settings = {
         START_CHARGE_THRESH_BAT0 = 95;
         STOP_CHARGE_THRESH_BAT0 = 100;
+	CPU_MIN_PERF_ON_AC = 0;
+	CPU_MIN_PERF_ON_BAT = 0;
         CPU_MAX_PERF_ON_AC = 80;
         CPU_MAX_PERF_ON_BAT = 60;
         SOUND_POWER_SAVE_ON_AC = 0;
