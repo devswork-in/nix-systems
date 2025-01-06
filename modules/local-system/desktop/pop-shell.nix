@@ -168,6 +168,10 @@ in
 	show-battery-percentage = true;
       };
 
+      "org/gnome/desktop/wm/preferences" = {
+        focus-mode = "sloppy";
+      };
+
       "org/gnome/desktop/sound" = {
         allow-volume-above-100-percent = true;
       };
