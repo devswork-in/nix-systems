@@ -1,6 +1,27 @@
-# Nix-Systems: [Nix](https://nixos.org/) Config across my systems
+# NixOS Systems Configuration
 
-Configures NixOS and Home-Manager as NixOS Module to manage user with my configs across systems which I use.
+This repository contains NixOS configurations for multiple systems.
+
+## Project Structure
+
+```
+.
+├── modules/          # NixOS modules
+│   ├── configs/      # Configurations
+│   ├── services/     # Service-related modules
+│   ├── networking/   # Network-related modules
+│   ├── website/      # Website configurations
+│   ├── docker/       # Docker configurations
+│   └── local-system/ # System-specific local configs
+├── systems/          # System-specific configurations
+│   ├── omnix/       # Omnix system
+│   ├── cospi/       # Cospi system
+│   ├── server/      # Server system
+│   ├── blade/       # Blade system
+│   └── phoenix/     # Phoenix system
+├── flake.nix        # Main flake configuration
+└── config.nix       # Global configuration
+```
 
 ## One Step Setup
 Live boot a NixOS USB and run
