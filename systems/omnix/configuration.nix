@@ -8,13 +8,9 @@ in
     ./hibernation.nix
     ./fileSystems.nix
     ./../../modules/docker
-    ./../../modules/steam.nix
-    ./../../modules/hosts.nix
-    ./../../modules/snaps.nix
-    ./../../modules/flatpak.nix
     ./../../modules/local-system
-    ./../../modules/wireguard.nix
-    ./../../modules/virtManager.nix
+    ./../../modules/networking
+    ./../../modules/services
   ];
 
   boot = {
