@@ -13,7 +13,7 @@
       availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" "sdhci_pci" ];
       kernelModules = [ "amdgpu" ];
     };
-    kernelModules = [ "kvm-amd" ];
+    kernelModules = [ "amdgpu" "kvm-amd" ];
     kernelParams = [ "amd_iommu=on" "amd_pstate=guided" ]; # enable iGPU accelerated VMs and schedutil governor
   };
 
@@ -34,6 +34,11 @@
       amdvlk.enable = true;  # For AMD Vulkan driver
     };
 
+    # For OpenCL support
+    graphics.extraPackages = [
+      pkgs.rocmPackages.clr.icd
+    ];
+
     #pulseaudio = {
     #  enable = true;
     #  support32Bit = true;
@@ -41,6 +46,22 @@
     #  extraConfig = "load-module module-switch-on-connect";
     #};
   };
+
+  environment.systemPackages = with pkgs; [
+    clinfo
+    vulkan-tools  # For vulkaninfo and vkcube
+    rocmPackages.rocminfo
+    rocmPackages.rocm-smi
+    libva-utils   # For testing VA-API (vainfo)
+  ];
+
+  environment.variables = {
+    HSA_OVERRIDE_GFX_VERSION = "11.0.3";  # Ensure this matches your GPU’s supported ROCm version
+    AMDGPU_TCL_FORCE=1;
+  };
+
+  # To force a specific Vulkan ICD (optional)
+  # environment.variables.AMD_VULKAN_ICD = "RADV";  # To force radv instead of amdvlk
 
   services.xserver.videoDrivers = [ "amdgpu" ];
 }

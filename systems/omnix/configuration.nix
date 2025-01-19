@@ -4,6 +4,7 @@ let
 in
 {
   imports = [
+    ./ollama.nix
     ./hardware.nix
     ./hibernation.nix
     ./fileSystems.nix

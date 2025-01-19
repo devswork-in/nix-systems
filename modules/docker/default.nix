@@ -12,5 +12,5 @@ in
     };
   };
   users.users."${userName}".extraGroups = ["docker"];
-  environment.systemPackages = with pkgs; [ docker-compose ollama ];
+  environment.systemPackages = with pkgs; [ docker-compose ];
 }
