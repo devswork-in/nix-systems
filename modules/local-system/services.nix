@@ -38,7 +38,7 @@
 	CPU_MIN_PERF_ON_AC = 0;
 	CPU_MIN_PERF_ON_BAT = 0;
         CPU_MAX_PERF_ON_AC = 80;
-        CPU_MAX_PERF_ON_BAT = 60;
+        CPU_MAX_PERF_ON_BAT = 40;
         SOUND_POWER_SAVE_ON_AC = 0;
         SOUND_POWER_SAVE_ON_BAT = 1;
 	CPU_SCALING_GOVERNOR_ON_AC = "schedutil"; #to enable schedutil enable it in kernel params also
