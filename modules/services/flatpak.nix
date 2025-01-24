@@ -9,6 +9,7 @@
     }];
     packages = [
       { appId = "io.github.thetumultuousunicornofdarkness.cpu-x"; origin = "flathub"; }
+      { appId = "io.github.jeffshee.Hidamari"; origin = "flathub"; }
       { appId = "io.webtorrent.WebTorrent"; origin = "flathub"; }
     ];
 
