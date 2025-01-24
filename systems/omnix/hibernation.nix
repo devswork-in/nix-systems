@@ -7,17 +7,17 @@
 
   # Suspend-then-hibernate everywhere
   services.logind = {
-    lidSwitch = "hybrid-sleep";
-    lidSwitchDocked = "hybrid-sleep";
-    lidSwitchExternalPower = "hybrid-sleep";
-    powerKey = "hybrid-sleep";
+    lidSwitch = "suspend";
+    lidSwitchDocked = "suspend";
+    lidSwitchExternalPower = "suspend";
+    powerKey = "suspend";
 
     #https://wiki.archlinux.org/title/getty
     #NAutoVTs specifys no of tty's we can have
     extraConfig = ''
-      IdleAction=hybrid-sleep
+      IdleAction=suspend
       IdleActionSec=2min
-      HandlePowerKey=hybrid-sleep
+      HandlePowerKey=suspend
       PowerKeyIgnoreInhibited=yes
       NAutoVTs=1
     '';
