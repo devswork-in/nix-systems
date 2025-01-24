@@ -19,32 +19,52 @@
     };
 
     udev.extraRules = lib.mkMerge [
-      # autosuspend USB devices
+      # Autosuspend USB devices to save power after a period of inactivity
       ''
-        ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"''
-      # autosuspend PCI devices
+        ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"
       ''
-        ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"''
-      # disable Ethernet Wake-on-LAN
+
+      # Autosuspend PCI devices to save power after a period of inactivity
       ''
-        ACTION=="add", SUBSYSTEM=="net", NAME=="enp*", RUN+="${pkgs.ethtool}/sbin/ethtool -s $name wol d"''
+        ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"
+      ''
+
+      # Disable Ethernet Wake-on-LAN to prevent the network interface from waking the system
+      ''
+        ACTION=="add", SUBSYSTEM=="net", NAME=="enp*", RUN+="${pkgs.ethtool}/sbin/ethtool -s $name wol d"
+      ''
+
+      # Disable wakeup for PCI devices to prevent them from waking the system from sleep
+      ''
+        ACTION=="add", SUBSYSTEM=="pci", ATTR{power/wakeup}="disabled"
+      ''
+
+      # Disable wakeup for USB devices to prevent USB devices from waking the system from sleep
+      ''
+        ACTION=="add", SUBSYSTEM=="usb", ATTR{power/wakeup}="disabled"
+      ''
+
+      # Force deep sleep mode, does not work on omnix
+      ''
+        ACTION=="add", SUBSYSTEM=="power", TEST=="mem_sleep_default", ATTR{mem_sleep_default}="deep"
+      ''
     ];
 
     tlp = {
       enable = true;
       settings = {
         START_CHARGE_THRESH_BAT0 = 95;
-        STOP_CHARGE_THRESH_BAT0 = 100;
-	CPU_MIN_PERF_ON_AC = 0;
-	CPU_MIN_PERF_ON_BAT = 0;
+        CPU_MIN_PERF_ON_AC = 0;
+        CPU_MIN_PERF_ON_BAT = 0;
         CPU_MAX_PERF_ON_AC = 80;
-        CPU_MAX_PERF_ON_BAT = 40;
+        CPU_MAX_PERF_ON_BAT = 10;
         SOUND_POWER_SAVE_ON_AC = 0;
         SOUND_POWER_SAVE_ON_BAT = 1;
-	CPU_SCALING_GOVERNOR_ON_AC = "schedutil"; #to enable schedutil enable it in kernel params also
+        CPU_SCALING_GOVERNOR_ON_AC = "schedutil";
         CPU_SCALING_GOVERNOR_ON_BAT = "schedutil";
       };
     };
+
 
     openssh = {
       enable = true;
