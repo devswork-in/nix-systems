@@ -7,15 +7,20 @@
 
   # Suspend-then-hibernate everywhere
   services.logind = {
-    lidSwitch = "suspend-then-hibernate";
-    lidSwitchDocked = "suspend-then-hibernate";
-    lidSwitchExternalPower = "suspend-then-hibernate";
+    lidSwitch = "hybrid-sleep";
+    lidSwitchDocked = "hybrid-sleep";
+    lidSwitchExternalPower = "hybrid-sleep";
+    powerKey = "hybrid-sleep";
 
     #https://wiki.archlinux.org/title/getty
     #NAutoVTs specifys no of tty's we can have
     extraConfig = ''
+      IdleAction=hybrid-sleep
+      IdleActionSec=2min
       HandlePowerKey=hybrid-sleep
+      PowerKeyIgnoreInhibited=yes
       NAutoVTs=1
     '';
+    killUserProcesses = true; #on logout kill all user processes
   };
 }

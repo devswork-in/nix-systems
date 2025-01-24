@@ -14,7 +14,9 @@
       kernelModules = [ "amdgpu" ];
     };
     kernelModules = [ "amdgpu" "kvm-amd" ];
-    kernelParams = [ "amd_iommu=on" "amd_pstate=guided" ]; # enable iGPU accelerated VMs and schedutil governor
+    kernelParams = [ "amd_iommu=on" "amd_pstate=guided" "mem_sleep_default=deep" ]; # enable iGPU accelerated VMs and schedutil governor
+    # Enable Deep Sleep Mode (S3)
+    # improve deep sleep, less battery drain on sleep, check via cat /sys/power/mem_sleep
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
