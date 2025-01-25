@@ -46,10 +46,10 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport = true; #hardware acceleration for the Mesa implementation of OpenGL
-      driSupport32Bit = true;
+      #driSupport = true; #hardware acceleration for the Mesa implementation of OpenGL
+      enable32Bit = true;
       extraPackages = with pkgs; [
         vaapiIntel
         vaapiVdpau
@@ -58,12 +58,12 @@
 	intel-media-sdk #switch to onevpl-intel-gpu or vpl-gpu-rt 
       ];
     };
-    pulseaudio = {
-      enable = true;
-      support32Bit = true;
-      package = pkgs.pulseaudioFull;
-      extraConfig = "load-module module-switch-on-connect";
-    };
+    #pulseaudio = {
+    #  enable = true;
+    #  support32Bit = true;
+    #  package = pkgs.pulseaudioFull;
+    #  extraConfig = "load-module module-switch-on-connect";
+    #};
   };
 
   services.xserver.videoDrivers = [ "intel" ];

@@ -7,11 +7,10 @@ in
     ./hardware.nix
     ./fileSystems.nix
     ./../../modules/docker
-    ./../../modules/hosts.nix
-    ./../../modules/snaps.nix
-    ./../../modules/flatpak.nix
+    ./../../modules/networking
     ./../../modules/local-system
-    ./../../modules/wireguard.nix
+    ./../../modules/services/snaps.nix
+    ./../../modules/services/flatpak.nix
     ./../../modules/local-system/desktop/pop-shell.nix
   ];
 
