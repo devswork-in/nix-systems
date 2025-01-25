@@ -6,6 +6,7 @@ in
 {
   imports = [
     ./extras
+    ./tlp.nix
     ./plymouth.nix
     ./services.nix
     ./bluetooth.nix
