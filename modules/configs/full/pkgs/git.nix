@@ -16,7 +16,7 @@ in
       # https://discourse.nixos.org/t/is-it-possible-to-change-the-default-git-user-config-for-a-devshell/17612/3
       # https://github.com/NobbZ/nixos-config/blob/8848aa0cc4d65d7960ec2c8535e33d212e6691d2/home/modules/profiles/development/default.nix#L70-L76
       includes = [{
-        condition = "gitdir:~/Work/**";
+        condition = "gitdir:~/Work/Crio/**";
         contents = {
           init.defaultBranch = "master";
           user.name = "Saroj Kumar Mahato";
