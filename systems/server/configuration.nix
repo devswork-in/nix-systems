@@ -1,6 +1,9 @@
 { pkgs, lib, ... }:
 let config = import ./../../config.nix { };
 in {
+  imports = [
+    ./hardware-configuration.nix
+  ];
   environment.systemPackages = with pkgs; [ cachix home-manager ];
   boot.tmp.cleanOnBoot = true;
 

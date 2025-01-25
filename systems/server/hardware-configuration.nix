@@ -1,4 +1,4 @@
-{ modulesPath, ... }: {
+{ pkgs, modulesPath, ... }: {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_6_1.override {
     argsOverride = rec {
