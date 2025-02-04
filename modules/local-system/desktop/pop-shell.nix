@@ -1,7 +1,7 @@
 { pkgs, home-manager, ... }:
 
 let
-  user = (import ./../../../config.nix {}).userName;
+  user = (import ./../../../config.nix { }).userName;
 
   # ref:
   # https://github.com/flameshot-org/flameshot/issues/3365#issuecomment-1868580715
@@ -23,10 +23,10 @@ let
 
   togglePanelFreeScript = pkgs.writeShellScriptBin "toggle-panel-free" ''
     #!/usr/bin/env bash
-    
+
     EXTENSION_ID="panel-free@fthx"
     GNOME_EXTENSIONS_PATH="${pkgs.gnome-shell}/bin/gnome-extensions"
-    
+
     # Check current state
     if $GNOME_EXTENSIONS_PATH info "$EXTENSION_ID" | grep -q "Enabled: Yes"; then
       # Disable the extension if it is enabled
@@ -36,7 +36,7 @@ let
       $GNOME_EXTENSIONS_PATH enable "$EXTENSION_ID"
     fi
   '';
-  
+
   disableFavoriteAppShortcuts = pkgs.writeShellScript "disable-favorite-app-shortcuts" ''
     gsettings set org.gnome.shell.keybindings switch-to-application-1 "@as []"
     gsettings set org.gnome.shell.keybindings switch-to-application-2 "@as []"
@@ -130,16 +130,16 @@ in
           "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
           "unite-shell@gnome-shell-extensions.hardpixel.github.com"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
-	  "gsconnect@andyholmes.github.io"
-	  "no-overview@fthx"
-	  "panel-free@fthx"
-	  "window-title-is-back@fthx"
-	  "workspace-switcher-manager@G-dH.github.com"
-	  "system-monitor@gnome-shell-extensions.gcampax.github.com"
+          "gsconnect@andyholmes.github.io"
+          "no-overview@fthx"
+          "panel-free@fthx"
+          "window-title-is-back@fthx"
+          "workspace-switcher-manager@G-dH.github.com"
+          "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
 
-      "org/gnome/shell".disabled-extensions = [];
+      "org/gnome/shell".disabled-extensions = [ ];
 
       "org/gnome/desktop/background" = {
         picture-uri = "file://${./../wallpaper.jpg}";
@@ -164,8 +164,8 @@ in
         clock-show-seconds = true;
         clock-format = "12h";
 
-	# Battery
-	show-battery-percentage = true;
+        # Battery
+        show-battery-percentage = true;
       };
 
       "org/gnome/desktop/wm/preferences" = {
@@ -199,7 +199,7 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom17/"
         ];
 
-	# Set default screenshot keybindings to empty strings
+        # Set default screenshot keybindings to empty strings
         #screenshot = "";
         #screenshot-window = "";
         #screenshot-area = "";
@@ -360,10 +360,10 @@ in
         switch-to-workspace-8 = [ "<Super>8" ];
         switch-to-workspace-9 = [ "<Super>9" ];
         switch-to-workspace-10 = [ "<Super>0" ];
-	switch-to-workspace-left = [ "<Control>Left" ];
-	switch-to-workspace-right = [ "<Control>Right" ];
-	switch-to-workspace-up = [ "<Control>Page_Up" ];
-	switch-to-workspace-down = [ "<Control>Page_Down" ];
+        switch-to-workspace-left = [ "<Control>Left" ];
+        switch-to-workspace-right = [ "<Control>Right" ];
+        switch-to-workspace-up = [ "<Control>Page_Up" ];
+        switch-to-workspace-down = [ "<Control>Page_Down" ];
 
         move-to-workspace-1 = [ "<Super><Shift>1" ];
         move-to-workspace-2 = [ "<Super><Shift>2" ];
@@ -381,7 +381,7 @@ in
         # Additional GNOME Shell Keybindings
         toggle-message-tray = "disabled";
         close = [ "<Super><Shift>c" ];
-        toggle-fullscreen = ["<Super>f"];
+        toggle-fullscreen = [ "<Super>f" ];
         move-to-monitor-down = "disabled";
         move-to-monitor-left = "disabled";
         move-to-monitor-right = "disabled";
@@ -403,8 +403,8 @@ in
 
       # Disable mutter keybinds
       "org/gnome/mutter/keybindings" = {
-        toggle-tiled-left = [];
-	toggle-tiled-right = [];
+        toggle-tiled-left = [ ];
+        toggle-tiled-right = [ ];
       };
 
       # Configure blur-my-shell
@@ -447,8 +447,8 @@ in
       "org/gnome/shell/extensions/pop-shell" = {
         active-hint = true;
         # does not work, ref: https://github.com/pop-os/shell/issues/1582
-	# as always gets formatted incorrectly
-	# active-hint-border-radius = 12;
+        # as always gets formatted incorrectly
+        # active-hint-border-radius = 12;
         tile-by-default = true;
       };
 
@@ -457,17 +457,17 @@ in
       # Check inside via dconf like dconf list /org/gnome/shell/extensions/unite/
       "org/gnome/shell/extensions/unite" = {
         hide-window-titlebars = true;
-        hide-activities-button = "never";  # Adjust based on preference
-        hide-app-menu-icon = true;      # Adjust based on preference
-        show-appmenu-button = false;     # Adjust based on preference
-        show-window-title = true;       # Ensure window title is hidden
-        desktop-name-text = "";          # Optionally set the desktop name text
-        extend-left-box = true;          # Adjust based on preference
-        reduce-panel-spacing = true;     # Adjust based on preference
+        hide-activities-button = "never"; # Adjust based on preference
+        hide-app-menu-icon = true; # Adjust based on preference
+        show-appmenu-button = false; # Adjust based on preference
+        show-window-title = true; # Ensure window title is hidden
+        desktop-name-text = ""; # Optionally set the desktop name text
+        extend-left-box = true; # Adjust based on preference
+        reduce-panel-spacing = true; # Adjust based on preference
         restrict-to-primary-screen = false; # Adjust based on preference
-        show-desktop-name = false;       # Adjust based on preference
-        show-legacy-tray = false;        # Adjust based on preference
-        use-activities-text = false;     # Adjust based on preference
+        show-desktop-name = false; # Adjust based on preference
+        show-legacy-tray = false; # Adjust based on preference
+        use-activities-text = false; # Adjust based on preference
         enable-titlebar-actions = false; # Adjust based on preference
       };
 
@@ -510,17 +510,22 @@ in
   };
 
   programs.dconf.enable = true;
- 
+
   programs.kdeconnect = {
     enable = true;
     package = pkgs.gnomeExtensions.gsconnect;
   };
 
   # Dependency for Super+/ shortcut
-  environment.systemPackages = with pkgs; [ wofi pop-launcher gnome-tweaks ];
+  environment.systemPackages = with pkgs; [
+    wofi
+    pop-launcher
+    gnome-tweaks
+  ];
 
-  environment.gnome.excludePackages =
-    (with pkgs; [
+  environment.gnome.excludePackages = (
+    with pkgs;
+    [
       gnome-photos
       gnome-tour
       gedit
@@ -533,17 +538,17 @@ in
       gnome-maps
       gnome-software
       gnome-contacts
-      yelp #gnome-help
+      yelp # gnome-help
       totem
       tali
       iagno
       hitori
       atomix
-    ]);
+    ]
+  );
 
   services.power-profiles-daemon.enable = false;
   environment.variables = {
-    GNOME_SHELL_SLOWDOWN_FACTOR="0.8";
+    GNOME_SHELL_SLOWDOWN_FACTOR = "0.8";
   };
 }
-

@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  userName = (import ./../../config.nix {}).userName;
+  userName = (import ./../../config.nix { }).userName;
 in
 {
   virtualisation.docker = {
@@ -11,6 +11,6 @@ in
       setSocketVariable = true;
     };
   };
-  users.users."${userName}".extraGroups = ["docker"];
+  users.users."${userName}".extraGroups = [ "docker" ];
   environment.systemPackages = with pkgs; [ docker-compose ];
 }

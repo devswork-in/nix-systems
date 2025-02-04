@@ -2,13 +2,14 @@
 
 let
   bluez = pkgs.bluez.overrideAttrs (oldAttrs: {
-    configureFlags = oldAttrs.configureFlags ++ [ "--enable-experimental"];
+    configureFlags = oldAttrs.configureFlags ++ [ "--enable-experimental" ];
   });
 in
 
 {
 
-  hardware = { #If no audio,check output devices in pavucontrol
+  hardware = {
+    # If no audio,check output devices in pavucontrol
     bluetooth = {
       enable = true;
       package = bluez;
@@ -46,7 +47,7 @@ in
           "${pkgs.bluez}/bin/bluetoothd --noplugin=sap,vcp,mcp,bap"
         ];
       };
-      wantedBy = [ "bluetooth.target"  ];
+      wantedBy = [ "bluetooth.target" ];
     };
     bluetoothUnblock = {
       description = "Unblock Bluetooth on startup";

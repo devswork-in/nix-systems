@@ -13,8 +13,7 @@
     };
 
     libinput = {
-      enable =
-        true; # touchpad support generally enabled by most display managers
+      enable = true; # touchpad support generally enabled by most display managers
       touchpad.naturalScrolling = true;
     };
 
@@ -72,12 +71,11 @@
     upower.enable = true;
     # check once using sftp via cli
     # can give issues if/won't connect if loading a non-interactive bash session is taking time
-    # had direnv and startship running via bashrc due to which ssh conn in nautilus was failing 
+    # had direnv and startship running via bashrc due to which ssh conn in nautilus was failing
     # and sftp on cli was failing
     gvfs.enable = true;
     preload.enable = true;
-    gnome.gnome-keyring.enable =
-      true; # fails to save if enabled via home-manager
+    gnome.gnome-keyring.enable = true; # fails to save if enabled via home-manager
     #cachix-agent = {
     #  # needs /etc/cachix-agent.token fix to have CACHIX_AGENT_TOKEN=<CACHIX_AUTH_TOKEN>
     #  enable = true;
@@ -119,8 +117,6 @@
 
     ccache.enable = true;
     light.enable = true;
-    nix-ld.enable =
-      true; # Run unpatched dynamic binaries on NixOS., check : https://github.com/Mic92/nix-ld
+    nix-ld.enable = true; # Run unpatched dynamic binaries on NixOS., check : https://github.com/Mic92/nix-ld
   };
 }
-

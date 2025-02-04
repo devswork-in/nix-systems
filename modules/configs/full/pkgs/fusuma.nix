@@ -4,8 +4,12 @@
   services.fusuma = {
     enable = true;
     settings = {
-      threshold = { swipe = 0.1; };
-      interval = { swipe = 0.7; };
+      threshold = {
+        swipe = 0.1;
+      };
+      interval = {
+        swipe = 0.7;
+      };
       swipe = {
         # allow going back/forward in browsers
         "3" = {
@@ -30,4 +34,3 @@
     };
   };
 }
-

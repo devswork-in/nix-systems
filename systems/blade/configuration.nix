@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 let
-  config = import ./../../config.nix {};
+  config = import ./../../config.nix { };
 in
 {
   imports = [
@@ -21,7 +21,7 @@ in
           enable = true;
         };
       };
-      timeout = 0; #press Esc while booting if things get messy
+      timeout = 0; # press Esc while booting if things get messy
       efi.canTouchEfiVariables = true;
     };
     tmp.cleanOnBoot = true;
@@ -30,7 +30,12 @@ in
   networking = {
     networkmanager.enable = true;
     hostName = lib.mkDefault "blade";
-    nameservers = ["8.8.8.8" "9.9.9.9" "1.1.1.1" "8.8.4.4"];
+    nameservers = [
+      "8.8.8.8"
+      "9.9.9.9"
+      "1.1.1.1"
+      "8.8.4.4"
+    ];
   };
 
   #https://discourse.nixos.org/t/fish-shell-and-manual-page-completion-nixos-home-manager/15661/3
@@ -49,7 +54,14 @@ in
   users.users.${config.userName} = {
     shell = pkgs.fish;
     isNormalUser = true;
-    extraGroups = [ "power" "storage" "wheel" "audio" "video" "networkmanager" ];
+    extraGroups = [
+      "power"
+      "storage"
+      "wheel"
+      "audio"
+      "video"
+      "networkmanager"
+    ];
     hashedPassword = config.hashedPassword;
   };
 
@@ -57,12 +69,15 @@ in
 
   nix = {
     gc = {
-      automatic = false; 				# runs nix-collect-garbage which removes old unrefrenced packages
+      automatic = false; # runs nix-collect-garbage which removes old unrefrenced packages
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
     settings = {
-      experimental-features = [ "nix-command" "flakes" ]; #enable flakes
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ]; # enable flakes
       substituters = [
         "https://cache.nixos.org"
         "https://nixpkgs.cachix.org"
@@ -79,8 +94,11 @@ in
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
         "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       ];
-      auto-optimise-store = true; #automatically detects files in the store that have identical contents and replaces with hard links.
-      trusted-users = [ "root" "${config.userName}" ]; #for cachix to work
+      auto-optimise-store = true; # automatically detects files in the store that have identical contents and replaces with hard links.
+      trusted-users = [
+        "root"
+        "${config.userName}"
+      ]; # for cachix to work
     };
   };
 
@@ -88,4 +106,3 @@ in
   time.hardwareClockInLocalTime = true;
   system.stateVersion = "${config.nixosReleaseVersion}";
 }
-

@@ -1,10 +1,22 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   nurUrl = "https://github.com/nix-community/NUR/archive/d20910e4325043886e32c8d459b727e1e5be079e.tar.gz";
   nurSha256 = "sha256:0rzcslnig64flpb4hyxlpbdjnyl0k3aygb3y78yk0klraqrm2vis";
   link = config.lib.file.mkOutOfStoreSymlink;
-  nurOverlay = (import (builtins.fetchTarball { url = nurUrl; sha256 = nurSha256; })) { inherit pkgs; };
+  nurOverlay =
+    (import (
+      builtins.fetchTarball {
+        url = nurUrl;
+        sha256 = nurSha256;
+      }
+    ))
+      { inherit pkgs; };
   firefoxExtensions = with pkgs.nur.repos.rycee.firefox-addons; [
     stylus
     noscript
@@ -70,4 +82,3 @@ in
     };
   };
 }
-

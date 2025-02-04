@@ -1,12 +1,19 @@
 let
-  config = (import ./../../config.nix {});
+  config = (import ./../../config.nix { });
   httpsSettings = import ./https-settings.nix;
 in
 {
   imports = [
     ./repo-sync-service.nix
   ];
-  networking.firewall.allowedTCPPorts = if config.website.https then [ 80 443 ] else [ 80 ];
+  networking.firewall.allowedTCPPorts =
+    if config.website.https then
+      [
+        80
+        443
+      ]
+    else
+      [ 80 ];
 
   services = {
     nginx = {
@@ -49,16 +56,20 @@ in
     };
   };
 
-  security.acme = if config.website.https then {
-    acceptTerms = true;
-    certs = {
-      "${config.hostName}" = {
-        webroot = "/var/lib/acme/acme-challenge";
-        domain = "${config.hostName}";
-      };
-    };
-    defaults.email = "${config.userEmail}";
-  } else {};
+  security.acme =
+    if config.website.https then
+      {
+        acceptTerms = true;
+        certs = {
+          "${config.hostName}" = {
+            webroot = "/var/lib/acme/acme-challenge";
+            domain = "${config.hostName}";
+          };
+        };
+        defaults.email = "${config.userEmail}";
+      }
+    else
+      { };
 
   systemd.services.nginx.serviceConfig.ProtectHome = "read-only";
 }

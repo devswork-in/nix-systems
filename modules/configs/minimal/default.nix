@@ -1,23 +1,25 @@
 { ... }:
 let
-  config = (import ./../../../config.nix {});
+  config = (import ./../../../config.nix { });
   user = config.userName;
   stateVersion = config.nixosReleaseVersion;
-in 
+in
 {
   home-manager = {
-    users."${user}" = { ... }: {
-      imports = [
-        ./pkgs
-        ./symlinks
-      ];
+    users."${user}" =
+      { ... }:
+      {
+        imports = [
+          ./pkgs
+          ./symlinks
+        ];
 
-      home = {
-        username = "${user}";
-        homeDirectory = "/home/${user}";
-        stateVersion = "${stateVersion}";
+        home = {
+          username = "${user}";
+          homeDirectory = "/home/${user}";
+          stateVersion = "${stateVersion}";
+        };
       };
-    };
 
     # do home-manager switch -b by default
     # ref: https://nix-community.github.io/home-manager/nixos-options.xhtml#nixos-opt-home-manager.backupFileExtension

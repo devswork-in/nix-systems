@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   services = {
@@ -11,8 +16,10 @@
     };
   };
 
-    environment.systemPackages = with pkgs;
-    with gnomeExtensions; [
+  environment.systemPackages =
+    with pkgs;
+    with gnomeExtensions;
+    [
       gnome3.dconf-editor
       gnome3.gnome-tweaks
     ];

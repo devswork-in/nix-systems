@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 let
-  doom = pkgs.writeShellScriptBin "doom" ''${config.lib.file.mkOutOfStoreSymlink (config.home.homeDirectory + "/.config/emacs/bin/doom")} "$@"'';
+  doom = pkgs.writeShellScriptBin "doom" ''${
+    config.lib.file.mkOutOfStoreSymlink (config.home.homeDirectory + "/.config/emacs/bin/doom")
+  } "$@"'';
 in
 {
   programs.emacs = {
@@ -39,4 +41,3 @@ in
     aspellDicts.es
   ];
 }
-

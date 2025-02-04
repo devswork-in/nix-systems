@@ -1,6 +1,7 @@
 { pkgs, ... }:
 let
-  dmenu = pkgs.dmenu.overrideAttrs (old: { #custom name also works + prev instead of old works
+  dmenu = pkgs.dmenu.overrideAttrs (old: {
+    # custom name also works + prev instead of old works
     version = "5.0";
     src = pkgs.fetchFromGitHub {
       owner = "creator54";
@@ -11,8 +12,12 @@ let
   });
 in
 {
-  home.packages = with pkgs;[
-    feh rofi dmenu betterlockscreen libnotify
+  home.packages = with pkgs; [
+    feh
+    rofi
+    dmenu
+    betterlockscreen
+    libnotify
     networkmanagerapplet
     xdotool
     flameshot
@@ -32,13 +37,13 @@ in
     };
     dunst.enable = true;
   };
- 
+
   #https://github.com/nix-community/home-manager/issues/2064
   # As issues have not beeen resolved it, this work-round is needed
   systemd.user.targets.tray = {
-		Unit = {
-			Description = "Home Manager System Tray";
-			Wants = [ "graphical-session-pre.target" ];
-		};
-	};
+    Unit = {
+      Description = "Home Manager System Tray";
+      Wants = [ "graphical-session-pre.target" ];
+    };
+  };
 }

@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   programs.mcfly = {
@@ -6,6 +11,6 @@
     enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
-    fuzzySearchFactor = 5;#https://github.com/cantino/mcfly#fuzzy-searching
+    fuzzySearchFactor = 5; # https://github.com/cantino/mcfly#fuzzy-searching
   };
 }
