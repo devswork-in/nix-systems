@@ -49,7 +49,7 @@ in
     entr googler imgp recode glow yazi
     papirus-maia-icon-theme fff acpi sxiv axel python3 groff #for ms macros to pdf
     pandoc texlive.combined.scheme-small #for converting .md files to pdf
-    ddgr ytfzf dua simplescreenrecorder nix-tree
+    ddgr ytfzf dua simplescreenrecorder nix-tree nixfmt-rfc-style
     (kodi.withPackages (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ])) #kodi with jiotv, last is for drm
     #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
     google-chrome websocat warp#file-transfer
