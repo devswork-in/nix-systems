@@ -1,15 +1,25 @@
 { pkgs, lib, ... }:
-let config = import ./../../config.nix { };
-in {
+let
+  config = import ./../../config.nix { };
+in
+{
   imports = [
     ./hardware-configuration.nix
   ];
-  environment.systemPackages = with pkgs; [ cachix home-manager ];
+  environment.systemPackages = with pkgs; [
+    cachix
+    home-manager
+  ];
   boot.tmp.cleanOnBoot = true;
 
   networking = {
     hostName = lib.mkDefault "server";
-    nameservers = [ "8.8.4.4" "8.8.8.8" "1.1.1.1" "9.9.9.9" ];
+    nameservers = [
+      "8.8.4.4"
+      "8.8.8.8"
+      "1.1.1.1"
+      "9.9.9.9"
+    ];
     firewall.enable = true;
   };
 
@@ -28,13 +38,15 @@ in {
 
   nix = {
     gc = {
-      automatic =
-        true; # runs nix-collect-garbage which removes old unrefrenced packages
+      automatic = true; # runs nix-collect-garbage which removes old unrefrenced packages
       dates = "daily";
       options = "--delete-older-than 7d";
     };
     settings = {
-      experimental-features = [ "nix-command" "flakes" ]; # enable flakes
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ]; # enable flakes
       substituters = [
         "https://cache.nixos.org"
         "https://nixpkgs.cachix.org"
@@ -45,9 +57,11 @@ in {
         "nixpkgs.cachix.org-1:q91R6hxbwFvDqTSDKwDAV4T5PxqXGxswD8vhONFMeOE="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
-      auto-optimise-store =
-        true; # automatically detects files in the store that have identical contents and replaces with hard links.
-      trusted-users = [ "root" "${config.userName}" ]; # for cachix to work
+      auto-optimise-store = true; # automatically detects files in the store that have identical contents and replaces with hard links.
+      trusted-users = [
+        "root"
+        "${config.userName}"
+      ]; # for cachix to work
     };
   };
 
@@ -69,9 +83,11 @@ in {
     };
   };
 
-  swapDevices = [{
-    device = "/swapfile";
-    size = 4096;
-  }];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 4096;
+    }
+  ];
   system.stateVersion = config.nixosReleaseVersion;
 }

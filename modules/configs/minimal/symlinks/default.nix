@@ -4,11 +4,11 @@ let
 in
 {
   home.file = {
-    ".config/nixpkgs/config.nix".source                   = ./config.nix;
-    ".config/fish".source                                 = ./fish;
-    ".config/starship.toml".source                        = ./starship.toml;
-    ".config/htop".source                                 = ./htop;
-    ".tmux.conf".source                                   = ./tmux.conf;
-    ".bashrc".source                                      = ./bashrc;
+    ".config/nixpkgs/config.nix".source = ./config.nix;
+    ".config/fish".source = ./fish;
+    ".config/starship.toml".source = ./starship.toml;
+    ".config/htop".source = ./htop;
+    ".tmux.conf".source = ./tmux.conf;
+    ".bashrc".source = ./bashrc;
   };
 }

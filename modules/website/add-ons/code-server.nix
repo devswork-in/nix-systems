@@ -1,10 +1,11 @@
 { ... }:
 let
-  codeServer = (import ./../../../config.nix {}).codeServer;
+  codeServer = (import ./../../../config.nix { }).codeServer;
   httpsSettings = import ./../https-settings.nix;
 in
 {
-  services = { #Gzip and Proxy optimisations needs to be disabled for this to work, also authentication with password always faile
+  services = {
+    # Gzip and Proxy optimisations needs to be disabled for this to work, also authentication with password always faile
     code-server = {
       enable = true;
       auth = "none";

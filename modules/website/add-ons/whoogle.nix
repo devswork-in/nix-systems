@@ -1,6 +1,6 @@
 { ... }:
 let
-  whoogle = (import ./../../../config.nix {}).whoogle;
+  whoogle = (import ./../../../config.nix { }).whoogle;
   httpsSettings = import ./../https-settings.nix;
 in
 {
@@ -10,7 +10,7 @@ in
       containers.whoogle-search = {
         image = "benbusby/whoogle-search:latest";
         autoStart = true;
-        ports = [ "${whoogle.port}:5000" ]; #server localhost : docker localhost
+        ports = [ "${whoogle.port}:5000" ]; # server localhost : docker localhost
       };
     };
   };
@@ -21,4 +21,3 @@ in
     };
   };
 }
-

@@ -6,7 +6,6 @@
   };
 
   home = {
-    packages = [ pkgs.luajit ]; #dep for some plugins
+    packages = [ pkgs.luajit ]; # dep for some plugins
   };
 }
-

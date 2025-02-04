@@ -1,4 +1,5 @@
-{ pkgs, ... }: let
+{ pkgs, ... }:
+let
   pname = "cursor";
   version = "0.44.8";
 
@@ -6,7 +7,7 @@
     url = "https://downloader.cursor.sh/linux/appImage/x64";
     hash = "sha256-DV4Om5eAt7hDDPsyCwhALGhH36YAfvDk5u8Mnlhalsw=";
   };
-  appimageContents = pkgs.appimageTools.extract {inherit pname version src;};
+  appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
 in
 pkgs.appimageTools.wrapType2 {
   inherit pname version src;
@@ -29,11 +30,12 @@ pkgs.appimageTools.wrapType2 {
   # gui application isn't attached to the terminal session
   dieWithParent = false;
 
-  extraPkgs = pkgs: with pkgs; [
-    unzip
-    autoPatchelfHook
-    asar
-    # override doesn't preserve splicing https://github.com/NixOS/nixpkgs/issues/132651
-    (buildPackages.wrapGAppsHook.override {inherit (buildPackages) makeWrapper;})
-  ];
+  extraPkgs =
+    pkgs: with pkgs; [
+      unzip
+      autoPatchelfHook
+      asar
+      # override doesn't preserve splicing https://github.com/NixOS/nixpkgs/issues/132651
+      (buildPackages.wrapGAppsHook.override { inherit (buildPackages) makeWrapper; })
+    ];
 }

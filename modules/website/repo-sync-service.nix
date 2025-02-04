@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  config = (import ./../../config.nix {});
+  config = (import ./../../config.nix { });
   syncRepos = config.syncRepos;
 
   generateRepoSyncScript = pkgs.writeShellScript "repo-sync.sh" ''
@@ -42,7 +42,7 @@ let
 in
 {
   systemd.services.repo-sync = {
-    enable = true; #keep service enabled after reboot
+    enable = true; # keep service enabled after reboot
     description = "Sync Repository Service";
     serviceConfig = {
       Type = "simple";
@@ -53,4 +53,3 @@ in
     wantedBy = [ "multi-user.target" ]; # specify the target to start the service
   };
 }
-

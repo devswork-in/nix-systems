@@ -1,6 +1,6 @@
-{...}:
+{ ... }:
 let
-  nextCloud = (import ./../../../config.nix {}).nextCloud;
+  nextCloud = (import ./../../../config.nix { }).nextCloud;
   httpsSettings = import ./../https-settings.nix;
 in
 {
@@ -21,7 +21,7 @@ in
     https = true;
 
     # Auto-update Nextcloud Apps
-    autoUpdateApps ={
+    autoUpdateApps = {
       enable = true;
       # Set what time makes sense for you
       startAt = "05:00:00";
@@ -36,7 +36,7 @@ in
       dbuser = "nextcloud";
       dbhost = "/run/postgresql"; # nextcloud will add /.s.PGSQL.5432 by itself
       dbname = "nextcloud";
-      dbpassFile = "/var/nextcloud/db-pass"; #manually create these files
+      dbpassFile = "/var/nextcloud/db-pass"; # manually create these files
 
       adminuser = "${nextCloud.adminUser}";
       adminpassFile = "/var/nextcloud/admin-pass";
@@ -59,7 +59,7 @@ in
 
   # Ensure that postgres is running before running the setup
   systemd.services."nextcloud-setup" = {
-    requires = ["postgresql.service"];
-    after = ["postgresql.service"];
+    requires = [ "postgresql.service" ];
+    after = [ "postgresql.service" ];
   };
 }

@@ -1,7 +1,7 @@
 {
   fileSystems = {
     "/" = {
-	device = "/dev/sda2";
+      device = "/dev/sda2";
       fsType = "ext4";
       options = [ "noatime" ];
     };
@@ -21,8 +21,13 @@
     enable = true;
     algorithm = "zstd";
     memoryPercent = 50;
-    priority = 5; #matters only when using multiple swap devices
+    priority = 5; # matters only when using multiple swap devices
   };
 
-  swapDevices = [ { device = "/swapfile"; size = 5120; } ];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 5120;
+    }
+  ];
 }

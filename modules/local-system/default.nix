@@ -1,4 +1,4 @@
-{ pkgs,... }:
+{ pkgs, ... }:
 
 let
   cursorApp = import ./cursor.nix { inherit pkgs; };
@@ -16,4 +16,3 @@ in
 
   environment.systemPackages = with pkgs; [ cursorApp ];
 }
-

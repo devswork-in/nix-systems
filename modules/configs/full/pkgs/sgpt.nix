@@ -10,7 +10,7 @@ let
     };
   });
 
-  requests = pkgs.python3Packages.requests.overrideAttrs(old: {
+  requests = pkgs.python3Packages.requests.overrideAttrs (old: {
     src = pkgs.python3Packages.fetchPypi {
       pname = "requests";
       version = "2.28.2";
@@ -18,14 +18,13 @@ let
     };
   });
 
-  typer = pkgs.python3Packages.typer.overrideAttrs(old: {
+  typer = pkgs.python3Packages.typer.overrideAttrs (old: {
     src = pkgs.python3Packages.fetchPypi {
       pname = "typer";
       version = "0.7.0";
       hash = "sha256-/3l4RleKnyogG1NEKu3rVDMZRmhw++HHAeq2bddoEWU=";
     };
   });
-
 
   sgpt = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "sgpt";
