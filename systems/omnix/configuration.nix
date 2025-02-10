@@ -12,6 +12,7 @@ in
     ./../../modules/local-system
     ./../../modules/networking
     ./../../modules/services
+    ./../../modules/configs/appimages
   ];
 
   boot = {
