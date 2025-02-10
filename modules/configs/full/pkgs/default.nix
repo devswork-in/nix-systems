@@ -77,6 +77,7 @@ in
     unzip
     picom
     cmus
+    oci-cli
     conky
     fd # faster find alternative
     gromit-mpx
