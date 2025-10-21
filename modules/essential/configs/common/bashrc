@@ -1,0 +1,13 @@
+# If not running interactively, don't do anything
+case $- in
+*i*) ;;
+*) return ;;
+esac
+
+# Source general aliases
+if [ -f ~/.config/aliases ]; then
+  source ~/.config/aliases
+fi
+
+eval "$(direnv hook bash)"
+eval "$(starship init bash)"
