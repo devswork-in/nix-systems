@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 let
-  config = import ./../../config.nix { };
+  config = import ../../config.nix { };
 in
 {
   imports = [
@@ -8,11 +8,11 @@ in
     ./hardware.nix
     ./hibernation.nix
     ./fileSystems.nix
-    ./../../modules/docker
-    ./../../modules/local-system
-    ./../../modules/networking
-    ./../../modules/services
-    ./../../modules/configs/appimages
+    ./../../modules/addons/services/docker
+    ./../../modules/essential/core
+    ./../../modules/essential/networking
+    ./../../modules/addons/services
+    ./../../modules/addons/desktop/pop-shell.nix
   ];
 
   boot = {

@@ -1,17 +1,17 @@
 { pkgs, lib, ... }:
 let
-  config = import ./../../config.nix { };
+  config = import ../../config.nix { };
 in
 {
   imports = [
     ./hardware.nix
     ./fileSystems.nix
-    ./../../modules/docker
-    ./../../modules/networking
-    ./../../modules/local-system
-    ./../../modules/services/snaps.nix
-    ./../../modules/services/flatpak.nix
-    ./../../modules/local-system/desktop/pop-shell.nix
+    ./../../modules/addons/services/docker
+    ./../../modules/essential/networking
+    ./../../modules/essential/core
+    ./../../modules/addons/services/snaps.nix
+    ./../../modules/addons/services/flatpak.nix
+    ./../../modules/addons/desktop/pop-shell.nix
   ];
 
   boot = {

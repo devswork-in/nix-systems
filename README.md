@@ -7,12 +7,24 @@ This repository contains NixOS configurations for multiple systems.
 ```
 .
 ├── modules/          # NixOS modules
-│   ├── configs/      # Configurations
-│   ├── services/     # Service-related modules
-│   ├── networking/   # Network-related modules
-│   ├── website/      # Website configurations
-│   ├── docker/       # Docker configurations
-│   └── local-system/ # System-specific local configs
+│   ├── essential/    # Essential/core system functionality
+│   │   ├── base/     # Base NixOS system configurations
+│   │   ├── core/     # Core system configurations required for any system
+│   │   ├── networking/ # Network-related modules
+│   │   ├── packages/ # Package configurations (common, server, desktop)
+│   │   │   ├── common/ # Common packages for all systems
+│   │   │   ├── server/ # Server-specific packages
+│   │   │   └── desktop/ # Desktop-specific packages
+│   │   ├── configs/  # Configuration files (common, server, desktop)
+│   │   │   ├── common/ # Common configs for all systems
+│   │   │   ├── server/ # Server-specific configs
+│   │   │   └── desktop/ # Desktop-specific configs
+│   │   ├── server-config.nix # Complete server home-manager config
+│   └── addons/       # Optional functionality and enhancements
+│       ├── apps/     # Application packages
+│       ├── desktop/  # Desktop environment configurations
+│       ├── extras/   # Extra configurations
+│       ├── services/ # Service-related modules (Docker, Flatpak, etc.)
 ├── systems/          # System-specific configurations
 │   ├── omnix/       # Omnix system
 │   ├── cospi/       # Cospi system

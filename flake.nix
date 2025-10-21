@@ -44,7 +44,7 @@
           specialArgs = { inherit inputs; };
           system = "x86_64-linux";
           modules = [
-            ./modules/configs/minimal
+            ./modules/essential/server-config.nix
             ./systems/server/configuration.nix
             inputs.home-manager.nixosModules.default
           ];
@@ -55,7 +55,7 @@
           system = "x86_64-linux";
           modules = [
             ./systems/phoenix
-            ./modules/configs/minimal
+            ./modules/essential/server-config.nix
             inputs.home-manager.nixosModules.default
           ];
         };
@@ -65,7 +65,7 @@
           system = "aarch64-linux";
           modules = [
             ./systems/phoenix
-            ./modules/configs/minimal
+            ./modules/essential/server-config.nix
             inputs.home-manager.nixosModules.default
           ];
         };
@@ -75,7 +75,7 @@
           system = "x86_64-linux";
           modules = [
             ./systems/omnix
-            ./modules/configs/full
+            ./modules/addons/desktop/desktop-config.nix
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
             inputs.nix-snapd.nixosModules.default
@@ -96,7 +96,7 @@
           system = "x86_64-linux";
           modules = [
             ./systems/blade
-            ./modules/configs/minimal
+            ./modules/essential/server-config.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
@@ -107,7 +107,7 @@
           system = "x86_64-linux";
           modules = [
             ./systems/cospi
-            ./modules/configs/full
+            ./modules/addons/desktop/desktop-config.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
