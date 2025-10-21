@@ -1,0 +1,3 @@
+# Addon-specific aliases and functions for bash
+# Note: Since we now have a standalone fgit script in PATH,
+# the fgit function is no longer needed here

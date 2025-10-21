@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# Cross-shell fgit function for sparse cloning git repositories
+# Usage: fgit <repository-url> [subdirectory]
+
+if [ -z "$1" ]; then
+    echo "Usage: fgit <repository-url> [subdirectory]"
+    echo "Examples:"
+    echo "  fgit https://github.com/user/repo"
+    echo "  fgit https://github.com/user/repo specific/folder"
+    exit 1
+fi
+
+repo_url="$1"
+subdir="$2"
+
+# Extract repository name from URL
+if [[ "$repo_url" == git@* ]]; then
+    dirname=$(basename "$repo_url" .git | cut -d: -f2)
+else
+    dirname=$(basename "$repo_url" .git)
+fi
+
+original_dir=$(pwd)
+
+# Provide feedback
+echo "Sparse cloning repository..."
+
+# Clone repository with sparse checkout
+if ! git clone --filter=blob:none --no-checkout --depth 1 --sparse "$repo_url" 2>/dev/null; then
+    echo "Error: Failed to clone repository. Please check the URL and try again."
+    exit 1
+fi
+
+cd "$dirname"
+
+git sparse-checkout init --cone
+
+# If no subdirectory provided, ask user for input
+if [ -z "$subdir" ]; then
+    echo
+    read -p "Enter subdirectory to fetch from $dirname/: " subdir
+    echo
+fi
+
+if [ -z "$subdir" ]; then
+    echo "No subdirectory specified. Aborting."
+    cd "$original_dir"
+    rm -rf "$dirname"
+    exit 1
+fi
+
+# Try to add the subdirectory
+if ! git sparse-checkout add "$subdir" 2>/dev/null; then
+    echo "Warning: Could not find $subdir. Checking available directories..."
+    git ls-tree -d --name-only HEAD
+    cd "$original_dir"
+    rm -rf "$dirname"
+    exit 1
+fi
+
+# Checkout the content
+git checkout
+
+# Check if subdirectory exists after checkout
+if [ ! -d "$subdir" ]; then
+    echo "Error: Subdirectory $subdir not found after checkout."
+    cd "$original_dir"
+    rm -rf "$dirname"
+    exit 1
+fi
+
+# Move the requested directory to original location
+mv "$subdir" "$original_dir"/
+
+cd "$original_dir"
+
+# Remove the temporary repo directory
+rm -rf "$dirname"
+
+echo "Successfully fetched $subdir"

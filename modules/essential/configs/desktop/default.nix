@@ -14,14 +14,6 @@
   
   # Additional desktop config files
   home.file = {
-    # Kitty terminal configuration
-    ".config/kitty/kitty.conf".text = ''
-      # Desktop kitty configuration
-      font_family      JetBrains Mono
-      font_size        12.0
-      background_opacity 0.95
-    '';
-    
     # Starship prompt configuration
     ".config/starship.toml".text = ''
       # Starship configuration
