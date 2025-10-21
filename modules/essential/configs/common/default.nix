@@ -2,16 +2,23 @@
 { config, pkgs, ... }:
 
 {
-  # Fish shell configuration
+  imports = [
+    ./symlinks.nix
+  ];
+
+  # Fish shell configuration (can be overridden by addon configs)
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
+      # Source our external fish config
+      ${builtins.readFile ./fish/config.fish}
+      
       # Common fish configuration
       set -g fish_greeting
     '';
   };
   
-  # Tmux configuration
+  # Tmux configuration (can be overridden by addon configs)
   programs.tmux = {
     enable = true;
     extraConfig = ''
