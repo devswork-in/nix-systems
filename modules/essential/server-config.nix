@@ -11,6 +11,7 @@ in
       imports = [
         ../packages/common
         ../packages/server
+        ../configs/server/environment.nix
       ];
 
       home = {

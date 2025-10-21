@@ -1,0 +1,32 @@
+systemctl --user start udiskie.service & #for automounting usb drives
+systemctl --user start redshift.service & #eyecare
+dbus-launch nm-applet &
+blueman-applet &
+xrdb -load ~/.Xresources &
+numlockx on &
+xset -b &
+picom &
+pkill clipit; clipit -n &
+
+#Setting up the user's D-Bus Daemon from "https://nixos.wiki/wiki/Using_X_without_a_Display_Manager"
+if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+  eval $(dbus-launch --exit-with-session --sh-syntax)
+fi
+systemctl --user import-environment DISPLAY XAUTHORITY
+
+if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+  dbus-update-activation-environment DISPLAY XAUTHORITY
+fi
+
+# Default window manager selection
+if which sway;then
+  exec sway
+elif which bspwm; then
+  exec bspwm
+elif which awesome; then
+  exec awesome
+elif which xfce4-session; then
+  exec startxfce4
+else
+  exec xterm
+fi

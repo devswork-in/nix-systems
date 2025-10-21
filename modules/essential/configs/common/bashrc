@@ -9,5 +9,10 @@ if [ -f ~/.config/aliases ]; then
   source ~/.config/aliases
 fi
 
+# Auto-activate default Python virtual environment
+if [ -d "$HOME/.venv" ]; then
+    source "$HOME/.venv/bin/activate" 2>/dev/null || true
+fi
+
 eval "$(direnv hook bash)"
 eval "$(starship init bash)"

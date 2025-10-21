@@ -4,6 +4,7 @@
 {
   imports = [
     ./symlinks.nix
+    ./environment.nix
   ];
 
   # Fish shell configuration (can be overridden by addon configs)
