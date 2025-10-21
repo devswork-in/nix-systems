@@ -1,16 +1,15 @@
 { pkgs, lib, ... }:
 let
-  config = import ./../../config.nix { };
+  config = import ../../config.nix { };
 in
 {
   imports = [
     ./hardware.nix
     ./fileSystems.nix
-    ./../../modules/docker
-    ./../../modules/networking
-    ./../../modules/local-system
-    ./../../modules/services/flatpak.nix
-    ./../../modules/services/flatpak.nix
+    ./../../modules/addons/services/docker
+    ./../../modules/essential/networking
+    ./../../modules/essential/core
+    ./../../modules/addons/services/flatpak.nix
   ];
 
   boot = {
