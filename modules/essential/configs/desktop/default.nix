@@ -2,6 +2,10 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./fusuma.nix
+  ];
+
   # Additional fish functions/configs for desktop
   programs.fish = {
     interactiveShellInit = ''
