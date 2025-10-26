@@ -1,8 +1,10 @@
 { pkgs, lib, ... }:
 
 {
+  # Flatpak service - disabled to improve boot time (was causing flatpak-managed-install.service to take 1.8s)
+  # To use Flatpak: systemctl enable --now flatpak
   services.flatpak = {
-    enable = true;
+    enable = false;  # Changed to false to improve boot time
     remotes = [
       {
         name = "flathub";
@@ -25,7 +27,7 @@
     ];
 
     update.auto = {
-      enable = true;
+      enable = false;  # Changed to false - was causing flatpak-managed-install at boot
       onCalendar = "weekly"; # Default value
     };
   };
@@ -37,27 +39,32 @@
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
+  # Only add flatpak binaries to PATH if flatpak is enabled
+  # This avoids the shellInit from running during boot unnecessarily
   environment.shellInit = ''
-    FLATPAK_BIN_DIR="/var/lib/flatpak/exports/bin"
-    LOCAL_BIN_DIR="$HOME/.local/bin"
+    # Only run flatpak binary setup if flatpak is enabled
+    if command -v flatpak >/dev/null 2>&1; then
+      FLATPAK_BIN_DIR="/var/lib/flatpak/exports/bin"
+      LOCAL_BIN_DIR="$HOME/.local/bin"
 
-    mkdir -p "$LOCAL_BIN_DIR"
+      mkdir -p "$LOCAL_BIN_DIR"
 
-    for item in "$FLATPAK_BIN_DIR"/*; do
-      [ -x "$item" ] || continue
-      flatpak_short_alias="''${item##*.}"
-      flatpak_long_alias="''${item##*/}"
+      for item in "$FLATPAK_BIN_DIR"/*; do
+        [ -x "$item" ] || continue
+        flatpak_short_alias="''${item##*.}"
+        flatpak_long_alias="''${item##*/}"
 
-      # Create a symlink for the short alias if it doesn't conflict
-      if [ ! -f "$LOCAL_BIN_DIR/$flatpak_short_alias" ] && [ -z "$(command -v "$flatpak_short_alias")" ]; then
-        ln -sf "$item" "$LOCAL_BIN_DIR/$flatpak_short_alias"
-      # Create a symlink for the long alias if it doesn't conflict
-      elif [ ! -f "$LOCAL_BIN_DIR/$flatpak_long_alias" ] && [ -z "$(command -v "$flatpak_long_alias")" ]; then
-        ln -sf "$item" "$LOCAL_BIN_DIR/$flatpak_long_alias"
-      fi
-    done
+        # Create a symlink for the short alias if it doesn't conflict
+        if [ ! -f "$LOCAL_BIN_DIR/$flatpak_short_alias" ] && [ -z "$(command -v "$flatpak_short_alias")" ]; then
+          ln -sf "$item" "$LOCAL_BIN_DIR/$flatpak_short_alias"
+        # Create a symlink for the long alias if it doesn't conflict
+        elif [ ! -f "$LOCAL_BIN_DIR/$flatpak_long_alias" ] && [ -z "$(command -v "$flatpak_long_alias")" ]; then
+          ln -sf "$item" "$LOCAL_BIN_DIR/$flatpak_long_alias"
+        fi
+      done
 
-    export PATH="$LOCAL_BIN_DIR:$PATH"
+      export PATH="$LOCAL_BIN_DIR:$PATH"
+    fi
   '';
 
 }
