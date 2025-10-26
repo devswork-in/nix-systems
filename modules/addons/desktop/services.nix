@@ -99,14 +99,13 @@
   };
 
   # systemd services which i dont like/use mostly cuz increases boot time and i find no issues not having them
-  #systemd.services = {
-  #  systemd-udev-settle.enable = false;
-  #  NetworkManager-wait-online.enable = false;
-  #  firewall.enable = false;
-  #  systemd-journal-flush.enable = false;
-  #  lvm2-activation-early.enable = false;
-  #  lvm2-activation.enable = false;
-  #};
+  systemd.services = {
+    systemd-udev-settle.enable = false;
+    NetworkManager-wait-online.enable = false;
+    systemd-journal-flush.enable = false;
+    lvm2-activation-early.enable = false;
+    lvm2-activation.enable = false;
+  };
 
   programs = {
     # https://wiki.nixos.org/wiki/Appimage

@@ -82,6 +82,6 @@ in
       };
     };
 
-    backupFileExtension = "bkp";
+    backupFileExtension = null;
   };
 }
