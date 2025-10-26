@@ -10,7 +10,7 @@
 #
 # The script creates:
 # - A 2GB boot partition (FAT32)
-# - An 80GB root partition (ext4) 
+# - An 100GB root partition (ext4) 
 # - A home partition using remaining space (ext4)
 #
 # Supports both traditional SATA drives (/dev/sdX) and NVMe drives (/dev/nvmeXnY)
@@ -26,7 +26,7 @@ set -euo pipefail
 
 # Partition size and label configuration
 BOOT_SIZE="2GB"
-ROOT_SIZE="80GB"
+ROOT_SIZE="100GB"
 BOOT_LABEL="BOOT"
 ROOT_LABEL="ROOT"
 HOME_LABEL="HOME"
