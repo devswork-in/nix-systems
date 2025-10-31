@@ -5,4 +5,5 @@ function fish_user_key_bindings
     bind '!' bind_bang
     bind '$' bind_dollar
     bind \cs 'fish_search_files; commandline -f repaint'
+    bind \cp 'toggle_prompt'
 end
