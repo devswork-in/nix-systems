@@ -1,14 +1,12 @@
-{ pkgs, ... }:
-let
-  config = (import ../../../config.nix { });
-in
+{ pkgs, userConfig, ... }:
+
 {
   environment.systemPackages = with pkgs; [
     virt-manager
     virt-viewer
     quickemu
   ];
-  users.users."${config.userName}".extraGroups = [ "libvirtd" ];
+  users.users."${userConfig.user.name}".extraGroups = [ "libvirtd" ];
   virtualisation = {
     libvirtd.enable = true;
   };

@@ -1,7 +1,11 @@
-{ ... }:
+{ userConfig, ... }:
+
 let
-  whoogle = (import ../../../../config.nix { }).whoogle;
-  httpsSettings = import ./https-settings.nix;
+  whoogle = userConfig.services.whoogle;
+  httpsSettings = {
+    enableACME = userConfig.services.website.https;
+    forceSSL = userConfig.services.website.https;
+  };
 in
 {
   virtualisation = {

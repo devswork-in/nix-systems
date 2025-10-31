@@ -1,7 +1,11 @@
-{ ... }:
+{ userConfig, ... }:
+
 let
-  plex = (import ../../../../config.nix { }).plex;
-  httpsSettings = import ./https-settings.nix;
+  plex = userConfig.services.plex;
+  httpsSettings = {
+    enableACME = userConfig.services.website.https;
+    forceSSL = userConfig.services.website.https;
+  };
 in
 {
   services = {

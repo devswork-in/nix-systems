@@ -1,7 +1,11 @@
-{ ... }:
+{ userConfig, ... }:
+
 let
-  nextCloud = (import ../../../../config.nix { }).nextCloud;
-  httpsSettings = import ./https-settings.nix;
+  nextCloud = userConfig.services.nextCloud;
+  httpsSettings = {
+    enableACME = userConfig.services.website.https;
+    forceSSL = userConfig.services.website.https;
+  };
 in
 {
   services.nginx.virtualHosts."${nextCloud.host}" = {

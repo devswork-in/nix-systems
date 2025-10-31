@@ -1,24 +1,17 @@
 # Complete desktop configuration
-{ lib, ... }:
-let
-  config = (import ../../../config.nix { });
-  user = config.userName;
-  stateVersion = config.nixosReleaseVersion;
-in
-{
-  home-manager = {
-    users."${user}" = { ... }: {
-      imports = [
-        ../../essential/packages/common
-        ../../essential/packages/desktop
-        ./environment.nix
-      ];
+{ lib, userConfig, ... }:
 
-      home = {
-        username = "${user}";
-        homeDirectory = "/home/${user}";
-        stateVersion = "${stateVersion}";
-      };
+{
+  imports = [
+    ../../essential/configs/common/home-manager-base.nix
+  ];
+
+  home-manager.users."${userConfig.user.name}" = { ... }: {
+    imports = [
+      ../../essential/packages/common
+      ../../essential/packages/desktop
+      ./environment.nix
+    ];
 
       # Desktop-specific configurations (these override essential configs when both are present)
       home.file = {
@@ -55,9 +48,6 @@ in
         ".config/mpv/script-opts/youtube-quality.conf".source = ./mpv/youtube-quality.conf;
         ".config/mpv/README.md".source = ./mpv/README.md;
 
-        # Htop configuration (use mkForce to override essential configs)
-        ".config/htop/htoprc".source = lib.mkForce ./htop/htoprc;
-
         # Kitty terminal configuration
         ".config/kitty/kitty.conf".source = ./kitty.conf;
 
@@ -76,12 +66,8 @@ in
         fi
       '';
 
-      # For fish, we'll add functions that extend the shell
-      programs.fish = {
-        enable = true;
-      };
+      # Note: Fish is enabled at system level (profiles/base.nix)
+      # Desktop-specific fish config is symlinked below
+      home.file.".config/fish/config.fish".source = lib.mkForce ./fish/config.fish;
     };
-
-    backupFileExtension = null;
-  };
 }

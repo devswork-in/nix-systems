@@ -1,13 +1,17 @@
+{ userConfig, ... }:
+
 let
-  config = (import ../../../../config.nix { });
-  httpsSettings = import ./https-settings.nix;
+  httpsSettings = {
+    enableACME = userConfig.services.website.https;
+    forceSSL = userConfig.services.website.https;
+  };
 in
 {
   imports = [
     ./repo-sync-service.nix
   ];
   networking.firewall.allowedTCPPorts =
-    if config.website.https then
+    if userConfig.services.website.https then
       [
         80
         443
@@ -27,26 +31,26 @@ in
       sslCiphers = "AES256+EECDH:AES256+EDH:!aNULL";
 
       virtualHosts = {
-        "${config.hostName}" = {
+        "${userConfig.user.domain}" = {
           inherit (httpsSettings) enableACME forceSSL;
-          root = "${config.syncRepos.hostSrc.localPath}";
+          root = "${userConfig.paths.base}/${userConfig.user.domain}";
           locations = {
             "/".extraConfig = ''
-              rewrite ^/(.*)$ https://blog.${config.hostName} redirect;
+              rewrite ^/(.*)$ https://blog.${userConfig.user.domain} redirect;
             '';
             "/blog".extraConfig = ''
-              rewrite ^/(.*)$ https://blog.${config.hostName} redirect;
+              rewrite ^/(.*)$ https://blog.${userConfig.user.domain} redirect;
             '';
             "/blog/".extraConfig = ''
-              rewrite ^/blog/(.*)$ https://blog.${config.hostName}/$1 redirect;
+              rewrite ^/blog/(.*)$ https://blog.${userConfig.user.domain}/$1 redirect;
             '';
           };
         };
-        "blog.${config.hostName}" = {
+        "blog.${userConfig.user.domain}" = {
           inherit (httpsSettings) enableACME forceSSL;
-          root = "${config.syncRepos.blogSrc.localPath}/_site";
+          root = "${userConfig.paths.base}/blog.${userConfig.user.domain}/_site";
         };
-        "labs.${config.hostName}" = {
+        "labs.${userConfig.user.domain}" = {
           inherit (httpsSettings) enableACME forceSSL;
           locations = {
             "/".proxyPass = "http://localhost:8000";
@@ -57,16 +61,16 @@ in
   };
 
   security.acme =
-    if config.website.https then
+    if userConfig.services.website.https then
       {
         acceptTerms = true;
         certs = {
-          "${config.hostName}" = {
+          "${userConfig.user.domain}" = {
             webroot = "/var/lib/acme/acme-challenge";
-            domain = "${config.hostName}";
+            domain = "${userConfig.user.domain}";
           };
         };
-        defaults.email = "${config.userEmail}";
+        defaults.email = "${userConfig.user.email}";
       }
     else
       { };

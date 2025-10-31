@@ -1,7 +1,7 @@
-{ pkgs, home-manager, ... }:
+{ pkgs, home-manager, userConfig, ... }:
 
 let
-  user = (import ./../../../config.nix { }).userName;
+  user = userConfig.user.name;
 
   # ref:
   # https://github.com/flameshot-org/flameshot/issues/3365#issuecomment-1868580715

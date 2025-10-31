@@ -13,5 +13,4 @@
   ];
 
   # Server-specific configurations can go here
-  nixpkgs.config.allowUnfree = true;
 }

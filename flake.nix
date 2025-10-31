@@ -38,11 +38,29 @@
       winapps,
       ...
     }@inputs:
+    let
+      # Import user configuration (easy to switch: just change which config file to import)
+      userConfig = import ./config.nix { inherit (nixpkgs) lib; };
+      
+      # Optional secrets overlay (git-ignored, falls back to config.nix if not present)
+      secrets = if builtins.pathExists ./secrets/user-secrets.nix 
+                then import ./secrets/user-secrets.nix 
+                else {};
+      
+      # Merge config with secrets
+      finalUserConfig = userConfig // { user = userConfig.user // secrets; };
+      
+      # Helper function for creating system configurations
+      mkSystem = import ./lib/mkSystemConfig.nix {
+        inherit nixpkgs inputs;
+        userConfig = finalUserConfig;
+      };
+    in
     {
       nixosConfigurations = {
-        server = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+        server = mkSystem {
           system = "x86_64-linux";
+          hostname = "server";
           modules = [
             ./modules/essential/server-config.nix
             ./systems/server/configuration.nix
@@ -50,9 +68,9 @@
           ];
         };
 
-        phoenix = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+        phoenix = mkSystem {
           system = "x86_64-linux";
+          hostname = "phoenix";
           modules = [
             ./systems/phoenix
             ./modules/essential/server-config.nix
@@ -60,9 +78,9 @@
           ];
         };
 
-        phoenix-arm = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+        phoenix-arm = mkSystem {
           system = "aarch64-linux";
+          hostname = "phoenix";
           modules = [
             ./systems/phoenix
             ./modules/essential/server-config.nix
@@ -70,9 +88,9 @@
           ];
         };
 
-        omnix = nixpkgs.lib.nixosSystem rec {
-          specialArgs = { inherit inputs; };
+        omnix = mkSystem {
           system = "x86_64-linux";
+          hostname = "omnix";
           modules = [
             ./systems/omnix
             ./modules/addons/desktop/desktop-config.nix
@@ -83,17 +101,17 @@
               { pkgs, ... }:
               {
                 environment.systemPackages = [
-                  winapps.packages.${system}.winapps
-                  winapps.packages.${system}.winapps-launcher # optional
+                  winapps.packages.x86_64-linux.winapps
+                  winapps.packages.x86_64-linux.winapps-launcher # optional
                 ];
               }
             )
           ];
         };
 
-        blade = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+        blade = mkSystem {
           system = "x86_64-linux";
+          hostname = "blade";
           modules = [
             ./systems/blade
             ./modules/essential/server-config.nix
@@ -102,9 +120,10 @@
             inputs.nix-flatpak.nixosModules.nix-flatpak
           ];
         };
-        cospi = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+
+        cospi = mkSystem {
           system = "x86_64-linux";
+          hostname = "cospi";
           modules = [
             ./systems/cospi
             ./modules/addons/desktop/desktop-config.nix

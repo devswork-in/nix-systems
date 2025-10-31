@@ -1,0 +1,26 @@
+# Common home-manager configuration for all systems
+# This provides the base home-manager setup that all systems inherit
+
+{ userConfig, ... }:
+
+{
+  home-manager = {
+    # Common home-manager settings
+    backupFileExtension = null;
+    
+    # Pass userConfig to all home-manager modules
+    extraSpecialArgs = { inherit userConfig; };
+    
+    # Base user configuration (extended by specific configs)
+    users."${userConfig.user.name}" = { ... }: {
+      home = {
+        username = "${userConfig.user.name}";
+        homeDirectory = "/home/${userConfig.user.name}";
+        stateVersion = "${userConfig.nixosReleaseVersion}";
+      };
+      
+      # Allow unfree packages in home-manager
+      nixpkgs.config.allowUnfree = true;
+    };
+  };
+}

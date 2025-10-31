@@ -5,9 +5,6 @@ let
 in
 {
   home.file = {
-    # Nixpkgs configuration
-    ".config/nixpkgs/config.nix".source = ../../../common/config.nix;
-
     # General aliases file
     ".config/aliases".source = ./aliases;
 
@@ -20,7 +17,8 @@ in
     # Bash configuration
     ".bashrc".source = ./bashrc;
 
-    # Fish configuration (only the files that are not handled by programs.fish)
+    # Fish configuration
+    ".config/fish/config.fish".source = ./fish/config.fish;
     ".config/fish/fish_variables".source = ./fish/fish_variables;
     ".config/fish/functions/fish_user_key_bindings.fish".source = ./fish/fish_user_key_bindings.fish;
     ".config/fish/functions/fish_prompt.fish".source = ./fish/functions/fish_prompt.fish;

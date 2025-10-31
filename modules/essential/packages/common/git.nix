@@ -1,13 +1,11 @@
-{ ... }:
-let
-  config = (import ../../../../config.nix { });
-in
+{ userConfig, ... }:
+
 {
   programs = {
     git = {
       enable = true;
-      userName = config.userName;
-      userEmail = config.userEmail;
+      userName = userConfig.user.name;
+      userEmail = userConfig.user.email;
       extraConfig = {
         init = {
           defaultBranch = "main";

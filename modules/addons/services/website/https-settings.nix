@@ -1,7 +1,6 @@
-let
-  config = (import ../../../../config.nix { });
-in
+{ userConfig, ... }:
+
 {
-  enableACME = config.website.https;
-  forceSSL = config.website.https;
+  enableACME = userConfig.services.website.https;
+  forceSSL = userConfig.services.website.https;
 }

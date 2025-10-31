@@ -49,6 +49,4 @@
     tmux
     lsof
   ];
-
-  nixpkgs.config.allowUnfree = true;
 }

@@ -1,13 +1,18 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, userConfig, ... }:
+
 {
   imports = [
-    ./../server/configuration.nix
-    ./../server/hardware-configuration.nix
-    ./../../modules/docker
-    ./../../modules/website
+    # Import server profile (provides common server configuration)
+    ../../profiles/server.nix
+    
+    # System-specific modules
+    ../server/hardware-configuration.nix
+    
+    # Addon modules
+    ../../modules/addons/services/docker
+    ../../modules/addons/services/website
   ];
 
-  #add on top of ./../server/configuration.nix
+  # System-specific hostname (overrides profile default)
   networking.hostName = "phoenix";
-  environment.systemPackages = with pkgs; [ git ];
 }

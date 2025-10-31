@@ -1,26 +1,16 @@
 # Complete server configuration
-{ ... }:
-let
-  config = (import ../../config.nix { });
-  user = config.userName;
-  stateVersion = config.nixosReleaseVersion;
-in
+{ userConfig, ... }:
+
 {
-  home-manager = {
-    users."${user}" = { ... }: {
-      imports = [
-        ./packages/common
-        ./packages/server
-        ../configs/server/environment.nix
-      ];
+  imports = [
+    ./configs/common/home-manager-base.nix
+  ];
 
-      home = {
-        username = "${user}";
-        homeDirectory = "/home/${user}";
-        stateVersion = "${stateVersion}";
-      };
-    };
-
-    backupFileExtension = null;
+  home-manager.users."${userConfig.user.name}" = { ... }: {
+    imports = [
+      ./packages/common
+      ./packages/server
+      ./configs/server/environment.nix
+    ];
   };
 }
