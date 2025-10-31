@@ -4,8 +4,11 @@
 { config, pkgs, lib, userConfig, ... }:
 
 {
-  # Import base profile
-  imports = [ ./base.nix ];
+  # Import base profile and repo-sync service
+  imports = [
+    ./base.nix
+    ../modules/services/repo-sync
+  ];
 
   # Boot configuration for servers
   boot.tmp.cleanOnBoot = true;
@@ -71,4 +74,28 @@
       size = 4096;  # 4GB swap file
     }
   ];
+
+  # Tmux configuration for servers
+  programs.tmux = {
+    enable = true;
+    extraConfig = ''
+      # Server tmux configuration
+      set -g mouse on
+      set -g status-bg colour235
+    '';
+  };
+
+  # Enable tmux auto-start for servers
+  environment.variables.TMUX_AUTO_START = "1";
+
+  # Repository sync service for server-specific repos
+  # Combines common syncs + server-specific syncs
+  services.repoSync = {
+    enable = lib.mkDefault true;
+    user = userConfig.user.name;
+    syncItems = lib.mkDefault (
+      (userConfig.syncConfig.common or []) ++ 
+      (userConfig.syncConfig.server or [])
+    );
+  };
 }

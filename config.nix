@@ -17,20 +17,8 @@ let
     base = "/var/www/${user.domain}";
   };
 
-  syncRepos = {
-    hostSrc = {
-      url = "https://github.com/creator54/creator54.me";
-      localPath = "${paths.base}/${user.domain}";
-    };
-    blogSrc = {
-      url = "https://github.com/creator54/blog.creator54.me";
-      localPath = "${paths.base}/blog.${user.domain}";
-    };
-    nvimSrc = {
-      url = "https://github.com/creator54/starter";
-      localPath = "/home/${user.name}/.config/nvim";
-    };
-  };
+  # Import sync configuration
+  syncConfig = import ./sync-config.nix { inherit user paths; };
 
   # Website services configuration
   services = {
@@ -82,9 +70,9 @@ let
 
   # Main configuration
   config = {
-    user = user;  # New structure: user.name, user.email, etc.
+    user = user;
     paths = paths;
-    syncRepos = syncRepos;
+    syncConfig = syncConfig;
     services = services;
     nixosReleaseVersion = "24.11";
   };

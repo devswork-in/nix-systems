@@ -3,17 +3,7 @@
 
 {
   imports = [
-    ./symlinks.nix
+    # ./symlinks.nix  # Disabled: Using repo-sync for symlinks instead (allows writable configs)
     ./environment.nix
   ];
-  
-  # Tmux configuration (can be overridden by addon configs)
-  programs.tmux = {
-    enable = true;
-    extraConfig = ''
-      # Common tmux configuration
-      set -g mouse on
-      set -g status-bg colour235
-    '';
-  };
 }

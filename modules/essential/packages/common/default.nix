@@ -8,7 +8,7 @@
     ./mcfly.nix
     ./git.nix
     ./nvim.nix
-    ../../configs/common
+    # ../../configs/common  # Disabled: Using repo-sync for config symlinks instead
   ];
 
   home.packages = with pkgs; [
