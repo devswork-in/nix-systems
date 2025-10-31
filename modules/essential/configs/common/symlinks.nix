@@ -22,9 +22,7 @@ in
 
     # Fish configuration (only the files that are not handled by programs.fish)
     ".config/fish/fish_variables".source = ./fish/fish_variables;
-    ".config/fish/fish_user_key_bindings.fish".source = ./fish/fish_user_key_bindings.fish;
-
-
+    ".config/fish/functions/fish_user_key_bindings.fish".source = ./fish/fish_user_key_bindings.fish;
     ".config/fish/functions/fish_prompt.fish".source = ./fish/functions/fish_prompt.fish;
     ".config/fish/functions/fish_right_prompt.fish".source = ./fish/functions/fish_right_prompt.fish;
     ".config/fish/functions/fish_greeting.fish".source = ./fish/functions/fish_greeting.fish;
