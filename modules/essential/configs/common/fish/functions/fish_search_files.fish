@@ -6,48 +6,55 @@ function fish_search_files
     else
         set search_term (commandline)
     end
-    
-    # If no search term, exit with message
-    if test -z "$search_term"
-        echo "Usage: Type search term and press Ctrl+s, or run 'fish_search_files <search_term>'"
-        return 1
-    end
 
-    # If called directly with argument, don't clear command line (only clear when used as keybinding)
+    # Clear command line if called from keybinding (not with direct argument)
     if test -z "$argv[1]"
-        commandline -r ''  # Clear the command line only when used from keybinding
+        commandline -r ''
     end
     
-    # Use ripgrep to search for the text in files, excluding common binary files
-    set -l results (rg -F --with-filename --line-number --no-heading --color=never "$search_term" . 2>/dev/null | head -1000 | fzf --height=100% --reverse --exit-0 --header="Select file to open (Search term: $search_term)")
+    # Use dynamic fzf with ripgrep for both cases
+    set -l results
+    if test -n "$search_term"
+        # With search term: use same approach as no-keyword but with initial query
+        set results (echo "" | fzf --height=100% --reverse --exit-0 --disabled --query="$search_term" --bind "start:reload:rg --line-number --no-heading --color=never --smart-case {q} . 2>/dev/null || true" --bind "change:reload:rg --line-number --no-heading --color=never --smart-case {q} . 2>/dev/null || true" --header="Search file contents (started with: $search_term)" --delimiter : --preview "bat --color=always --highlight-line {2} {1}" --preview-window "+{2}/2")
+    else
+        # Without search term: start empty, search as you type
+        set results (fzf --height=100% --reverse --exit-0 --disabled --bind "change:reload:rg --line-number --no-heading --color=never --smart-case {q} . 2>/dev/null || true" --header="Type to search file contents" --delimiter : --preview "bat --color=always --highlight-line {2} {1}" --preview-window "+{2}/2")
+    end
 
     if test -n "$results"
-        # Extract file and line number from the result (format: filename:line_number:content)
-        set -l file (echo "$results" | cut -d: -f1)
-        set -l line_number (echo "$results" | cut -d: -f2)
-        if test -n "$file" -a -f "$file" -a -n "$line_number"
-            # Use $EDITOR with line number support
-            set -l editor $EDITOR
+        # Determine editor
+        set -l editor $EDITOR
+        if test -z "$editor"
+            set editor $VISUAL
             if test -z "$editor"
-                set -l editor $VISUAL
-                if test -z "$editor"
-                    set -l editor vim
+                set editor vim
+            end
+        end
+        
+        # Check if result has line number (from content search) or is just a filename
+        if string match -q "*:*:*" "$results"
+            # Format: filename:line_number:content (from ripgrep search)
+            set -l file (echo "$results" | cut -d: -f1)
+            set -l line_number (echo "$results" | cut -d: -f2)
+            
+            if test -n "$file" -a -f "$file" -a -n "$line_number"
+                # Open with line number
+                if string match -q "*vim*" (basename "$editor") || string match -q "*nvim*" (basename "$editor")
+                    eval $editor +$line_number "$file"
+                else if string match -q "*emacs*" (basename "$editor")
+                    eval $editor +$line_number "$file"
+                else if string match -q "*code*" (basename "$editor") || string match -q "*code-insiders*" (basename "$editor")
+                    eval $editor "$file:$line_number"
+                else
+                    eval $editor +$line_number "$file"
                 end
             end
-            
-            # Check if the editor supports line number option
-            if string match -q "*vim*" (basename "$editor") || string match -q "*nvim*" (basename "$editor")
-                eval $editor +$line_number "$file"
-            else if string match -q "*emacs*" (basename "$editor")
-                eval $editor +$line_number "$file"
-            else if string match -q "*code*" (basename "$editor") || string match -q "*code-insiders*" (basename "$editor")
-                eval $editor "$file:$line_number"
-            else
-                # Default fallback to vim format if editor type is unknown
-                eval $editor +$line_number "$file"
-            end
         else
-            echo "Could not extract file or line number from selection"
+            # Just a filename (from fd file listing)
+            if test -f "$results"
+                eval $editor "$results"
+            end
         end
     end
 end
