@@ -22,6 +22,7 @@
     gcc
     gnumake
     fzf
+    ripgrep
     smartmontools
     jq
     direnv

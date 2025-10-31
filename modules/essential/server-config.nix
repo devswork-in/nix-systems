@@ -9,8 +9,8 @@ in
   home-manager = {
     users."${user}" = { ... }: {
       imports = [
-        ../packages/common
-        ../packages/server
+        ./packages/common
+        ./packages/server
         ../configs/server/environment.nix
       ];
 
