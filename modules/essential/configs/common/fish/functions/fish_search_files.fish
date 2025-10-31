@@ -1,8 +1,10 @@
 function fish_search_files
     # Use first argument if provided, otherwise get current command line content
-    set -l search_term $argv[1]
-    if test -z "$search_term"
-        set -l search_term (commandline)
+    set -l search_term
+    if test -n "$argv[1]"
+        set search_term $argv[1]
+    else
+        set search_term (commandline)
     end
     
     # If no search term, exit with message

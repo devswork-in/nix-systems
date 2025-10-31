@@ -1,5 +1,8 @@
 function fish_user_key_bindings
+    # Disable terminal flow control to allow ctrl+s
+    stty -ixon 2>/dev/null
+    
     bind '!' bind_bang
     bind '$' bind_dollar
-    bind \cr fish_search_files
+    bind \cs 'fish_search_files; commandline -f repaint'
 end
