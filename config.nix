@@ -82,22 +82,11 @@ let
 
   # Main configuration
   config = {
-    hostName = user.domain;
-    userName = user.name;
-    userEmail = user.email;
-    nixosReleaseVersion = "24.11";
-    hashedPassword = user.hashedPassword;
-    sshKeys = user.sshKeys;
-    path = paths.base;
+    user = user;  # New structure: user.name, user.email, etc.
+    paths = paths;
     syncRepos = syncRepos;
-    website = services.website;
-    watchman = services.watchman;
-    codeServer = services.codeServer;
-    nextCloud = services.nextCloud;
-    adguard = services.adguard;
-    jellyfin = services.jellyfin;
-    plex = services.plex;
-    whoogle = services.whoogle;
+    services = services;
+    nixosReleaseVersion = "24.11";
   };
 in
 config

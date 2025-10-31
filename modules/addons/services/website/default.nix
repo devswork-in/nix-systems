@@ -1,14 +1,13 @@
-let
-  config = (import ../../../../config.nix { });
-in
+{ userConfig, ... }:
+
 {
   imports = [
-    (if config.website.enable then ./website.nix else { })
-    (if config.whoogle.enable then ./add-ons/whoogle.nix else { })
-    (if config.adguard.enable then ./add-ons/adguard.nix else { })
-    (if config.plex.enable then ./add-ons/plex-server.nix else { })
-    (if config.jellyfin.enable then ./add-ons/jellyfin.nix else { })
-    (if config.nextCloud.enable then ./add-ons/next-cloud.nix else { })
-    (if config.codeServer.enable then ./add-ons/code-server.nix else { })
+    (if userConfig.services.website.enable then ./website.nix else { })
+    (if userConfig.services.whoogle.enable then ./whoogle.nix else { })
+    (if userConfig.services.adguard.enable then ./adguard.nix else { })
+    (if userConfig.services.plex.enable then ./plex-server.nix else { })
+    (if userConfig.services.jellyfin.enable then ./jellyfin.nix else { })
+    (if userConfig.services.nextCloud.enable then ./next-cloud.nix else { })
+    (if userConfig.services.codeServer.enable then ./code-server.nix else { })
   ];
 }

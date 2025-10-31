@@ -1,11 +1,15 @@
-{ ... }:
+{ userConfig, ... }:
+
 let
-  codeServer = (import ../../../../config.nix { }).codeServer;
-  httpsSettings = import ./../https-settings.nix;
+  codeServer = userConfig.services.codeServer;
+  httpsSettings = {
+    enableACME = userConfig.services.website.https;
+    forceSSL = userConfig.services.website.https;
+  };
 in
 {
   services = {
-    # Gzip and Proxy optimisations needs to be disabled for this to work, also authentication with password always faile
+    # Gzip and Proxy optimisations needs to be disabled for this to work, also authentication with password always fails
     code-server = {
       enable = true;
       auth = "none";

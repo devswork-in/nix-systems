@@ -1,7 +1,11 @@
-{ ... }:
+{ userConfig, ... }:
+
 let
-  jellyfin = (import ../../../../config.nix { }).jellyfin;
-  httpsSettings = import ../https-settings.nix;
+  jellyfin = userConfig.services.jellyfin;
+  httpsSettings = {
+    enableACME = userConfig.services.website.https;
+    forceSSL = userConfig.services.website.https;
+  };
 in
 {
   services = {
