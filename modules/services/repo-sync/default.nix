@@ -91,7 +91,7 @@ in
     # This ensures configs are cleaned up and symlinked before HM tries to manage them
     system.activationScripts.repoSyncPreActivation = lib.stringAfter [ "users" ] ''
       echo "Running repo-sync to prepare configs..."
-      ${syncConfig.service.serviceConfig.ExecStart} || true
+      ${pkgs.sudo}/bin/sudo -u ${cfg.user} ${syncConfig.service.serviceConfig.ExecStart} || true
     '';
     
     # Install CLI utilities
