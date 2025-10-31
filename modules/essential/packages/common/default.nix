@@ -47,6 +47,7 @@
     python3
     tree
     tmux
+    lsof
   ];
 
   nixpkgs.config.allowUnfree = true;
