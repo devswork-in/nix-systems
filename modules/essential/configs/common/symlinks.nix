@@ -26,6 +26,7 @@ in
     ".config/fish/functions/fish_greeting.fish".source = ./fish/functions/fish_greeting.fish;
     ".config/fish/functions/__fish_command_not_found_handler.fish".source = ./fish/functions/__fish_command_not_found_handler.fish;
     ".config/fish/functions/fish_search_files.fish".source = ./fish/functions/fish_search_files.fish;
+    ".config/fish/functions/toggle_prompt.fish".source = ./fish/functions/toggle_prompt.fish;
     ".config/fish/functions/bind_bang.fish".source = ./fish/functions/bind_bang.fish;
     ".config/fish/functions/bind_dollar.fish".source = ./fish/functions/bind_dollar.fish;
     ".config/fish/completions/.gitkeep".text = "";

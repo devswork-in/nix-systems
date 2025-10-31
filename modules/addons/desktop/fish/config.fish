@@ -9,7 +9,8 @@ fish_add_path -g $HOME/.local/bin/ $HOME/.npm-global/bin $HOME/.bun/bin
 # Note: Python venv initialization is handled in common fish config
 # (modules/essential/configs/common/fish/config.fish)
 
-starship init fish | source
+# Start with custom prompts by default (use Ctrl+P to toggle to starship)
+set -g PROMPT_MODE "custom"
 
 # Python virtual environment management
 function activate_venv -d "Activate default Python virtual environment at ~/.venv"
