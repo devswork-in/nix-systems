@@ -13,6 +13,7 @@ in
     ./../../modules/essential/networking
     ./../../modules/addons/services
     ./../../modules/addons/desktop/pop-shell.nix
+    ./../../modules/addons/apps/kiro
   ];
 
   boot = {
