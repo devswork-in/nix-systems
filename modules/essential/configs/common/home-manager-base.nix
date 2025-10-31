@@ -6,7 +6,6 @@
 {
   home-manager = {
     # Common home-manager settings
-    backupFileExtension = null;
     
     # Pass userConfig to all home-manager modules
     extraSpecialArgs = { inherit userConfig; };

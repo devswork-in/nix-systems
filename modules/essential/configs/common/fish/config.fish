@@ -1,10 +1,11 @@
 # Source general aliases
 source ~/.config/aliases 2>/dev/null
 
-# Auto-start tmux in interactive shells, except when TMUX_DISABLE_AUTO_START is set
+# Auto-start tmux in interactive shells (servers only)
+# Set TMUX_AUTO_START=1 to enable on desktop systems
 if status is-interactive
   and not set -q TMUX
-  and not set -q TMUX_DISABLE_AUTO_START
+  and set -q TMUX_AUTO_START
   if tmux ls
     exec tmux attach
   else
@@ -37,6 +38,17 @@ else
     end
 end
 
+# Desktop-specific settings (NNN file manager)
+set -gx NNN_PLUG 'f:finder;o:fzopen;p:preview-tui;d:diffs;t:nmount;v:imgview;g:!git log;'
+set -gx NNN_FIFO '/tmp/nnn.fifo'
+
+# Add user bin directories to PATH
+fish_add_path -g $HOME/.local/bin/ $HOME/.npm-global/bin $HOME/.bun/bin
+
+# Start with custom prompts by default (use Ctrl+P to toggle to starship)
+set -g PROMPT_MODE "custom"
+
+# Git helper functions
 function gpull
   git pull origin (git branch | sed 's/^* //') --force
 end
@@ -57,4 +69,26 @@ function ga
   end
 end
 
+# Python virtual environment management
+function activate_venv -d "Activate default Python virtual environment at ~/.venv"
+    if test -d $HOME/.venv
+        if test -f $HOME/.venv/bin/activate.fish
+            source $HOME/.venv/bin/activate.fish
+        else
+            set -gx VIRTUAL_ENV $HOME/.venv
+            set -gx PATH $HOME/.venv/bin $PATH
+        end
+        echo "Default virtual environment activated: $HOME/.venv"
+    else
+        echo "Default virtual environment does not exist at $HOME/.venv"
+        echo "Creating it with: python -m venv $HOME/.venv"
+    end
+end
+
+# Convenient aliases
+alias x "rm -rf $argv"
+alias l 'v (ls | fzf )'
+alias d "cd ~/dev"
+
+# Enable direnv
 direnv hook fish | source

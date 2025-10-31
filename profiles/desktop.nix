@@ -4,8 +4,11 @@
 { config, pkgs, lib, userConfig, ... }:
 
 {
-  # Import base profile
-  imports = [ ./base.nix ];
+  # Import base profile and repo-sync service
+  imports = [
+    ./base.nix
+    ../modules/services/repo-sync
+  ];
 
   # Boot configuration common to desktops
   boot = {
@@ -67,4 +70,15 @@
 
   # Hardware clock in local time (useful for dual-boot with Windows)
   time.hardwareClockInLocalTime = true;
+
+  # Repository sync service for neovim config and other dotfiles
+  # Combines common syncs + desktop-specific syncs
+  services.repoSync = {
+    enable = lib.mkDefault true;
+    user = userConfig.user.name;
+    syncItems = lib.mkDefault (
+      (userConfig.syncConfig.common or []) ++ 
+      (userConfig.syncConfig.desktop or [])
+    );
+  };
 }
