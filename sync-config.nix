@@ -1,8 +1,9 @@
-{ user, paths, nixSystemsPath ? "/home/${user.name}/nix-systems" }:
+{ user, paths }:
 
 let
-  # Use the provided nix-systems path or default to home directory
-  nixSystemsRoot = nixSystemsPath;
+  # Get the absolute path to the nix-systems directory (where this file is located)
+  # This makes it work regardless of where the repo is cloned
+  nixSystemsRoot = toString ./.;
 in
 {
   # Common sync items for ALL systems (desktop and server)
