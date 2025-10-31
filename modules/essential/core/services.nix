@@ -26,6 +26,10 @@
         ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"
       ''
     ];
+    printing = {
+      enable = false;
+      browsed.enable = false;
+    };
   };
 
   programs = {
