@@ -64,6 +64,7 @@ let
     no-overview
     window-title-is-back
     workspace-switcher-manager
+    vitals  # System monitor with disk usage and uptime
   ];
 in
 {
@@ -111,11 +112,12 @@ in
           "panel-free@fthx"
           "window-title-is-back@fthx"
           "workspace-switcher-manager@G-dH.github.com"
-          "system-monitor@gnome-shell-extensions.gcampax.github.com"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
         ];
 
-      "org/gnome/shell".disabled-extensions = [ ];
+      "org/gnome/shell".disabled-extensions = [ 
+        "system-monitor@gnome-shell-extensions.gcampax.github.com"  # Replaced with Vitals
+      ];
 
       "org/gnome/desktop/background" = {
         picture-uri = "file://${./wallpaper.jpg}";
@@ -454,6 +456,31 @@ in
       # Disable Super key (Overlay Key)
       "org/gnome/mutter" = {
         overlay-key = "";
+      };
+
+      # Vitals Extension Configuration
+      "org/gnome/shell/extensions/vitals" = {
+        hot-sensors = [
+          "_processor_usage_"
+          "_memory_usage_"
+          "__network-rx_max__"
+          "__network-tx_max__"
+          "_storage_free_"
+          "_system_uptime_"
+        ];
+        position-in-panel = 1;  # 0 = left, 1 = center, 2 = right (center to be closer to time)
+        show-storage = true;
+        show-network = true;
+        show-processor = true;
+        show-memory = true;
+        show-system = true;
+        menu-centered = false;
+        alphabetize = false;
+        hide-zeros = false;
+        use-higher-precision = false;
+        icon-style = 1;  # 0 = original, 1 = GNOME, 2 = symbolic (smaller, cleaner icons)
+        fixed-widths = true;
+        hide-icons = false;
       };
     };
   };
