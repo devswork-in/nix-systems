@@ -1,4 +1,4 @@
-{ pkgs, lib, userConfig, ... }:
+{ pkgs, lib, userConfig, inputs, ... }:
 
 {
   imports = [
@@ -20,6 +20,14 @@
     ../../modules/addons/desktop/tlp.nix
     ../../modules/addons/apps/kiro
   ];
+  
+  # Add NUR overlay for Firefox extensions
+  nixpkgs.overlays = [
+    inputs.nur.overlays.default
+  ];
+  
+  # Ensure home-manager uses the same pkgs with overlays
+  home-manager.useGlobalPkgs = true;
 
   # System-specific hostname (overrides profile default)
   networking.hostName = "omnix";
