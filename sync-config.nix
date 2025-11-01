@@ -91,11 +91,6 @@ in
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/clipit/clipitrc";
-      dest = "~/.config/clipit/clipitrc";
-    }
-    {
-      type = "local";
       source = "${nixSystemsRoot}/modules/addons/desktop/xinitrc";
       dest = "~/.xinitrc";
     }
