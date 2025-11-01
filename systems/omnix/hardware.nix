@@ -32,6 +32,7 @@
     kernelParams = [
       "amd_iommu=on"
       "amd_pstate=guided"
+      "amdgpu.ppfeaturemask=0xffffffff"
       "mem_sleep_default=deep"
     ]; # enable iGPU accelerated VMs and schedutil governor
     # Enable Deep Sleep Mode (S3)

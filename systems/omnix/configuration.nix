@@ -17,6 +17,7 @@
     ../../modules/essential/networking
     ../../modules/addons/services
     ../../modules/addons/desktop/pop-shell.nix
+    ../../modules/addons/desktop/tlp.nix
     ../../modules/addons/apps/kiro
   ];
 
