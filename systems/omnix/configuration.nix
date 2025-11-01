@@ -32,6 +32,11 @@
   # System-specific user groups (extends profile groups)
   users.users.${userConfig.user.name}.extraGroups = [ "input" ];
   
+  # Ensure input devices are accessible for fusuma gestures
+  services.udev.extraRules = ''
+    KERNEL=="event*", SUBSYSTEM=="input", MODE="0660", GROUP="input"
+  '';
+  
   # System-specific nix caches (extends profile caches)
   nix.settings.substituters = [
     "file:///home/${userConfig.user.name}/.nix-cache"

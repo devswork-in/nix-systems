@@ -1,7 +1,7 @@
 # Server profile - Common configuration for server systems
 # This profile contains settings shared across all server NixOS systems
 
-{ config, pkgs, lib, userConfig, ... }:
+{ config, pkgs, lib, userConfig, flakeRoot, ... }:
 
 {
   # Import base profile and repo-sync service
@@ -90,12 +90,20 @@
 
   # Repository sync service for server-specific repos
   # Combines common syncs + server-specific syncs
-  services.repoSync = {
-    enable = lib.mkDefault true;
-    user = userConfig.user.name;
-    syncItems = lib.mkDefault (
-      (userConfig.syncConfig.common or []) ++ 
-      (userConfig.syncConfig.server or [])
-    );
-  };
+  # We regenerate syncConfig here with the actual flakeRoot path
+  services.repoSync = 
+    let
+      # Import sync-config with the actual flake root path
+      syncConfig = import ../sync-config.nix { 
+        inherit (userConfig) user paths;
+        inherit flakeRoot;
+      };
+    in {
+      enable = lib.mkDefault true;
+      user = userConfig.user.name;
+      syncItems = lib.mkDefault (
+        (syncConfig.common or []) ++ 
+        (syncConfig.server or [])
+      );
+    };
 }

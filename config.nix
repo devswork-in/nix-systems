@@ -1,4 +1,4 @@
-{ ... }:
+{ lib }:
 
 let
   # User configuration
@@ -16,8 +16,9 @@ let
   paths = {
     base = "/var/www/${user.domain}";
   };
-
+  
   # Import sync configuration
+  # flakeRoot will be passed from the flake
   syncConfig = import ./sync-config.nix { inherit user paths; };
 
   # Website services configuration
@@ -74,7 +75,6 @@ let
     paths = paths;
     syncConfig = syncConfig;
     services = services;
-    nixosReleaseVersion = "24.11";
   };
 in
 config

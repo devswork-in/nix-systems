@@ -1,7 +1,7 @@
 # Base profile - Common configuration for all systems
 # This profile contains settings shared across all NixOS systems
 
-{ config, pkgs, lib, userConfig, ... }:
+{ config, pkgs, lib, userConfig, nixosVersion, ... }:
 
 {
   # Nix settings common to all systems
@@ -51,6 +51,6 @@
   # Default locale (can be overridden per-system)
   i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
   
-  # System state version
-  system.stateVersion = userConfig.nixosReleaseVersion;
+  # System state version (derived from flake nixpkgs input)
+  system.stateVersion = nixosVersion;
 }

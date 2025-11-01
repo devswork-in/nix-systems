@@ -1,7 +1,7 @@
 # Common home-manager configuration for all systems
 # This provides the base home-manager setup that all systems inherit
 
-{ userConfig, ... }:
+{ userConfig, nixosVersion, ... }:
 
 {
   home-manager = {
@@ -15,7 +15,7 @@
       home = {
         username = "${userConfig.user.name}";
         homeDirectory = "/home/${userConfig.user.name}";
-        stateVersion = "${userConfig.nixosReleaseVersion}";
+        stateVersion = "${nixosVersion}";
       };
       
       # Allow unfree packages in home-manager

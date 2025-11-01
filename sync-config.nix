@@ -1,9 +1,9 @@
-{ user, paths }:
+{ user, paths, flakeRoot }:
 
 let
-  # Get the absolute path to the nix-systems directory (where this file is located)
-  # This makes it work regardless of where the repo is cloned
-  nixSystemsRoot = toString ./.;
+  # Use the flake root path passed from the flake
+  # This ensures configs are symlinked to the actual editable repo, not the read-only nix store
+  nixSystemsRoot = flakeRoot;
 in
 {
   # Common sync items for ALL systems (desktop and server)
@@ -48,11 +48,6 @@ in
       type = "local";
       source = "${nixSystemsRoot}/modules/essential/configs/common/fish";
       dest = "~/.config/fish";
-    }
-    {
-      type = "local";
-      source = "${nixSystemsRoot}/modules/essential/configs/common/scripts";
-      dest = "~/.local/bin";
     }
   ];
 

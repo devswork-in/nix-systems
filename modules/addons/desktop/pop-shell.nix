@@ -453,9 +453,29 @@ in
         sleep-inactive-battery-type = "nothing";
       };
 
-      # Disable Super key (Overlay Key)
+      # Disable Super key (Overlay Key) and configure workspaces
       "org/gnome/mutter" = {
         overlay-key = "";
+        dynamic-workspaces = true;  # Auto-create workspaces as needed
+        edge-tiling = true;  # Enable edge tiling
+      };
+      
+      # Workspace settings
+      "org/gnome/desktop/wm/preferences" = {
+        num-workspaces = 10;  # Maximum number of workspaces
+        workspace-names = [];  # Let GNOME auto-name them
+      };
+      
+      # Enable touchpad gestures for workspace switching
+      "org/gnome/desktop/peripherals/touchpad" = {
+        tap-to-click = true;
+        two-finger-scrolling-enabled = true;
+        natural-scroll = true;  # Reverse scrolling direction (macOS-style)
+      };
+      
+      # Gesture settings for workspace switching
+      "org/gnome/shell/overrides" = {
+        workspaces-only-on-primary = false;  # Show workspaces on all monitors
       };
 
       # Vitals Extension Configuration

@@ -43,6 +43,7 @@
     android-tools
     efibootmgr
     websocat
+    xdotool  # Required for fusuma touchpad gestures
     (kodi.withPackages (
       p: with p; [
         inputstream-adaptive
