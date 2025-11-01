@@ -26,6 +26,11 @@ in
     }
     {
       type = "local";
+      source = "${nixSystemsRoot}/scheduled-scripts";
+      dest = "~/.config/scheduled-scripts";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/modules/essential/configs/common/htop/htoprc";
       dest = "~/.config/htop/htoprc";
     }

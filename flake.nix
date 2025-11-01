@@ -42,6 +42,9 @@
       # Import user configuration (easy to switch: just change which config file to import)
       userConfig = import ./config.nix { inherit (nixpkgs) lib; };
       
+      # Import desktop settings
+      desktopSettings = import ./modules/addons/desktop/desktop-settings.nix {};
+      
       # Optional secrets overlay (git-ignored, falls back to config.nix if not present)
       secrets = if builtins.pathExists ./secrets/user-secrets.nix 
                 then import ./secrets/user-secrets.nix 
@@ -50,10 +53,19 @@
       # Merge config with secrets
       finalUserConfig = userConfig // { user = userConfig.user // secrets; };
       
+      # Merge desktop settings for desktop systems
+      desktopUserConfig = finalUserConfig // desktopSettings;
+      
       # Helper function for creating system configurations
       mkSystem = import ./lib/mkSystemConfig.nix {
         inherit nixpkgs inputs;
         userConfig = finalUserConfig;
+      };
+      
+      # Helper function for creating desktop system configurations
+      mkDesktopSystem = import ./lib/mkSystemConfig.nix {
+        inherit nixpkgs inputs;
+        userConfig = desktopUserConfig;
       };
     in
     {
@@ -88,7 +100,7 @@
           ];
         };
 
-        omnix = mkSystem {
+        omnix = mkDesktopSystem {
           system = "x86_64-linux";
           hostname = "omnix";
           modules = [
@@ -121,7 +133,7 @@
           ];
         };
 
-        cospi = mkSystem {
+        cospi = mkDesktopSystem {
           system = "x86_64-linux";
           hostname = "cospi";
           modules = [
