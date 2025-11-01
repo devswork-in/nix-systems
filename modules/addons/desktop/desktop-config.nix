@@ -4,6 +4,7 @@
 {
   imports = [
     ../../essential/configs/common/home-manager-base.nix
+    ../../essential/command-scheduler/command-scheduler.nix
   ];
 
   home-manager.users."${userConfig.user.name}" = { ... }: {

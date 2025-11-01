@@ -1,14 +1,19 @@
-{ pkgs, home-manager, userConfig, ... }:
+{ pkgs, home-manager, userConfig, lib, ... }:
 
 let
   user = userConfig.user.name;
+  screenshotsPathRaw = userConfig.desktop.screenshotsPath or "~/Screenshots";
+  # Expand ~ to actual home directory
+  screenshotsPath = if lib.hasPrefix "~/" screenshotsPathRaw
+                    then "/home/${user}/${lib.removePrefix "~/" screenshotsPathRaw}"
+                    else screenshotsPathRaw;
 
   # ref:
   # https://github.com/flameshot-org/flameshot/issues/3365#issuecomment-1868580715
   # https://flameshot.org/docs/guide/wayland-help/
   flameshot-gui = pkgs.writeShellScriptBin "flameshot-gui" "${pkgs.flameshot}/bin/flameshot gui -c";
-  flameshot-gui-path = pkgs.writeShellScriptBin "flameshot-gui-path" "${pkgs.flameshot}/bin/flameshot gui -p /home/${user}/Screenshots/";
-  flameshot-full = pkgs.writeShellScriptBin "flameshot-full" "${pkgs.flameshot}/bin/flameshot full -p /home/${user}/Screenshots/";
+  flameshot-gui-path = pkgs.writeShellScriptBin "flameshot-gui-path" "${pkgs.flameshot}/bin/flameshot gui -p ${screenshotsPath}";
+  flameshot-full = pkgs.writeShellScriptBin "flameshot-full" "${pkgs.flameshot}/bin/flameshot full -p ${screenshotsPath}";
   local-scripts = pkgs.writeShellScriptBin "local-scripts" ''
     selected_script=$(${pkgs.coreutils}/bin/ls /home/${user}/.local/bin | ${pkgs.wofi}/bin/wofi --dmenu)
     if [ -n "$selected_script" ]; then
