@@ -2,7 +2,7 @@
   description = "Simple flake to manage my NixOS Systems";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/release-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-25.05";
 
     deploy-rs = {
       url = "github:serokell/deploy-rs";
@@ -24,7 +24,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -39,8 +39,25 @@
       ...
     }@inputs:
     let
+      # Extract NixOS version from nixpkgs input URL
+      nixosVersion = 
+        let
+          # Get the nixpkgs input URL (e.g., "github:NixOS/nixpkgs/release-25.05")
+          nixpkgsUrl = inputs.nixpkgs.sourceInfo.originalUrl or "release-25.05";
+          # Extract version using regex match
+          versionMatch = builtins.match ".*release-([0-9]+\\.[0-9]+).*" nixpkgsUrl;
+        in
+          if versionMatch != null
+          then builtins.head versionMatch
+          else "25.05"; # fallback
+      
       # Import user configuration (easy to switch: just change which config file to import)
       userConfig = import ./config.nix { inherit (nixpkgs) lib; };
+      
+      # Get flake root dynamically using PWD environment variable
+      # This requires building with --impure flag: nixos-rebuild switch --flake .#hostname --impure
+      # This allows repo-sync to create symlinks to the actual editable repo, not nix store
+      flakeRoot = builtins.getEnv "PWD";
       
       # Import desktop settings
       desktopSettings = import ./modules/addons/desktop/desktop-settings.nix {};
@@ -51,20 +68,22 @@
                 else {};
       
       # Merge config with secrets
-      finalUserConfig = userConfig // { user = userConfig.user // secrets; };
+      finalUserConfig = userConfig // { 
+        user = userConfig.user // secrets;
+      };
       
       # Merge desktop settings for desktop systems
       desktopUserConfig = finalUserConfig // desktopSettings;
       
       # Helper function for creating system configurations
       mkSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs inputs;
+        inherit nixpkgs inputs nixosVersion flakeRoot;
         userConfig = finalUserConfig;
       };
       
       # Helper function for creating desktop system configurations
       mkDesktopSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs inputs;
+        inherit nixpkgs inputs nixosVersion flakeRoot;
         userConfig = desktopUserConfig;
       };
     in

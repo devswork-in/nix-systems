@@ -47,7 +47,7 @@ sudo sh -c 'curl -sSL https://raw.githubusercontent.com/Creator54/nix-systems/ma
 ## Common Commands
 
 ```bash
-# Local rebuild
+# Local rebuild (--impure required for repo-sync to detect repo location)
 sudo nixos-rebuild switch --flake .#<hostname> --impure
 
 # Remote deployment
@@ -58,6 +58,12 @@ repo-sync-force
 
 # View sync logs
 repo-sync-logs
+
+# Comprehensive Nix cleanup
+# WARNING: Removes old generations, GC roots, local builds, and impure caches
+nix-cleanup --dry-run           # Preview what would be cleaned (recommended first)
+nix-cleanup                     # Run full cleanup
+nix-cleanup --dry-run --verbose # Preview with detailed output
 ```
 
 See [Usage](docs/usage.md) for complete command reference.

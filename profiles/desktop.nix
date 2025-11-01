@@ -1,7 +1,7 @@
 # Desktop profile - Common configuration for desktop/laptop systems
 # This profile contains settings shared across all desktop NixOS systems
 
-{ config, pkgs, lib, userConfig, ... }:
+{ config, pkgs, lib, userConfig, flakeRoot, ... }:
 
 {
   # Import base profile and repo-sync service
@@ -73,12 +73,20 @@
 
   # Repository sync service for neovim config and other dotfiles
   # Combines common syncs + desktop-specific syncs
-  services.repoSync = {
-    enable = lib.mkDefault true;
-    user = userConfig.user.name;
-    syncItems = lib.mkDefault (
-      (userConfig.syncConfig.common or []) ++ 
-      (userConfig.syncConfig.desktop or [])
-    );
-  };
+  # We regenerate syncConfig here with the actual flakeRoot path
+  services.repoSync = 
+    let
+      # Import sync-config with the actual flake root path
+      syncConfig = import ../sync-config.nix { 
+        inherit (userConfig) user paths;
+        inherit flakeRoot;
+      };
+    in {
+      enable = lib.mkDefault true;
+      user = userConfig.user.name;
+      syncItems = lib.mkDefault (
+        (syncConfig.common or []) ++ 
+        (syncConfig.desktop or [])
+      );
+    };
 }

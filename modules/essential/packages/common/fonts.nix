@@ -9,12 +9,8 @@
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     source-code-pro
-    (nerdfonts.override {
-      fonts = [
-        "SourceCodePro"
-        "FiraCode"
-        "DroidSansMono"
-      ];
-    })
+    nerd-fonts.sauce-code-pro
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
   ];
 }

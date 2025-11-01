@@ -7,9 +7,6 @@ let
   };
 in
 {
-  imports = [
-    ./repo-sync-service.nix
-  ];
   networking.firewall.allowedTCPPorts =
     if userConfig.services.website.https then
       [

@@ -1,13 +1,13 @@
 # Helper function to create NixOS system configurations
 # Simplifies system creation in flake.nix by providing consistent structure
 
-{ nixpkgs, inputs, userConfig }:
+{ nixpkgs, inputs, userConfig, nixosVersion, flakeRoot }:
 
 { system, modules, hostname }:
 
 nixpkgs.lib.nixosSystem {
   specialArgs = { 
-    inherit inputs userConfig; 
+    inherit inputs userConfig nixosVersion flakeRoot; 
   };
   inherit system;
   modules = [

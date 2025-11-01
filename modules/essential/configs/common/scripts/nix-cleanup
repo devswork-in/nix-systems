@@ -1,0 +1,662 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash -p coreutils findutils gawk jq nix
+
+# Nix Store Cleanup Script
+# Comprehensive cleanup of Nix store, generations, GC roots, and caches
+# Author: System Administrator
+# Usage: nix-cleanup [--dry-run] [--verbose] [--help]
+
+set -euo pipefail
+
+# Show help
+show_help() {
+    cat << EOF
+Usage: nix-cleanup [OPTIONS]
+
+Comprehensive Nix store cleanup tool that removes old generations, GC roots,
+caches, and unreferenced store paths.
+
+OPTIONS:
+    --dry-run    Preview what would be cleaned without making changes
+    --verbose    Show detailed output during cleanup
+    --help       Show this help message
+
+EXAMPLES:
+    nix-cleanup --dry-run           # Preview cleanup (recommended first)
+    nix-cleanup --dry-run --verbose # Preview with detailed output
+    nix-cleanup                     # Run full cleanup
+    nix-cleanup --verbose           # Run with detailed output
+
+WARNING:
+    This script removes old generations, GC roots, local builds, and caches.
+    Always run with --dry-run first to preview changes.
+    
+TIME ESTIMATE:
+    Total: 15-45 minutes depending on store size
+    - Cleanup operations: 2-5 minutes
+    - Store optimization: 10-30 minutes  
+    - Store verification: 5-15 minutes
+
+AFTER CLEANUP:
+    Rebuild your system to restore packages from configuration:
+    sudo nixos-rebuild switch --impure --flake .#<hostname>
+
+EOF
+    exit 0
+}
+
+# Parse arguments
+DRY_RUN=""
+VERBOSE=""
+
+for arg in "$@"; do
+    case "$arg" in
+        --help|-h)
+            show_help
+            ;;
+        --dry-run)
+            DRY_RUN="--dry-run"
+            ;;
+        --verbose|-v)
+            VERBOSE="--verbose"
+            ;;
+        *)
+            echo "Unknown option: $arg"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
+readonly SCRIPT_NAME="$(basename "$0")"
+
+# Terminal colors
+readonly COLOR_RESET='\033[0m'
+readonly COLOR_BOLD='\033[1m'
+readonly COLOR_DIM='\033[2m'
+readonly COLOR_GREEN='\033[0;32m'
+readonly COLOR_YELLOW='\033[0;33m'
+readonly COLOR_RED='\033[0;31m'
+readonly COLOR_BLUE='\033[0;34m'
+readonly COLOR_CYAN='\033[0;36m'
+
+# Check if terminal supports colors
+if [[ -t 1 ]]; then
+    USE_COLOR=true
+else
+    USE_COLOR=false
+fi
+
+# Logging functions
+log_info() {
+    if [[ "$USE_COLOR" == "true" ]]; then
+        echo -e "${COLOR_BLUE}▸${COLOR_RESET} $*"
+    else
+        echo "[INFO] $*"
+    fi
+}
+
+log_warn() {
+    if [[ "$USE_COLOR" == "true" ]]; then
+        echo -e "${COLOR_YELLOW}⚠${COLOR_RESET} $*" >&2
+    else
+        echo "[WARN] $*" >&2
+    fi
+}
+
+log_error() {
+    if [[ "$USE_COLOR" == "true" ]]; then
+        echo -e "${COLOR_RED}✗${COLOR_RESET} $*" >&2
+    else
+        echo "[ERROR] $*" >&2
+    fi
+}
+
+log_success() {
+    if [[ "$USE_COLOR" == "true" ]]; then
+        echo -e "${COLOR_GREEN}✓${COLOR_RESET} $*"
+    else
+        echo "[ OK ] $*"
+    fi
+}
+
+log_section() {
+    echo ""
+    if [[ "$USE_COLOR" == "true" ]]; then
+        echo -e "${COLOR_BOLD}${COLOR_CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${COLOR_RESET}"
+        echo -e "${COLOR_BOLD}${COLOR_CYAN}$*${COLOR_RESET}"
+        echo -e "${COLOR_BOLD}${COLOR_CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${COLOR_RESET}"
+    else
+        echo "=========================================================================="
+        echo "$*"
+        echo "=========================================================================="
+    fi
+}
+
+log_subsection() {
+    echo ""
+    if [[ "$USE_COLOR" == "true" ]]; then
+        echo -e "${COLOR_BOLD}$*${COLOR_RESET}"
+        echo -e "${COLOR_DIM}──────────────────────────────────────────────────────────────────────────${COLOR_RESET}"
+    else
+        echo "$*"
+        echo "--------------------------------------------------------------------------"
+    fi
+}
+
+log_step() {
+    local current="$1"
+    local total="$2"
+    local description="$3"
+    
+    if [[ "$USE_COLOR" == "true" ]]; then
+        echo -e "\n${COLOR_BOLD}[${current}/${total}]${COLOR_RESET} ${description}"
+    else
+        echo ""
+        echo "[${current}/${total}] ${description}"
+    fi
+}
+
+# Progress bar function
+show_progress() {
+    local current="$1"
+    local total="$2"
+    local percentage=$((current * 100 / total))
+    
+    if [[ "$USE_COLOR" == "true" ]]; then
+        echo -e "${COLOR_CYAN}Progress: ${current}/${total} (${percentage}%)${COLOR_RESET}"
+    else
+        echo "Progress: ${current}/${total} (${percentage}%)"
+    fi
+}
+
+log_verbose() {
+    if [[ "$VERBOSE" == "--verbose" ]]; then
+        if [[ "$USE_COLOR" == "true" ]]; then
+            echo -e "  ${COLOR_DIM}$*${COLOR_RESET}"
+        else
+            echo "  $*"
+        fi
+    fi
+}
+
+# Utility functions
+show_size() {
+    local label="$1"
+    local path="$2"
+    
+    if [[ -d "$path" ]]; then
+        local size
+        size=$(du -sh "$path" 2>/dev/null | cut -f1)
+        log_info "${label}: ${size}"
+    else
+        log_warn "${label}: Path not found"
+    fi
+}
+
+count_items() {
+    local path="$1"
+    local count
+    
+    if [[ -d "$path" ]]; then
+        count=$(find "$path" -mindepth 1 2>/dev/null | wc -l)
+        echo "$count"
+    else
+        echo "0"
+    fi
+}
+
+run_command() {
+    local description="$1"
+    shift
+    
+    log_info "${description}..."
+    
+    if [[ "$DRY_RUN" == "--dry-run" ]]; then
+        log_verbose "[DRY RUN] Would execute: $*"
+        return 0
+    fi
+    
+    local output
+    if output=$("$@" 2>&1); then
+        log_verbose "$output"
+        log_success "${description}"
+        return 0
+    else
+        log_error "${description} failed"
+        if [[ -n "$output" ]]; then
+            echo "$output" | tail -10 | while IFS= read -r line; do
+                log_error "  ${line}"
+            done
+        fi
+        return 1
+    fi
+}
+
+# Check and request root access
+check_root_access() {
+    if [[ "$DRY_RUN" == "--dry-run" ]]; then
+        return 0
+    fi
+    
+    log_section "PERMISSION CHECK"
+    log_info "This script requires sudo privileges for system-wide cleanup"
+    log_info "Requesting sudo access..."
+    
+    if sudo -v; then
+        log_success "Sudo access granted"
+        # Keep sudo alive in background
+        (while true; do sudo -n true; sleep 50; done 2>/dev/null) &
+        readonly SUDO_KEEPER_PID=$!
+        trap "kill $SUDO_KEEPER_PID 2>/dev/null" EXIT
+    else
+        log_error "Failed to obtain sudo privileges"
+        exit 1
+    fi
+}
+
+# Main cleanup functions
+cleanup_boot_entries() {
+    if [[ -d "/boot" ]]; then
+        log_verbose "Boot partition: $(du -sh /boot 2>/dev/null | cut -f1)"
+        run_command "Removing old boot entries" \
+            sudo nix-collect-garbage --delete-older-than 7d
+        run_command "Updating boot configuration" \
+            sudo /run/current-system/bin/switch-to-configuration boot || true
+    else
+        log_warn "Boot directory not found, skipping"
+    fi
+}
+
+cleanup_system_generations() {
+    local profile="/nix/var/nix/profiles/system"
+    
+    if [[ -L "$profile" ]]; then
+        local before
+        before=$(sudo nix-env --list-generations --profile "$profile" 2>/dev/null | wc -l)
+        
+        run_command "Removing old system generations" \
+            sudo nix-env --delete-generations old --profile "$profile"
+        
+        local after
+        after=$(sudo nix-env --list-generations --profile "$profile" 2>/dev/null | wc -l)
+        local removed=$((before - after))
+        
+        if [[ $removed -gt 0 ]]; then
+            log_verbose "Removed ${removed} system generations (${before} → ${after})"
+        else
+            log_verbose "No old system generations to remove"
+        fi
+    else
+        log_warn "System profile not found"
+    fi
+}
+
+cleanup_user_profiles() {
+    log_section "Cleaning User Profiles"
+    
+    local profiles_dir="/nix/var/nix/profiles/per-user"
+    
+    if [[ -d "$profiles_dir" ]]; then
+        for profile in "$profiles_dir"/*; do
+            if [[ -d "$profile" ]]; then
+                local user
+                user=$(basename "$profile")
+                log_info "Processing user: ${user}"
+                
+                local profile_path="${profile}/profile"
+                if [[ -L "$profile_path" ]]; then
+                    local before
+                    before=$(sudo nix-env --list-generations --profile "$profile_path" 2>/dev/null | wc -l || echo "0")
+                    
+                    run_command "Removing old generations for ${user}" \
+                        sudo nix-env --delete-generations old --profile "$profile_path" || true
+                    
+                    local after
+                    after=$(sudo nix-env --list-generations --profile "$profile_path" 2>/dev/null | wc -l || echo "0")
+                    log_info "  Removed $((before - after)) generations for ${user}"
+                fi
+            fi
+        done
+    fi
+    
+    # Clean current user's profile
+    log_info "Cleaning current user profile"
+    local before
+    before=$(nix-env --list-generations 2>/dev/null | wc -l || echo "0")
+    
+    run_command "Removing old user generations" \
+        nix-env --delete-generations old || true
+    
+    local after
+    after=$(nix-env --list-generations 2>/dev/null | wc -l || echo "0")
+    log_info "Removed $((before - after)) user generations"
+}
+
+cleanup_home_manager() {
+    log_section "Cleaning Home Manager Generations"
+    
+    local hm_profile="${HOME}/.local/state/nix/profiles/home-manager"
+    
+    if [[ -L "$hm_profile" ]]; then
+        local before
+        before=$(nix-env --list-generations --profile "$hm_profile" 2>/dev/null | wc -l || echo "0")
+        log_info "Home Manager generations before cleanup: ${before}"
+        
+        run_command "Removing old home-manager generations" \
+            nix-env --delete-generations old --profile "$hm_profile" || true
+        
+        local after
+        after=$(nix-env --list-generations --profile "$hm_profile" 2>/dev/null | wc -l || echo "0")
+        log_info "Home Manager generations after cleanup: ${after}"
+        log_info "Removed $((before - after)) home-manager generations"
+    else
+        log_info "Home Manager profile not found, skipping"
+    fi
+}
+
+cleanup_gc_roots() {
+    log_section "Cleaning GC Roots"
+    
+    local gcroots_dir="/nix/var/nix/gcroots"
+    
+    if [[ -d "$gcroots_dir" ]]; then
+        local before
+        before=$(count_items "$gcroots_dir")
+        log_info "GC roots before cleanup: ${before}"
+        
+        # Remove broken symlinks in main gcroots
+        run_command "Removing broken symlinks in ${gcroots_dir}" \
+            sudo find "$gcroots_dir" -xtype l -delete || true
+        
+        # Clean auto GC roots
+        if [[ -d "${gcroots_dir}/auto" ]]; then
+            run_command "Cleaning auto GC roots" \
+                sudo find "${gcroots_dir}/auto" -type l -delete || true
+        fi
+        
+        # Clean per-user GC roots
+        local per_user_dir="${gcroots_dir}/per-user"
+        if [[ -d "$per_user_dir" ]]; then
+            for user_gcroot in "$per_user_dir"/*; do
+                if [[ -d "$user_gcroot" ]]; then
+                    local user
+                    user=$(basename "$user_gcroot")
+                    run_command "Cleaning GC roots for user: ${user}" \
+                        sudo find "$user_gcroot" -xtype l -delete || true
+                fi
+            done
+        fi
+        
+        # Clean profiles directory
+        local profiles_dir="/nix/var/nix/profiles"
+        if [[ -d "$profiles_dir" ]]; then
+            run_command "Cleaning profile symlinks" \
+                sudo find "$profiles_dir" -xtype l -delete || true
+            
+            # Clean per-user profile directories
+            local per_user_profiles="${profiles_dir}/per-user"
+            if [[ -d "$per_user_profiles" ]]; then
+                for user_profile in "$per_user_profiles"/*; do
+                    if [[ -d "$user_profile" ]]; then
+                        local user
+                        user=$(basename "$user_profile")
+                        run_command "Cleaning profile links for user: ${user}" \
+                            sudo find "$user_profile" -xtype l -delete || true
+                    fi
+                done
+            fi
+        fi
+        
+        # Clean home-manager GC roots
+        local hm_gcroots="${HOME}/.local/state/home-manager/gcroots"
+        if [[ -d "$hm_gcroots" ]]; then
+            run_command "Cleaning home-manager GC roots" \
+                find "$hm_gcroots" -xtype l -delete || true
+        fi
+        
+        # Clean result symlinks in common locations
+        run_command "Cleaning result symlinks in /tmp" \
+            sudo find /tmp -maxdepth 1 -type l -name 'result*' -delete || true
+        
+        run_command "Cleaning result symlinks in HOME" \
+            find "$HOME" -maxdepth 1 -type l -name 'result*' -delete || true
+        
+        # Clean result symlinks in current directory
+        if [[ -w "." ]]; then
+            run_command "Cleaning result symlinks in current directory" \
+                find . -maxdepth 2 -type l -name 'result*' -delete || true
+        fi
+        
+        local after
+        after=$(count_items "$gcroots_dir")
+        log_info "GC roots after cleanup: ${after}"
+        log_info "Removed $((before - after)) GC roots"
+    else
+        log_warn "GC roots directory not found"
+    fi
+}
+
+cleanup_caches() {
+    log_section "Cleaning Caches"
+    
+    # Clean user nix cache
+    if [[ -d "${HOME}/.cache/nix" ]]; then
+        run_command "Cleaning user nix cache" \
+            rm -rf "${HOME}/.cache/nix" || true
+    fi
+    
+    # Clean root nix cache
+    run_command "Cleaning root nix cache" \
+        sudo rm -rf /root/.cache/nix || true
+    
+    # Clean temporary nix files
+    run_command "Cleaning temporary nix files" \
+        sudo find /tmp -maxdepth 1 -name 'nix-*' -exec rm -rf {} + || true
+    
+    # Clean flake registry cache
+    if [[ -f "${HOME}/.cache/nix/flake-registry.json" ]]; then
+        run_command "Cleaning flake registry cache" \
+            rm -f "${HOME}/.cache/nix/flake-registry.json" || true
+    fi
+    
+    # Clean nix evaluation cache
+    if [[ -d "${HOME}/.cache/nix/eval-cache-v5" ]]; then
+        run_command "Cleaning evaluation cache" \
+            rm -rf "${HOME}/.cache/nix/eval-cache-v5" || true
+    fi
+}
+
+run_garbage_collection() {
+    log_section "Running Garbage Collection"
+    
+    run_command "Running system garbage collection" \
+        sudo nix-collect-garbage -d
+    
+    run_command "Running user garbage collection" \
+        nix-collect-garbage -d
+}
+
+optimize_store() {
+    log_section "Optimizing Store"
+    
+    log_warn "Store optimization may take 10-30 minutes depending on store size"
+    log_info "This process deduplicates identical files to save disk space"
+    
+    run_command "Optimizing store (deduplication)" \
+        nix-store --optimise
+}
+
+verify_store() {
+    log_section "Verifying Store Integrity"
+    
+    log_warn "Store verification may take 5-15 minutes depending on store size"
+    log_info "This process checks integrity of all store paths"
+    
+    run_command "Verifying store integrity" \
+        nix-store --verify --check-contents
+}
+
+show_statistics() {
+    log_subsection "Storage Summary"
+    show_size "Nix store" "/nix/store"
+    show_size "Boot partition" "/boot"
+    
+    echo ""
+    log_subsection "Generation Summary"
+    local sys_gens
+    sys_gens=$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo "0")
+    log_info "System generations:       ${sys_gens}"
+    
+    local user_gens
+    user_gens=$(nix-env --list-generations 2>/dev/null | wc -l || echo "0")
+    log_info "User generations:         ${user_gens}"
+    
+    local hm_gens
+    if [[ -L "${HOME}/.local/state/nix/profiles/home-manager" ]]; then
+        hm_gens=$(nix-env --list-generations --profile "${HOME}/.local/state/nix/profiles/home-manager" 2>/dev/null | wc -l || echo "0")
+        log_info "Home Manager generations: ${hm_gens}"
+    fi
+    
+    echo ""
+    log_subsection "Largest Store Paths (Top 10)"
+    if nix path-info --all --json 2>/dev/null | \
+       jq -r '.[] | "\(.narSize)\t\(.path)"' | \
+       sort -rn | \
+       head -10 | \
+       awk '{
+           size = $1;
+           path = $2;
+           if (size >= 1073741824) {
+               printf "  %.2f GB  %s\n", size/1073741824, path
+           } else if (size >= 1048576) {
+               printf "  %.2f MB  %s\n", size/1048576, path
+           } else {
+               printf "  %.2f KB  %s\n", size/1024, path
+           }
+       }'; then
+        :
+    else
+        log_warn "Unable to query store paths"
+    fi
+}
+
+# Main execution
+main() {
+    local start_time
+    start_time=$(date +%s)
+    
+    log_section "NIX STORE CLEANUP"
+    
+    # Check root access first
+    check_root_access
+    
+    if [[ "$DRY_RUN" == "--dry-run" ]]; then
+        log_subsection "DRY RUN MODE"
+        log_warn "No changes will be made - this is a preview only"
+    else
+        log_subsection "CLEANUP WARNING"
+        echo ""
+        log_warn "This script will remove:"
+        log_warn "  [1] All old system and user generations (except current)"
+        log_warn "  [2] All GC roots and broken symlinks"
+        log_warn "  [3] All local build references (nix-build result symlinks)"
+        log_warn "  [4] All impure evaluation caches"
+        log_warn "  [5] All unreferenced store paths"
+        echo ""
+        log_subsection "TIME ESTIMATE"
+        log_info "Total time: 15-45 minutes (varies by store size)"
+        log_info "  Phase 1 - Cleanup operations:  2-5 minutes"
+        log_info "  Phase 2 - Store optimization: 10-30 minutes"
+        log_info "  Phase 3 - Store verification:  5-15 minutes"
+        echo ""
+        log_warn "This is a DESTRUCTIVE operation!"
+        log_warn "Recommendation: Run 'nix-cleanup --dry-run' first to preview changes"
+        echo ""
+        log_warn "Press Ctrl+C within 10 seconds to cancel..."
+        for i in {10..1}; do
+            if [[ "$USE_COLOR" == "true" ]]; then
+                echo -ne "\r${COLOR_YELLOW}⏳${COLOR_RESET} Continuing in ${COLOR_BOLD}${i}${COLOR_RESET} seconds... "
+            else
+                echo -ne "\r[WAIT] Continuing in ${i} seconds... "
+            fi
+            sleep 1
+        done
+        echo ""
+    fi
+    
+    # Show initial state
+    log_section "PHASE 0: Initial State Assessment"
+    show_size "Nix store" "/nix/store"
+    show_size "Boot partition" "/boot"
+    
+    # Run cleanup operations
+    log_section "PHASE 1: Cleanup Operations"
+    
+    local total_steps=7
+    local current_step=0
+    
+    current_step=$((current_step + 1))
+    show_progress "$current_step" "$total_steps"
+    log_step "$current_step" "$total_steps" "Cleaning boot entries"
+    cleanup_boot_entries
+    
+    current_step=$((current_step + 1))
+    show_progress "$current_step" "$total_steps"
+    log_step "$current_step" "$total_steps" "Cleaning system generations"
+    cleanup_system_generations
+    
+    current_step=$((current_step + 1))
+    show_progress "$current_step" "$total_steps"
+    log_step "$current_step" "$total_steps" "Cleaning user profiles"
+    cleanup_user_profiles
+    
+    current_step=$((current_step + 1))
+    show_progress "$current_step" "$total_steps"
+    log_step "$current_step" "$total_steps" "Cleaning home-manager"
+    cleanup_home_manager
+    
+    current_step=$((current_step + 1))
+    show_progress "$current_step" "$total_steps"
+    log_step "$current_step" "$total_steps" "Cleaning GC roots"
+    cleanup_gc_roots
+    
+    current_step=$((current_step + 1))
+    show_progress "$current_step" "$total_steps"
+    log_step "$current_step" "$total_steps" "Cleaning caches"
+    cleanup_caches
+    
+    current_step=$((current_step + 1))
+    show_progress "$current_step" "$total_steps"
+    log_step "$current_step" "$total_steps" "Running garbage collection"
+    run_garbage_collection
+    
+    show_progress "$total_steps" "$total_steps"
+    echo ""
+    log_success "Phase 1 complete"
+    
+    if [[ "$DRY_RUN" != "--dry-run" ]]; then
+        log_section "PHASE 2: Store Optimization"
+        optimize_store
+        
+        log_section "PHASE 3: Store Verification"
+        verify_store
+    fi
+    
+    # Show final statistics
+    log_section "FINAL REPORT"
+    show_statistics
+    
+    # Calculate and display execution time
+    local end_time
+    end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    local minutes=$((duration / 60))
+    local seconds=$((duration % 60))
+    
+    log_section "Nix Cleanup Complete"
+    log_info "Total execution time: ${minutes}m ${seconds}s"
+}
+
+# Execute main function
+main "$@"
