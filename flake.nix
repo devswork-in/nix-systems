@@ -23,10 +23,13 @@
       url = "github:nix-community/nix-snapd";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    nur.url = "github:nix-community/NUR";
   };
 
   outputs =
@@ -36,6 +39,7 @@
       nix-flatpak,
       nix-snapd,
       winapps,
+      nur,
       ...
     }@inputs:
     let

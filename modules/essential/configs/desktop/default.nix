@@ -4,5 +4,6 @@
 {
   imports = [
     ./fusuma.nix
+    ./firefox
   ];
 }
