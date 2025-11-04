@@ -25,12 +25,19 @@
       CPU_BOOST_ON_BAT = 0;
       
       # AMD GPU power management
+      # For modern AMDGPU (Phoenix/RDNA3), use "auto" to allow dynamic performance scaling
+      # "auto" = GPU can scale from low to high based on load (best for responsive performance)
+      # "high" = Force maximum performance (use for gaming/rendering)
+      # "low" = Force power saving (not recommended - causes stuttering)
+      # Set to "auto" on both AC and battery for load-based dynamic scaling
       RADEON_DPM_PERF_LEVEL_ON_AC = "auto";
-      RADEON_DPM_PERF_LEVEL_ON_BAT = "low";
+      RADEON_DPM_PERF_LEVEL_ON_BAT = "auto";
       
       RADEON_DPM_STATE_ON_AC = "performance";
-      RADEON_DPM_STATE_ON_BAT = "battery";
+      RADEON_DPM_STATE_ON_BAT = "balanced";
       
+      # Power profiles for workload optimization
+      # Options: default, low, high, auto, video, vr, compute, custom
       RADEON_POWER_PROFILE_ON_AC = "default";
       RADEON_POWER_PROFILE_ON_BAT = "low";
       
@@ -82,6 +89,13 @@
   # Disable conflicting services
   services.auto-cpufreq.enable = false;
   services.power-profiles-daemon.enable = false;
+  
+  # Ensure AMD GPU performance is not stuck in low mode on AC power
+  # This is a workaround for TLP sometimes not applying GPU settings correctly
+  services.udev.extraRules = ''
+    # Set AMD GPU to auto performance level on AC power
+    ACTION=="change", SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/bash -c 'echo auto > /sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null || true'"
+  '';
   
   # Power management tools
   environment.systemPackages = with pkgs; [

@@ -34,8 +34,8 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    #pulseaudio = {
-    #  enable = true;
+    
+    # AMD GPU configuration
     #  support32Bit = true;
     #  package = pkgs.pulseaudioFull;
     #  extraConfig = "load-module module-switch-on-connect";
