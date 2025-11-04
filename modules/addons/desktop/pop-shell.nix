@@ -1,6 +1,14 @@
 { pkgs, home-manager, userConfig, lib, ... }:
 
-let
+{
+  # Pop Shell Configuration
+  # Import base GNOME configuration
+  imports = [
+    ./gnome-base.nix
+  ];
+
+  # Pop Shell specific configuration
+  config = let
   user = userConfig.user.name;
   screenshotsPathRaw = userConfig.desktop.screenshotsPath or "~/Screenshots";
   # Expand ~ to actual home directory
@@ -505,71 +513,21 @@ in
     };
   };
 
-  # ---- System Configuration ----
-  services = {
-    xserver = {
-      enable = true;
-      desktopManager.gnome = {
-        enable = true;
-      };
-      displayManager = {
-        gdm = {
-          enable = true;
-          wayland = true;
-          autoSuspend = true;
-        };
-      };
-    };
-    displayManager.defaultSession = "gnome-xorg";
-  };
-
-  services = {
-    gnome = {
-      evolution-data-server.enable = true;
-      gnome-keyring.enable = true;
-    };
-  };
-
-  programs.dconf.enable = true;
-
+  # ---- Pop Shell Specific System Configuration ----
+  
+  # Set default session to GNOME X11 (Pop Shell works better on X11)
+  services.displayManager.defaultSession = "gnome-xorg";
+  
+  # KDE Connect (GSConnect)
   programs.kdeconnect = {
     enable = true;
     package = pkgs.gnomeExtensions.gsconnect;
   };
 
-  # Dependency for Super+/ shortcut
+  # Pop Shell dependencies
   environment.systemPackages = with pkgs; [
     wofi
     pop-launcher
-    gnome-tweaks
   ];
-
-  environment.gnome.excludePackages = (
-    with pkgs;
-    [
-      gnome-photos
-      gnome-tour
-      gedit
-      gnome-console
-      gnome-music
-      epiphany
-      geary
-      evince
-      gnome-characters
-      gnome-maps
-      gnome-software
-      gnome-contacts
-      yelp # gnome-help
-      totem
-      tali
-      iagno
-      hitori
-      atomix
-    ]
-  );
-
-  services.power-profiles-daemon.enable = false;
-  environment.variables = {
-    GNOME_SHELL_SLOWDOWN_FACTOR = "0.8";
-  };
+  }; # End of config let block
 }

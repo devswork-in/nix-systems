@@ -8,8 +8,25 @@
       displayManager.sx.enable = true; # minimal replacement for startx
       deviceSection = ''
         Option "TearFree" "true"
+        Option "VariableRefresh" "true"
+        Option "AsyncFlipSecondaries" "true"
       '';
       excludePackages = [ pkgs.xterm ];
+    };
+    
+    # Enable picom compositor to prevent tearing and glitches
+    picom = {
+      enable = true;
+      backend = "glx";
+      vSync = true;
+      settings = {
+        # Performance optimizations for AMD
+        glx-no-stencil = true;
+        glx-no-rebind-pixmap = true;
+        use-damage = true;
+        # Prevent tearing
+        unredir-if-possible = false;
+      };
     };
 
     libinput = {
