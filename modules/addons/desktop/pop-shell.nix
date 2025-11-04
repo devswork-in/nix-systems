@@ -515,8 +515,9 @@ in
 
   # ---- Pop Shell Specific System Configuration ----
   
-  # Set default session to GNOME X11 (Pop Shell works better on X11)
-  services.displayManager.defaultSession = "gnome-xorg";
+  # Set default session to GNOME Wayland (better GPU power management, less glitches)
+  # Note: Pop Shell works on both X11 and Wayland, but Wayland has better AMD GPU handling
+  services.displayManager.defaultSession = "gnome";
   
   # KDE Connect (GSConnect)
   programs.kdeconnect = {

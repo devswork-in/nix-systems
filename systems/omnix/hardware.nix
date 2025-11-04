@@ -47,6 +47,8 @@
       "amdgpu.dc=1"
       "amdgpu.dpm=1"
       "amdgpu.gpu_recovery=1"
+      # Reduce GPU power state transition glitches
+      "amdgpu.dcdebugmask=0x10"
       # Deep sleep support
       "mem_sleep_default=deep"
     ];
