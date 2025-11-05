@@ -115,7 +115,7 @@
       "org/gnome/desktop/wm/preferences" = {
         focus-mode = "sloppy";
         resize-with-right-button = true;
-        num-workspaces = 10;
+        # num-workspaces is not used when dynamic-workspaces is enabled
         workspace-names = [];
       };
 
