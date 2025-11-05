@@ -10,7 +10,7 @@
     # Display Manager
     displayManager.gdm = {
       enable = true;
-      wayland = true;  # Enable Wayland for better performance
+      wayland = false;  # Use Xorg instead of Wayland
       autoSuspend = true;
     };
     

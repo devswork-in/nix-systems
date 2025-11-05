@@ -23,7 +23,7 @@
   flameshot-gui-path = pkgs.writeShellScriptBin "flameshot-gui-path" "${pkgs.flameshot}/bin/flameshot gui -p ${screenshotsPath}";
   flameshot-full = pkgs.writeShellScriptBin "flameshot-full" "${pkgs.flameshot}/bin/flameshot full -p ${screenshotsPath}";
   local-scripts = pkgs.writeShellScriptBin "local-scripts" ''
-    selected_script=$(${pkgs.coreutils}/bin/ls /home/${user}/.local/bin | ${pkgs.wofi}/bin/wofi --dmenu)
+    selected_script=$(${pkgs.coreutils}/bin/ls /home/${user}/.local/bin | ${pkgs.rofi}/bin/rofi -dmenu)
     if [ -n "$selected_script" ]; then
       bash -c /home/${user}/.local/bin/"$selected_script"
     else
@@ -290,7 +290,7 @@ in
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom13" = {
-        name = "Run Wofi Script";
+        name = "Run Rofi Script";
         command = "${local-scripts}/bin/local-scripts";
         binding = "<Alt>Return";
       };
@@ -515,9 +515,9 @@ in
 
   # ---- Pop Shell Specific System Configuration ----
   
-  # Set default session to GNOME Wayland (better GPU power management, less glitches)
-  # Note: Pop Shell works on both X11 and Wayland, but Wayland has better AMD GPU handling
-  services.displayManager.defaultSession = "gnome";
+  # Set default session to GNOME on Xorg
+  # Note: Pop Shell works on both X11 and Wayland
+  services.displayManager.defaultSession = "gnome-xorg";
   
   # KDE Connect (GSConnect)
   programs.kdeconnect = {
@@ -527,7 +527,7 @@ in
 
   # Pop Shell dependencies
   environment.systemPackages = with pkgs; [
-    wofi
+    rofi
     pop-launcher
   ];
   }; # End of config let block
