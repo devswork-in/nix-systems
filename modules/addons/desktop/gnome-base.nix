@@ -75,8 +75,8 @@
 
   # Performance optimizations
   environment.variables = {
-    # Reduce GNOME Shell animation speed (0.8 = 20% faster)
-    GNOME_SHELL_SLOWDOWN_FACTOR = "0.8";
+    # Speed up GNOME Shell animations (0.5 = 2x faster, smoother feel)
+    GNOME_SHELL_SLOWDOWN_FACTOR = "0.5";
   };
 
   # Home Manager base configuration for GNOME
