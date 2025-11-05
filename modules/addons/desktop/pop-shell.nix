@@ -44,10 +44,10 @@
     
     # Check if extension is currently enabled
     if echo "$ENABLED" | ${pkgs.gnugrep}/bin/grep -q "$EXTENSION_UUID"; then
-      # Disable the extension
+      # Disable the extension (show top bar)
       ${pkgs.gnome-shell}/bin/gnome-extensions disable "$EXTENSION_UUID"
     else
-      # Enable the extension
+      # Enable the extension (hide top bar)
       ${pkgs.gnome-shell}/bin/gnome-extensions enable "$EXTENSION_UUID"
     fi
   '';
@@ -425,8 +425,10 @@ in
       };
 
       # Workspace switch pop-up Configuration
+      # Note: workspace-switcher-manager can sometimes interfere with dynamic workspaces
+      # If dynamic workspaces aren't working, try removing this extension from gnomeExtensionsList
       "org/gnome/shell/extensions/workspace-switcher-manager" = {
-        popup-visibility = 0;
+        popup-visibility = 0;  # 0 = hidden, 1 = always show
       };
 
       # Pop Shell Extension settings
@@ -471,8 +473,10 @@ in
       };
       
       # Workspace settings
+      # Note: When dynamic-workspaces is true, num-workspaces is ignored
+      # Dynamic workspaces will auto-create/remove workspaces as needed
       "org/gnome/desktop/wm/preferences" = {
-        num-workspaces = 10;  # Maximum number of workspaces
+        # num-workspaces is not used with dynamic workspaces
         workspace-names = [];  # Let GNOME auto-name them
       };
       
