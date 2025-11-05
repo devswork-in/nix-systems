@@ -132,4 +132,18 @@
     libvirtd.enable = lib.mkDefault false;
     spiceUSBRedirection.enable = lib.mkDefault false;
   };
+  
+  # Kernel optimizations for better responsiveness and app launch speed
+  boot.kernel.sysctl = {
+    # Improve system responsiveness under load
+    "vm.swappiness" = 10;  # Reduce swap usage (prefer RAM)
+    "vm.vfs_cache_pressure" = 50;  # Keep more file cache in memory
+    "vm.dirty_ratio" = 10;  # Start writing dirty pages earlier
+    "vm.dirty_background_ratio" = 5;  # Background writes start earlier
+    # Note: vm.dirty_writeback_centisecs and vm.laptop_mode are set in tlp.nix
+    
+    # Network performance
+    "net.core.netdev_max_backlog" = 16384;
+    "net.ipv4.tcp_fastopen" = 3;
+  };
 }

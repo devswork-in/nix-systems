@@ -38,11 +38,24 @@
     gparted
   ];
   
+  # Performance optimizations for faster app launches
+  systemd.services = {
+    # Reduce systemd timeout for faster boot/shutdown
+    systemd-user-sessions.serviceConfig.TimeoutStartSec = "5s";
+  };
+  
+  # Enable fstrim for SSD performance
+  services.fstrim.enable = true;
+  
   # System-specific user groups (extends profile groups)
   users.users.${userConfig.user.name}.extraGroups = [ "input" ];
   
-  # Ensure input devices are accessible for fusuma gestures
+  # Optimize I/O scheduler for faster app loading
   services.udev.extraRules = ''
+    # Set I/O scheduler to none for NVMe (best for NVMe SSDs - faster app loading)
+    ACTION=="add|change", KERNEL=="nvme[0-9]n[0-9]", ATTR{queue/scheduler}="none"
+    
+    # Ensure input devices are accessible for fusuma gestures
     KERNEL=="event*", SUBSYSTEM=="input", MODE="0660", GROUP="input"
   '';
   
