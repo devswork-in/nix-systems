@@ -37,16 +37,18 @@
   togglePanelFreeScript = pkgs.writeShellScriptBin "toggle-panel-free" ''
     #!/usr/bin/env bash
 
-    EXTENSION_ID="panel-free@fthx"
-    GNOME_EXTENSIONS_PATH="${pkgs.gnome-shell}/bin/gnome-extensions"
-
-    # Check current state
-    if $GNOME_EXTENSIONS_PATH info "$EXTENSION_ID" | grep -q "Enabled: Yes"; then
-      # Disable the extension if it is enabled
-      $GNOME_EXTENSIONS_PATH disable "$EXTENSION_ID"
+    EXTENSION_UUID="panel-free@fthx"
+    
+    # Get current enabled extensions
+    ENABLED=$(${pkgs.glib}/bin/gsettings get org.gnome.shell enabled-extensions)
+    
+    # Check if extension is currently enabled
+    if echo "$ENABLED" | ${pkgs.gnugrep}/bin/grep -q "$EXTENSION_UUID"; then
+      # Disable the extension
+      ${pkgs.gnome-shell}/bin/gnome-extensions disable "$EXTENSION_UUID"
     else
-      # Enable the extension if it is disabled
-      $GNOME_EXTENSIONS_PATH enable "$EXTENSION_ID"
+      # Enable the extension
+      ${pkgs.gnome-shell}/bin/gnome-extensions enable "$EXTENSION_UUID"
     fi
   '';
 
@@ -529,6 +531,11 @@ in
   environment.systemPackages = with pkgs; [
     rofi
     pop-launcher
+  ];
+
+  # Apply overlay for panel-free extension v10
+  nixpkgs.overlays = [
+    (import ./panel-free-overlay.nix)
   ];
   }; # End of config let block
 }
