@@ -63,8 +63,7 @@ let
 
       # Create wrapper script
       makeWrapper $out/lib/kiro/kiro $out/bin/kiro \
-        --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath buildInputs}" \
-        --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
+        --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath buildInputs}"
 
       # Install icon if it exists
       if [ -f $out/lib/kiro/resources/app/resources/linux/code.png ]; then

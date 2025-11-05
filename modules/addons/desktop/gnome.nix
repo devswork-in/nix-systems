@@ -7,8 +7,8 @@
     ./gnome-base.nix
   ];
 
-  # Set default session to GNOME (Wayland)
-  services.displayManager.defaultSession = "gnome";
+  # Set default session to GNOME on Xorg
+  services.displayManager.defaultSession = "gnome-xorg";
 
   # Vanilla GNOME extensions
   environment.systemPackages = with pkgs; [
