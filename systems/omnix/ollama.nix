@@ -31,11 +31,11 @@
       # This tells ROCm to treat gfx1103 as gfx1100 (RDNA3 architecture)
       HSA_OVERRIDE_GFX_VERSION = "11.0.0";
       
-      # Optional: Enable unified memory for better iGPU performance
+      # Enable unified memory for better iGPU performance
       # Allows GPU to access system RAM beyond BIOS-allocated VRAM
-      # Requires Linux kernel 6.0+ with GTT memory support
-      # Uncomment if you experience memory issues with larger models:
-      # GGML_CUDA_ENABLE_UNIFIED_MEMORY = "ON";
+      # With this enabled, the GPU can use nearly all available system RAM
+      # This is especially beneficial for AMD iGPUs with limited VRAM allocation
+      GGML_CUDA_ENABLE_UNIFIED_MEMORY = "ON";
     };
   };
   
