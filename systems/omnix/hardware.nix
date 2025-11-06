@@ -66,19 +66,21 @@
   hardware = {
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     
-    # AMD GPU configuration - Minimal setup for modern integrated GPUs
-    # Based on community consensus: hardware.graphics.enable is all you need for basic usage
+    # AMD GPU configuration - ROCm-enabled for AMD 780M iGPU
+    # Supports GPU-accelerated compute workloads (Ollama/LLM inference, AI/ML, Blender, etc.)
     # Mesa RADV (Vulkan), OpenGL, and VA-API are included automatically
     graphics = {
       enable = true;
       enable32Bit = true;
-      # Only add OpenCL if you need it for compute workloads (AI/ML, Blender, etc.)
+      # ROCm packages for GPU compute support
       extraPackages = with pkgs; [
-        rocmPackages.clr.icd  # OpenCL support
+        rocmPackages.clr.icd  # OpenCL ICD loader
+        rocmPackages.clr      # ROCm Compute Language Runtime (HIP/OpenCL)
       ];
     };
 
-    # Optional: Enable OpenCL system-wide (only if needed)
+    # Enable OpenCL system-wide for ROCm compute workloads
+    # Required for Ollama GPU acceleration with AMD 780M (gfx1103)
     amdgpu.opencl.enable = true;
 
     #pulseaudio = {
@@ -96,6 +98,8 @@
     vulkan-tools   # Check Vulkan: vulkaninfo
     clinfo         # Check OpenCL: clinfo
     libva-utils    # Check VA-API: vainfo
+    rocmPackages.rocminfo  # ROCm system information
+    rocmPackages.rocm-smi  # ROCm System Management Interface
     
     # Monitoring tools
     radeontop      # Monitor AMD GPU usage
