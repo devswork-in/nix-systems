@@ -26,10 +26,6 @@
       kernelModules = [ 
         # amdgpu loads automatically, only add here if you need early KMS for Plymouth
         # "amdgpu"
-        # VFIO modules for GPU passthrough (if needed in future)
-        # "vfio_pci"
-        # "vfio"
-        # "vfio_iommu_type1"
       ];
     };
     kernelModules = [
@@ -37,9 +33,6 @@
       "kvm-amd"
     ];
     kernelParams = [
-      # IOMMU for virtualization and potential passthrough
-      "amd_iommu=on"
-      "iommu=pt"
       # CPU power management
       "amd_pstate=active"
       # AMD GPU optimizations
@@ -131,12 +124,7 @@
     };
   };
   
-  # Virtualization support
-  virtualisation = {
-    libvirtd.enable = lib.mkDefault false;
-    spiceUSBRedirection.enable = lib.mkDefault false;
-  };
-  
+
   # Kernel optimizations for better responsiveness and app launch speed
   boot.kernel.sysctl = {
     # Improve system responsiveness under load
@@ -145,6 +133,9 @@
     "vm.dirty_ratio" = 10;  # Start writing dirty pages earlier
     "vm.dirty_background_ratio" = 5;  # Background writes start earlier
     # Note: vm.dirty_writeback_centisecs and vm.laptop_mode are set in tlp.nix
+    
+    # Gaming optimizations
+    "vm.max_map_count" = 2147483642;  # Required for many games (Elden Ring, etc.)
     
     # Network performance
     "net.core.netdev_max_backlog" = 16384;

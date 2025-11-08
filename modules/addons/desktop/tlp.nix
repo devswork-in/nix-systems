@@ -5,12 +5,18 @@
   services.tlp = {
     enable = true;
     settings = {
-      # CPU settings - use schedutil for AMD with amd_pstate driver
-      CPU_SCALING_GOVERNOR_ON_AC = "schedutil";
-      CPU_SCALING_GOVERNOR_ON_BAT = "schedutil";
+      # CPU settings for amd-pstate-epp driver (active mode)
+      # With EPP driver, only "performance" and "powersave" governors are available
+      # The actual performance is controlled by EPP preference, not the governor
+      # "powersave" governor + "balance_performance" EPP = good performance with efficiency
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
       
       # AMD P-State EPP (Energy Performance Preference) for amd_pstate=active
+      # This is what actually controls performance with amd-pstate-epp driver
       # Valid values: performance, balance_performance, default, balance_power, power
+      # "balance_performance" = good performance with some power saving (recommended for AC)
+      # "performance" = maximum performance, no power saving (for gaming/heavy workloads)
       CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
       CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
       
