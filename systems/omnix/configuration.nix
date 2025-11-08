@@ -19,6 +19,7 @@
     ../../modules/addons/desktop/pop-shell.nix
     ../../modules/addons/desktop/tlp.nix
     ../../modules/addons/apps/kiro
+    ../../modules/addons/extras/kernels/xanmod.nix
   ];
   
   # Add NUR overlay for Firefox extensions
