@@ -11,7 +11,6 @@
   home.packages = with pkgs; [
     bc
     openssl
-    xplr
     koji
     nodejs
     pre-commit
@@ -19,7 +18,6 @@
     tdesktop
     ncftp
     comma
-    postman
     capitaine-cursors
     fortune
     file
