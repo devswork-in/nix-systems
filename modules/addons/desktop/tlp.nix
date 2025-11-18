@@ -89,6 +89,13 @@
       # Sound power saving
       SOUND_POWER_SAVE_ON_AC = 0;
       SOUND_POWER_SAVE_ON_BAT = 1;
+      
+      # CPU scheduler power-saving (performance optimization)
+      SCHED_POWERSAVE_ON_AC = 0;
+      SCHED_POWERSAVE_ON_BAT = 1;
+      
+      # NMI watchdog (disable for lower overhead)
+      NMI_WATCHDOG = 0;
     };
   };
   
