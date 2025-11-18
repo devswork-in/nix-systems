@@ -164,8 +164,6 @@ in {
         "transparent_hugepage=madvise"
         "nowatchdog"
         "nmi_watchdog=0"
-        "quiet"
-        "loglevel=3"
         # Zswap configuration (compressed swap in RAM)
         "zswap.enabled=1"
         "zswap.compressor=lz4"
