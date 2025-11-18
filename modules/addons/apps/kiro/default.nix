@@ -3,11 +3,11 @@
 let
   kiro = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "kiro";
-    version = "202511032205";
+    version = "0.6.0";
 
     src = pkgs.fetchurl {
-      url = "https://prod.download.desktop.kiro.dev/releases/202511032205--distro-linux-x64-tar-gz/202511032205-distro-linux-x64.tar.gz";
-      hash = "sha256-Xm7uRogux3bQMsWjdaamrHELnxNltRmjPLM8Mgt5+5Y=";
+      url = "https://prod.download.desktop.kiro.dev/releases/stable/linux-x64/signed/0.6.0/tar/kiro-ide-0.6.0-stable-linux-x64.tar.gz";
+      hash = "sha256-FOMfF/rJIzBnAqR5dxUlcDaMV2I/7dWMqU2UtMvJZIo=";
     };
 
     nativeBuildInputs = with pkgs; [
