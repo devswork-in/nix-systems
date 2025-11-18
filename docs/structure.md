@@ -8,16 +8,15 @@ Repository organization and architecture.
 .
 ├── lib/                    # Helper functions
 │   ├── mkSystemConfig.nix  # System builder
-│   ├── mkAppImage.nix      # AppImage packager
-│   └── mkRepoSync.nix      # Sync service generator
+│   └── mkAppImage.nix      # AppImage packager
+├── nix-repo-sync/         # Config sync library (standalone flake)
 ├── profiles/               # Reusable configurations
 │   ├── base.nix           # Common settings
 │   ├── desktop.nix        # Desktop config
 │   └── server.nix         # Server config
 ├── modules/
 │   ├── essential/         # Core modules (base, packages, configs)
-│   ├── addons/           # Optional modules (desktop, apps, services)
-│   └── services/         # System services (repo-sync)
+│   └── addons/           # Optional modules (desktop, apps, services)
 ├── systems/              # Machine configs (omnix, blade, cospi, server, phoenix)
 ├── flake.nix            # Main flake
 ├── config.nix           # User config
@@ -32,11 +31,13 @@ Repository organization and architecture.
 
 **[`mkAppImage.nix`](../lib/mkAppImage.nix)** - Packages AppImages with desktop integration
 
-**[`mkRepoSync.nix`](../lib/mkRepoSync.nix)** - Generates sync service with systemd timer and CLI
+### nix-repo-sync/
+
+**[`nix-repo-sync`](../nix-repo-sync/)** - Standalone flake library for configuration synchronization (git repos and symlinks)
 
 ### profiles/
 
-**[`base.nix`](../profiles/base.nix)** - Common settings (Nix config, essential packages, user setup, SSH, repo-sync)
+**[`base.nix`](../profiles/base.nix)** - Common settings (Nix config, essential packages, user setup, SSH)
 
 **[`desktop.nix`](../profiles/desktop.nix)** - Desktop systems (extends base, adds desktop packages, NetworkManager, boot config)
 

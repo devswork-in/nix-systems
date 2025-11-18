@@ -4,10 +4,9 @@
 { config, pkgs, lib, userConfig, flakeRoot, ... }:
 
 {
-  # Import base profile and repo-sync service
+  # Import base profile
   imports = [
     ./base.nix
-    ../modules/services/repo-sync
   ];
 
   # Boot configuration for servers
@@ -88,12 +87,9 @@
   # Enable tmux auto-start for servers
   environment.variables.TMUX_AUTO_START = "1";
 
-  # Repository sync service for server-specific repos
-  # Combines common syncs + server-specific syncs
-  # We regenerate syncConfig here with the actual flakeRoot path
-  services.repoSync = 
+  # Configuration sync service (common + server syncs)
+  services.nix-repo-sync = 
     let
-      # Import sync-config with the actual flake root path
       syncConfig = import ../sync-config.nix { 
         inherit (userConfig) user paths;
         inherit flakeRoot;
