@@ -18,6 +18,7 @@
     ../../modules/addons/services
     ../../modules/addons/desktop/pop-shell.nix
     ../../modules/addons/desktop/tlp.nix
+    ../../modules/addons/desktop/performance-optimization.nix
     ../../modules/addons/apps/kiro
     ../../modules/addons/extras/kernels/xanmod.nix
   ];
@@ -71,4 +72,10 @@
     "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
     "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
   ];
+  
+  # Enable performance optimizations with balanced profile
+  performance-optimization = {
+    enable = true;
+    profile = "balanced";  # Options: "balanced", "responsive", "quiet"
+  };
 }
