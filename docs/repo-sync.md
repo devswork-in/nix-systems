@@ -1,61 +1,22 @@
-# Sync
+# Nix Repo Sync
 
-Configuration synchronization system.
+Configuration synchronization system using [`nix-repo-sync`](https://github.com/Creator54/nix-repo-sync).
 
-## Overview
+See the [nix-repo-sync README](https://github.com/Creator54/nix-repo-sync/README.md) for installation and usage details.
 
-Manages dotfiles and configurations via git repositories and symlinks. Impure but allows flexibility of having things outside /nix/store without rewriting everything in Nix.
+## This Repository's Configuration
 
-Implementation: [`modules/services/repo-sync/`](../modules/services/repo-sync/), [`lib/mkRepoSync.nix`](../lib/mkRepoSync.nix)
-
-**Runs:**
-- On system activation
-- Hourly via systemd timer
-- On demand via `repo-sync-force`
-
-**Sync Types:**
-- **Git** - One-way (clone/pull from remote)
-- **Local** - Bi-directional (symlinks, edit anywhere)
-
-## Configuration
-
-Edit [`sync-config.nix`](../sync-config.nix):
+Edit [`sync-config.nix`](../sync-config.nix) to manage sync items:
 
 ```nix
 {
-  # All systems
-  common = [
-    { type = "git"; url = "https://github.com/user/nvim"; dest = "~/.config/nvim"; }
-    { type = "local"; source = "${nixSystemsRoot}/configs/fish"; dest = "~/.config/fish"; }
-  ];
-  
-  # Desktop only
-  desktop = [
-    { type = "local"; source = "${nixSystemsRoot}/configs/kitty.conf"; dest = "~/.config/kitty/kitty.conf"; }
-  ];
-  
-  # Server only
-  server = [
-    { type = "git"; url = "https://github.com/user/site"; dest = "/var/www/site"; }
-  ];
+  common = [ /* synced on all systems */ ];
+  desktop = [ /* desktop-only syncs */ ];
+  server = [ /* server-only syncs */ ];
 }
 ```
 
-## Adding Items
-
-1. Edit [`sync-config.nix`](../sync-config.nix)
-2. Rebuild: `sudo nixos-rebuild switch --flake .#<hostname> --impure`
-3. Verify: `repo-sync-logs | tail -20`
-
-## CLI
-
+Rebuild with `--impure` flag:
 ```bash
-repo-sync-force         # Force sync now
-repo-sync-logs          # View logs (last 100 lines)
-repo-sync-logs 50       # View logs (last 50 lines)
-
-systemctl status repo-sync.service
-systemctl status repo-sync.timer
+sudo nixos-rebuild switch --flake .#<hostname> --impure
 ```
-
-Log location: `/var/log/repo-sync.log`

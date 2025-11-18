@@ -19,21 +19,8 @@
   # System-specific hostname (overrides profile default)
   networking.hostName = "blade";
 
-  # Example: Add system-specific sync items (extends desktop profile defaults)
-  # services.repoSync.syncItems = lib.mkForce [
-  #   # Keep desktop defaults
-  #   {
-  #     type = "git";
-  #     url = "https://github.com/creator54/starter";
-  #     dest = "~/.config/nvim";
-  #   }
-  #   # Add system-specific syncs
-  #   {
-  #     type = "local";
-  #     source = ./local-configs;  # Relative path from this file
-  #     dest = "~/.config/custom";
-  #   }
-  # ];
+  # Example: Override sync items for this system
+  # services.nix-repo-sync.syncItems = lib.mkForce [ /* ... */ ];
   
   # System-specific nix caches (extends profile caches)
   nix.settings.substituters = [

@@ -30,6 +30,9 @@
   
   # Ensure home-manager uses the same pkgs with overlays
   home-manager.useGlobalPkgs = true;
+  
+  # Backup existing files instead of failing
+  home-manager.backupFileExtension = "backup";
 
   # System-specific hostname (overrides profile default)
   networking.hostName = "omnix";

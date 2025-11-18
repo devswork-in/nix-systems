@@ -30,6 +30,11 @@
     };
     
     nur.url = "github:nix-community/NUR";
+    
+    nix-repo-sync = {
+      url = "github:Creator54/nix-repo-sync";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -40,6 +45,7 @@
       nix-snapd,
       winapps,
       nur,
+      nix-repo-sync,
       ...
     }@inputs:
     let
@@ -60,8 +66,13 @@
       
       # Get flake root dynamically using PWD environment variable
       # This requires building with --impure flag: nixos-rebuild switch --flake .#hostname --impure
-      # This allows repo-sync to create symlinks to the actual editable repo, not nix store
-      flakeRoot = builtins.getEnv "PWD";
+      # This allows config-sync to create symlinks to the actual editable repo, not nix store
+      flakeRoot = 
+        let
+          pwd = builtins.getEnv "PWD";
+        in
+          if pwd != "" then pwd
+          else builtins.toString self.outPath;
       
       # Import desktop settings
       desktopSettings = import ./modules/addons/desktop/desktop-settings.nix {};
@@ -100,6 +111,7 @@
             ./modules/essential/server-config.nix
             ./systems/server/configuration.nix
             inputs.home-manager.nixosModules.default
+            inputs.nix-repo-sync.nixosModules.default
           ];
         };
 
@@ -110,6 +122,7 @@
             ./systems/phoenix
             ./modules/essential/server-config.nix
             inputs.home-manager.nixosModules.default
+            inputs.nix-repo-sync.nixosModules.default
           ];
         };
 
@@ -120,6 +133,7 @@
             ./systems/phoenix
             ./modules/essential/server-config.nix
             inputs.home-manager.nixosModules.default
+            inputs.nix-repo-sync.nixosModules.default
           ];
         };
 
@@ -132,6 +146,7 @@
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
             inputs.nix-snapd.nixosModules.default
+            inputs.nix-repo-sync.nixosModules.default
             (
               { pkgs, ... }:
               {
@@ -153,6 +168,7 @@
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
+            inputs.nix-repo-sync.nixosModules.default
           ];
         };
 
@@ -165,6 +181,7 @@
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
+            inputs.nix-repo-sync.nixosModules.default
           ];
         };
       };

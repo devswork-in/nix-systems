@@ -7,6 +7,9 @@
   home-manager = {
     # Common home-manager settings
     
+    # Backup existing files instead of failing
+    backupFileExtension = "backup";
+    
     # Pass userConfig to all home-manager modules
     extraSpecialArgs = { inherit userConfig; };
     

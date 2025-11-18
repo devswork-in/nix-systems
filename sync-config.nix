@@ -1,24 +1,18 @@
 { user, paths, flakeRoot }:
+# Sync configuration for nix-repo-sync
+# See nix-repo-sync/README.md for usage details
 
 let
-  # Use the flake root path passed from the flake
-  # This ensures configs are symlinked to the actual editable repo, not the read-only nix store
   nixSystemsRoot = flakeRoot;
 in
 {
-  # Common sync items for ALL systems (desktop and server)
-  # These will be synced on every system
+  # Synced on all systems
   common = [
-    # Neovim config from GitHub (one-way sync)
     {
       type = "git";
-      url = "https://github.com/creator54/starter";
+      source = "https://github.com/creator54/starter";
       dest = "~/.config/nvim";
     }
-    
-    # Local nix-systems configs (bi-directional via symlinks)
-    # These symlinks allow editing files in either location
-    # Using relative paths from nix-systems root
     {
       type = "local";
       source = "${nixSystemsRoot}/modules/essential/configs/common/aliases";
@@ -56,12 +50,12 @@ in
   server = [
     {
       type = "git";
-      url = "https://github.com/creator54/creator54.me";
+      source = "https://github.com/creator54/creator54.me";
       dest = "${paths.base}/${user.domain}";
     }
     {
       type = "git";
-      url = "https://github.com/creator54/blog.creator54.me";
+      source = "https://github.com/creator54/blog.creator54.me";
       dest = "${paths.base}/blog.${user.domain}";
     }
   ];

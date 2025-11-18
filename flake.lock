@@ -175,6 +175,26 @@
         "type": "github"
       }
     },
+    "nix-repo-sync": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1763486181,
+        "narHash": "sha256-4kdqmg06OoGO0kPAQ8hZmV2sNtAkS4+j2NRwYMbCgbE=",
+        "owner": "Creator54",
+        "repo": "nix-repo-sync",
+        "rev": "00686ab63182921b94b92b127a35f2f5e004dfc3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Creator54",
+        "repo": "nix-repo-sync",
+        "type": "github"
+      }
+    },
     "nix-snapd": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -268,6 +288,7 @@
         "deploy-rs": "deploy-rs",
         "home-manager": "home-manager",
         "nix-flatpak": "nix-flatpak",
+        "nix-repo-sync": "nix-repo-sync",
         "nix-snapd": "nix-snapd",
         "nixpkgs": "nixpkgs",
         "nur": "nur",

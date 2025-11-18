@@ -12,20 +12,6 @@
   # System-specific hostname (overrides profile default)
   networking.hostName = "server";
 
-  # Example: Override or extend repo sync items for this specific server
-  # services.repoSync.syncItems = lib.mkForce [
-  #   # Add system-specific repos here
-  #   {
-  #     type = "git";
-  #     url = "https://github.com/user/custom-repo";
-  #     dest = "/var/www/custom";
-  #   }
-  # ];
-  
-  # Or append to defaults:
-  # services.repoSync.syncItems = lib.mkDefault (
-  #   config.services.repoSync.syncItems ++ [
-  #     { type = "git"; url = "..."; dest = "..."; }
-  #   ]
-  # );
+  # Example: Override sync items for this system
+  # services.nix-repo-sync.syncItems = lib.mkForce [ /* ... */ ];
 }

@@ -4,10 +4,9 @@
 { config, pkgs, lib, userConfig, flakeRoot, ... }:
 
 {
-  # Import base profile and repo-sync service
+  # Import base profile
   imports = [
     ./base.nix
-    ../modules/services/repo-sync
   ];
 
   # Boot configuration common to desktops
@@ -71,12 +70,9 @@
   # Hardware clock in local time (useful for dual-boot with Windows)
   time.hardwareClockInLocalTime = true;
 
-  # Repository sync service for neovim config and other dotfiles
-  # Combines common syncs + desktop-specific syncs
-  # We regenerate syncConfig here with the actual flakeRoot path
-  services.repoSync = 
+  # Configuration sync service (common + desktop syncs)
+  services.nix-repo-sync = 
     let
-      # Import sync-config with the actual flake root path
       syncConfig = import ../sync-config.nix { 
         inherit (userConfig) user paths;
         inherit flakeRoot;
