@@ -516,6 +516,11 @@ in
         fixed-widths = true;
         hide-icons = false;
       };
+      
+      # Prevent Evolution services from auto-starting
+      "org/gnome/evolution-data-server" = {
+        autostart = false;
+      };
     };
   };
 
@@ -541,5 +546,37 @@ in
   nixpkgs.overlays = [
     (import ./panel-free-overlay.nix)
   ];
+  
+  # ---- Service Optimization ----
+  # These optimizations are specific to GNOME/Pop Shell and are always enabled
+  # when using this desktop environment
+  
+  # Disable Evolution packages (not using Evolution email client)
+  environment.gnome.excludePackages = with pkgs; [
+    evolution
+  ];
+  
+  # Disable Evolution data server service (this is a service, not a package)
+  services.gnome.evolution-data-server.enable = lib.mkForce false;
+  
+  # Disable unused GNOME Settings Daemon services
+  systemd.user.services = {
+    # Disable smartcard service (no smartcard hardware)
+    "org.gnome.SettingsDaemon.Smartcard".enable = lib.mkForce false;
+    
+    # Disable Wacom service (no Wacom tablet - can be re-enabled if needed)
+    "org.gnome.SettingsDaemon.Wacom".enable = lib.mkForce false;
+    
+    # Disable sharing service (personal laptop, no network sharing)
+    "org.gnome.SettingsDaemon.Sharing".enable = lib.mkForce false;
+  };
+  
+  # XDG Portal consolidation - use only GNOME portal (removes redundancy)
+  # Override flatpak module's portal configuration for GNOME desktop
+  xdg.portal = {
+    enable = true;
+    extraPortals = lib.mkForce (with pkgs; [ xdg-desktop-portal-gnome ]);
+    config.common.default = lib.mkForce "gnome";
+  };
   }; # End of config let block
 }

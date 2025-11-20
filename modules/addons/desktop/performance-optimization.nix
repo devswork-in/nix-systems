@@ -119,6 +119,14 @@ in {
         description = "Override minimum CPU frequency on AC power (kHz). Null uses profile default.";
       };
     };
+    
+    services = {
+      disableModemManager = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Disable ModemManager service (no mobile broadband chip)";
+      };
+    };
   };
   
   config = mkIf cfg.enable {
@@ -240,5 +248,11 @@ in {
       iotop
       stress-ng
     ];
+        
+    # Disable ModemManager (no mobile broadband chip)
+    systemd.services.ModemManager.enable = mkIf cfg.services.disableModemManager (mkForce false);
+
+    
+
   };
 }
