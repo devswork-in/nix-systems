@@ -10,12 +10,10 @@
     ./fileSystems.nix
     
     # Addon modules
-    ../../modules/addons/services/docker
-    ../../modules/essential/networking
-    ../../modules/essential/core
-    ../../modules/addons/services/snaps.nix
-    ../../modules/addons/services/flatpak.nix
-    ../../modules/addons/desktop/pop-shell.nix
+    ../../modules/services/docker
+    ../../modules/services/snaps.nix
+    ../../modules/services/flatpak.nix
+    ../../modules/desktop/pop-shell.nix
   ];
 
   # System-specific hostname (overrides profile default)

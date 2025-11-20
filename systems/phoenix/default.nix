@@ -9,8 +9,8 @@
     ../server/hardware-configuration.nix
     
     # Addon modules
-    ../../modules/addons/services/docker
-    ../../modules/addons/services/website
+    ../../modules/services/docker
+    ../../modules/services/website
   ];
 
   # System-specific hostname (overrides profile default)

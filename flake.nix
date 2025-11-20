@@ -83,7 +83,7 @@
           else builtins.toString self.outPath;
       
       # Import desktop settings
-      desktopSettings = import ./modules/addons/desktop/desktop-settings.nix {};
+      desktopSettings = import ./modules/desktop/desktop-settings.nix {};
       
       # Optional secrets overlay (git-ignored, falls back to config.nix if not present)
       secrets = if builtins.pathExists ./secrets/user-secrets.nix 
@@ -116,7 +116,7 @@
           system = "x86_64-linux";
           hostname = "server";
           modules = [
-            ./modules/essential/server-config.nix
+            ./modules/server/default.nix
             ./systems/server/configuration.nix
             inputs.home-manager.nixosModules.default
             inputs.nix-repo-sync.nixosModules.default
@@ -128,7 +128,7 @@
           hostname = "phoenix";
           modules = [
             ./systems/phoenix
-            ./modules/essential/server-config.nix
+            ./modules/server/default.nix
             inputs.home-manager.nixosModules.default
             inputs.nix-repo-sync.nixosModules.default
           ];
@@ -139,7 +139,7 @@
           hostname = "phoenix";
           modules = [
             ./systems/phoenix
-            ./modules/essential/server-config.nix
+            ./modules/server/default.nix
             inputs.home-manager.nixosModules.default
             inputs.nix-repo-sync.nixosModules.default
           ];
@@ -150,7 +150,7 @@
           hostname = "omnix";
           modules = [
             ./systems/omnix
-            ./modules/addons/desktop/desktop-config.nix
+            ./modules/desktop/default.nix
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
             inputs.nix-snapd.nixosModules.default
@@ -172,7 +172,7 @@
           hostname = "blade";
           modules = [
             ./systems/blade
-            ./modules/essential/server-config.nix
+            ./modules/server/default.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
@@ -185,7 +185,7 @@
           hostname = "cospi";
           modules = [
             ./systems/cospi
-            ./modules/addons/desktop/desktop-config.nix
+            ./modules/desktop/default.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak

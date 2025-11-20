@@ -2,6 +2,9 @@
 
 {
   imports = [
+    ./base
+    ./networking
+    ./command-scheduler/command-scheduler.nix
     ./services.nix
   ];
 
