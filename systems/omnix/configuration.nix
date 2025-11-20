@@ -12,15 +12,13 @@
     ./fileSystems.nix
     
     # Addon modules
-    ../../modules/addons/services/docker
-    ../../modules/essential/core
-    ../../modules/essential/networking
-    ../../modules/addons/services
-    ../../modules/addons/desktop/pop-shell.nix
-    ../../modules/addons/desktop/tlp.nix
-    ../../modules/addons/desktop/performance-optimization.nix
-    ../../modules/addons/apps/kiro
-    ../../modules/addons/extras/kernels/xanmod.nix
+    ../../modules/services/docker
+    ../../modules/services
+    ../../modules/desktop/pop-shell.nix
+    ../../modules/desktop/tlp.nix
+    ../../modules/desktop/performance-optimization.nix
+    ../../modules/apps/kiro
+    ../../modules/extras/kernels/xanmod.nix
   ];
   
   # Add NUR overlay for Firefox extensions

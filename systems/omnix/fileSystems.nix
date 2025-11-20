@@ -1,6 +1,6 @@
 {
   imports = [
-    ../../modules/essential/common/swap.nix
+    ../../modules/core/common/swap.nix
   ];
 
   fileSystems = {

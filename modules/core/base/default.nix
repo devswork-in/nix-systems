@@ -8,7 +8,7 @@
 
   home-manager.users."${userConfig.user.name}" = { ... }: {
     imports = [
-      ../packages/common  # Import common packages
+      ../packages  # Import common packages
     ];
   };
 }

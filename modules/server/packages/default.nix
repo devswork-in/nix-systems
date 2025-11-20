@@ -3,8 +3,7 @@
 
 {
   imports = [
-    ../common  # Import common packages
-    ../../configs/server  # Import server configs
+    ../../core/packages  # Import common packages
   ];
 
   # Add only server-specific packages not in common

@@ -10,10 +10,8 @@
     ./fileSystems.nix
     
     # Addon modules
-    ../../modules/addons/services/docker
-    ../../modules/essential/networking
-    ../../modules/essential/core
-    ../../modules/addons/services/flatpak.nix
+    ../../modules/services/docker
+    ../../modules/services/flatpak.nix
   ];
 
   # System-specific hostname (overrides profile default)

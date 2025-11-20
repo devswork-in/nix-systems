@@ -3,8 +3,7 @@
 
 {
   imports = [
-    ../common  # Import common packages
-    ../../configs/desktop  # Import desktop configs
+    ../../core/packages  # Import common packages
   ];
 
   # Add only desktop-specific packages

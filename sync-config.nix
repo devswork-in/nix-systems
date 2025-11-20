@@ -15,7 +15,7 @@ in
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/essential/configs/common/aliases";
+      source = "${nixSystemsRoot}/modules/core/configs/common/aliases";
       dest = "~/.config/aliases";
     }
     {
@@ -25,22 +25,22 @@ in
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/essential/configs/common/htop/htoprc";
+      source = "${nixSystemsRoot}/modules/core/configs/common/htop/htoprc";
       dest = "~/.config/htop/htoprc";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/essential/configs/common/tmux.conf";
+      source = "${nixSystemsRoot}/modules/core/configs/common/tmux.conf";
       dest = "~/.tmux.conf";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/essential/configs/common/bashrc";
+      source = "${nixSystemsRoot}/modules/core/configs/common/bashrc";
       dest = "~/.bashrc";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/essential/configs/common/fish";
+      source = "${nixSystemsRoot}/modules/core/configs/common/fish";
       dest = "~/.config/fish";
     }
   ];
@@ -65,47 +65,47 @@ in
   desktop = [
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/kitty.conf";
+      source = "${nixSystemsRoot}/modules/desktop/kitty.conf";
       dest = "~/.config/kitty/kitty.conf";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/gromit-mpx.ini";
+      source = "${nixSystemsRoot}/modules/desktop/gromit-mpx.ini";
       dest = "~/.config/gromit-mpx.ini";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/flameshot/flameshot.ini";
+      source = "${nixSystemsRoot}/modules/desktop/flameshot/flameshot.ini";
       dest = "~/.config/flameshot/flameshot.ini";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/xinitrc";
+      source = "${nixSystemsRoot}/modules/desktop/xinitrc";
       dest = "~/.xinitrc";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/Xresources";
+      source = "${nixSystemsRoot}/modules/desktop/Xresources";
       dest = "~/.Xresources";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/addon-aliases";
+      source = "${nixSystemsRoot}/modules/desktop/addon-aliases";
       dest = "~/.config/addon-aliases";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/xplr";
+      source = "${nixSystemsRoot}/modules/desktop/xplr";
       dest = "~/.config/xplr";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/mpv";
+      source = "${nixSystemsRoot}/modules/desktop/mpv";
       dest = "~/.config/mpv";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/addons/desktop/icons";
+      source = "${nixSystemsRoot}/modules/desktop/icons";
       dest = "~/.icons";
     }
   ];

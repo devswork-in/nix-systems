@@ -13,9 +13,8 @@ let
     then import configPath { inherit config pkgs lib userConfig; }
     else import ../../../scheduled-scripts/scheduled-commands.nix { inherit config pkgs lib userConfig; };
   
-  # Determine system type by checking which config is imported
-  # This is a simple heuristic - desktop systems import desktop-config.nix
-  isDesktop = builtins.pathExists ../../addons/desktop/desktop-config.nix;
+  # Determine system type by checking if Xserver is enabled
+  isDesktop = config.services.xserver.enable;
   isServer = !isDesktop;
   
   # Select appropriate commands based on system type
