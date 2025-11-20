@@ -3,15 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/release-25.05";
+    
+    flake-compat.url = "github:edolstra/flake-compat";
 
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "flake-compat";
     };
 
     winapps = {
       url = "github:winapps-org/winapps";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "flake-compat";
     };
 
     nix-flatpak = {
@@ -22,6 +26,7 @@
     nix-snapd = {
       url = "github:nix-community/nix-snapd";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "flake-compat";
     };
     
     home-manager = {
@@ -29,7 +34,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
-    nur.url = "github:nix-community/NUR";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     
     nix-repo-sync = {
       url = "github:Creator54/nix-repo-sync";
@@ -146,7 +154,7 @@
             inputs.home-manager.nixosModules.default
             inputs.nix-flatpak.nixosModules.nix-flatpak
             inputs.nix-snapd.nixosModules.default
-            inputs.nix-repo-sync.nixosModules.default
+            nix-repo-sync.nixosModules.default
             (
               { pkgs, ... }:
               {
