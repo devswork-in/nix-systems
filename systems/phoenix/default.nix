@@ -9,7 +9,6 @@
     ../server/hardware-configuration.nix
     
     # Addon modules
-    ../../modules/services/docker
     ../../modules/services/website
   ];
 

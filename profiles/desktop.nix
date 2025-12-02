@@ -1,12 +1,14 @@
 # Desktop profile - Common configuration for desktop/laptop systems
 # This profile contains settings shared across all desktop NixOS systems
 
-{ config, pkgs, lib, userConfig, flakeRoot, ... }:
+{ config, pkgs, lib, userConfig, flakeRoot, inputs, ... }:
 
 {
   # Import base profile
   imports = [
     ./base.nix
+    ../modules/services/flatpak.nix
+    inputs.nix-flatpak.nixosModules.nix-flatpak
   ];
 
   # Boot configuration common to desktops
