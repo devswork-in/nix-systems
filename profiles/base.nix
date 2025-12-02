@@ -5,6 +5,10 @@
 
 {
   # Nix settings common to all systems
+  imports = [
+    ../modules/services/docker
+  ];
+
   nix = {
     settings = {
       # Enable flakes and nix-command
@@ -12,9 +16,12 @@
       
       # Common binary caches
       substituters = [
+        "file:///home/${userConfig.user.name}/.nix-cache"
         "https://cache.nixos.org"
         "https://nixpkgs.cachix.org"
         "https://nix-community.cachix.org"
+        "https://cache.iog.io"
+        "https://numtide.cachix.org"
       ];
       
       # Trusted public keys for binary caches
@@ -22,6 +29,8 @@
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nixpkgs.cachix.org-1:q91R6hxbwFvDqTSDKwDAV4T5PxqXGxswD8vhONFMeOE="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+        "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
       ];
       
       # Automatically optimize store by hard-linking identical files
