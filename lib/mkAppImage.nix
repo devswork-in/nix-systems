@@ -15,11 +15,12 @@ let
   };
 in pkgs.appimageTools.wrapType2 {
   inherit pname version src;
+  binName = pname; # Explicitly set the executable name to match pname for consistency
 
   extraInstallCommands = ''
     # Create desktop entry and icon directories
     mkdir -p $out/share/applications
-    
+
     # Create directories for different icon sizes
     for size in 16 32 48 64 128 256 512 1024; do
       mkdir -p $out/share/icons/hicolor/''${size}x''${size}/apps
