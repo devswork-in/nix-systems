@@ -54,7 +54,22 @@
     git
     cachix
     home-manager
+    vim
   ];
+
+  # Environment variables for all systems
+  environment.variables = {
+    PAGER = "bat";
+    BROWSER = "google-chrome";
+    TERMINAL = "kitty";
+    READER = "zathura";
+  };
+
+  # Configure vim and set as default editor
+  programs.vim = {
+    enable = true;
+    defaultEditor = true;  # This sets EDITOR and VISUAL to vim
+  };
   
   # Default timezone (can be overridden per-system)
   time.timeZone = lib.mkDefault "Asia/Kolkata";
