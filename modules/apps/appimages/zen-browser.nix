@@ -3,7 +3,7 @@
 
 let
   # Import mkAppImage helper from lib
-  mkAppImage = import ../../../../lib/mkAppImage.nix { inherit pkgs; };
+  mkAppImage = import ../../../lib/mkAppImage.nix { inherit pkgs; };
   
   zen-browser = mkAppImage {
     pname = "zen-browser";

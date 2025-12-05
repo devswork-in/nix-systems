@@ -5,6 +5,7 @@
   imports = [
     ../core
     ./copyq
+    ../apps/appimages
   ];
 
   # Enable CopyQ clipboard manager
@@ -15,7 +16,6 @@
       ./packages
       ./environment.nix
       ./fusuma.nix
-      ./firefox
     ];
   };
 }
