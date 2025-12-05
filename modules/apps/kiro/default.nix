@@ -131,7 +131,7 @@ let
           pkgs.coreutils
           pkgs.xdg-utils
         ]}
-        --set BROWSER "firefox"
+        --set BROWSER "xdg-open"
         --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true --wayland-text-input-version=3}}"
       )
     '';

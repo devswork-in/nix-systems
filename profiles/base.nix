@@ -60,7 +60,7 @@
   # Environment variables for all systems
   environment.variables = {
     PAGER = "bat";
-    BROWSER = "google-chrome";
+    BROWSER = "zen-browser";
     TERMINAL = "kitty";
     READER = "zathura";
   };
