@@ -1074,7 +1074,7 @@ xplr.config.modes.builtin.default = {
         messages = {
           {
             BashExec = [===[
-              ${EDITOR:-vi} "${XPLR_FOCUS_PATH:?}"
+              ${EDITOR:-vim} "${XPLR_FOCUS_PATH:?}"
             ]===],
           },
           "PopMode",
@@ -1329,7 +1329,7 @@ xplr.config.modes.builtin.debug_error = {
         messages = {
           {
             BashExec = [===[
-              ${EDITOR:-vi} "${XPLR_PIPE_LOGS_OUT:?}"
+              ${EDITOR:-vim} "${XPLR_PIPE_LOGS_OUT:?}"
             ]===],
           },
         },
