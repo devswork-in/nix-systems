@@ -7,10 +7,10 @@ let
   
   zen-browser = mkAppImage {
     pname = "zen-browser";
-    version = "1.7.6b";
+    version = "1.17.12b";
     src = pkgs.fetchurl {
-      url = "https://github.com/zen-browser/desktop/releases/download/1.7.6b/zen-x86_64.AppImage";
-      sha256 = "sha256-GJuxooMV6h3xoYB9hA9CaF4g7JUIJ2ck5/hiQp89Y5o=";
+      url = "https://github.com/zen-browser/desktop/releases/download/1.17.12b/zen-x86_64.AppImage";
+      sha256 = "sha256:a5a87189dbcc2f1b524f8c6122d5c8e799d14f8d13582923b2758a6f7ed9ac09";
     };
     name = "Zen Browser";
     comment = "A modern and fast web browser";
