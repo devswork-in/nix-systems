@@ -4,7 +4,7 @@
 let
   # Import mkAppImage helper from lib
   mkAppImage = import ../../../lib/mkAppImage.nix { inherit pkgs; };
-  
+
   zen-browser = mkAppImage {
     pname = "zen-browser";
     version = "1.17.12b";
@@ -15,6 +15,8 @@ let
     name = "Zen Browser";
     comment = "A modern and fast web browser";
     categories = "Network;WebBrowser;";
+    mimeType = "x-scheme-handler/http;x-scheme-handler/https;";
+    desktopActions = "NewWindow:New Window:zen-browser --new-window|NewPrivateWindow:New Private Window:zen-browser --private-window";
   };
 in
 {
