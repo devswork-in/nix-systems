@@ -11,7 +11,7 @@
     
     # Addon modules
     ../../modules/services/snaps.nix
-    ../../modules/desktop/pop-shell.nix
+    ../../modules/desktops/gnome/pop-shell.nix
   ];
 
   # System-specific hostname (overrides profile default)

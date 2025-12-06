@@ -159,7 +159,7 @@
 
     # Import GTK configuration
     imports = [
-      ./gtk-config.nix
+      ../../desktop-utils/gtk-config.nix
     ];
   };
 }
