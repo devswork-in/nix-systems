@@ -109,5 +109,9 @@ if ! sudo nixos-install --flake /tmp/nix-systems/#"$FLAKE" --impure; then
   err "nixos-install failed!"
 fi
 log "nixos-install completed successfully."
+if ! sudo chown -R 1000:100 /mnt/home/*/.*; then
+  err "Failed to fix permissions for dotfiles."
+fi
+log "Permissions fixed for dotfiles."
 log "Setup completed successfully!"
 exit 0
