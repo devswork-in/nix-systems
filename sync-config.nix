@@ -108,5 +108,22 @@ in
       source = "${nixSystemsRoot}/modules/desktop-utils/icons";
       dest = "~/.icons";
     }
+
+    # Niri Wayland compositor configuration
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/config.kdl";
+      dest = "~/.config/niri/config.kdl";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/waybar-config.json";
+      dest = "~/.config/waybar/config";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/waybar-style.css";
+      dest = "~/.config/waybar/style.css";
+    }
   ];
 }
