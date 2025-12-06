@@ -78,7 +78,7 @@ log "All dependencies are present."
 #---------------------------------------
 if [[ ! -d "/tmp/nix-systems" ]]; then
   log "/tmp/nix-systems does not exist. Cloning repository..."
-  if ! git clone https://github.com/creator54/nix-systems /tmp/nix-systems; then
+  if ! git clone https://github.com/devswork-in/nix-systems /tmp/nix-systems; then
     err "Cloning of nix-systems failed!"
   fi
   log "Repository cloned successfully."
@@ -111,4 +111,3 @@ fi
 log "nixos-install completed successfully."
 log "Setup completed successfully!"
 exit 0
-
