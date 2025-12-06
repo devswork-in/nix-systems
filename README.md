@@ -1,69 +1,63 @@
-# NixOS Systems Configuration
+# Nix-Systems (NixOS)
 
-[![NixOS](https://img.shields.io/badge/NixOS-24.11-blue.svg?logo=nixos)](https://nixos.org)
+[![NixOS](https://img.shields.io/badge/NixOS-25.05-blue.svg?logo=nixos)](https://nixos.org)
 [![Flakes](https://img.shields.io/badge/Nix-Flakes-informational.svg?logo=nixos)](https://nixos.wiki/wiki/Flakes)
 
-Opinionated NixOS configurations for managing multiple machines with shared profiles and automated config synchronization.
+Opinionated NixOS configs for my devices.
 
-## Quick Start
-
-```bash
-sudo sh -c 'curl -sSL https://raw.githubusercontent.com/Creator54/nix-systems/main/setup.sh | bash -s /dev/nvme0n1 omnix'
-```
-
-## Documentation
-
-- [Structure](docs/structure.md) - Repository layout and architecture
-- [Setup](docs/setup.md) - Installation and configuration
-- [Usage](docs/usage.md) - Building and deploying systems
-- [Modules](docs/modules.md) - Available modules and services
-- [Repo-Sync](docs/repo-sync.md) - Configuration synchronization
-- [Development](docs/development.md) - Extending the system
-
-## Repository Layout
+## Layout
 
 ```
 .
-├── lib/                    # Helper functions (mkSystemConfig, mkAppImage, mkRepoSync)
+├── lib/                    # Helper functions (mkSystemConfig, mkAppImage)
 ├── profiles/               # Reusable profiles (base, desktop, server)
 ├── modules/
-│   ├── essential/          # Core functionality
-│   ├── addons/             # Optional features
-│   └── services/           # System services
+│   ├── addons/             # Addon modules
+│   ├── apps/               # Application modules
+│   ├── core/               # Core system modules
+│   ├── desktop-utils/      # Desktop utilities and configurations
+│   ├── desktops/           # Desktop environment modules
+│   ├── server/             # Server configurations
+│   ├── services/           # Service modules
+│   └── extras/             # Additional modules
+├── scheduled-scripts/      # Scheduled scripts
 ├── systems/                # Machine-specific configs
 ├── flake.nix               # Main configuration
 ├── config.nix              # User settings
 └── sync-config.nix         # Sync configuration
 ```
 
-## Systems
+## Quick Start
 
-- **omnix** - Desktop (GNOME + Pop Shell)
-- **blade** - Server
-- **cospi** - Desktop (GNOME)
-- **server** - Basic server
-- **phoenix** - Server (x86_64/aarch64)
-
-## Common Commands
+1. Boot NixOS ISO
+2. Run setup script:
 
 ```bash
-# Local rebuild (--impure required for repo-sync to detect repo location)
-sudo nixos-rebuild switch --flake .#<hostname> --impure
-
-# Remote deployment
-nix run nixpkgs#deploy-rs -- .#<hostname>
-
-# Force config sync
-repo-sync-force
-
-# View sync logs
-repo-sync-logs
-
-# Comprehensive Nix cleanup
-# WARNING: Removes old generations, GC roots, local builds, and impure caches
-nix-cleanup --dry-run           # Preview what would be cleaned (recommended first)
-nix-cleanup                     # Run full cleanup
-nix-cleanup --dry-run --verbose # Preview with detailed output
+sudo sh -c 'curl -sSL https://raw.githubusercontent.com/devswork-in/nix-systems/main/setup.sh | bash -s /dev/nvme0n1 omnix'
 ```
 
-See [Usage](docs/usage.md) for complete command reference.
+**Warning**: Wipes `/dev/nvme0n1`, repartitions & installs `omnix` flake.
+
+## Systems
+
+[omnix](systems/omnix/), [blade](systems/blade/), [cospi](systems/cospi/), [phoenix](systems/phoenix/)
+
+## Commands
+
+```bash
+sudo nixos-rebuild switch --flake .#<hostname> --impure  # Build & switch
+nix run nixpkgs#deploy-rs -- .#<hostname>               # Remote deploy
+nix-repo-sync-force                                     # Force sync
+nix-repo-sync-logs                                      # View logs
+nix-cleanup --dry-run                                   # Cleanup preview
+nix-cleanup                                             # Full cleanup
+nix run nixpkgs#nixos-rebuild -- build-vm --flake .#<hostname> --fast  # VM test
+```
+
+## Docs
+
+- [Setup](docs/setup.md)
+- [Usage](docs/usage.md)
+- [Modules](docs/modules.md)
+- [Structure](docs/structure.md)
+- [Repo-Sync](docs/repo-sync.md)

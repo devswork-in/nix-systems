@@ -1,17 +1,17 @@
 # Usage
 
-Building, deploying, and managing systems.
+Build, deploy, and manage systems.
 
-## Local Builds
+## Builds
 
 ```bash
-sudo nixos-rebuild switch --flake .#<hostname> --impure
-sudo nixos-rebuild test --flake .#<hostname> --impure      # Test without making default
-sudo nixos-rebuild build --flake .#<hostname>              # Build only
-sudo nixos-rebuild boot --flake .#<hostname> --impure      # Apply on next boot
+sudo nixos-rebuild switch --flake .#<hostname> --impure  # Build & switch
+sudo nixos-rebuild test --flake .#<hostname> --impure    # Test only
+sudo nixos-rebuild build --flake .#<hostname>            # Build only
+sudo nixos-rebuild boot --flake .#<hostname> --impure    # Next boot
 
 # From GitHub
-sudo nixos-rebuild switch --flake github:creator54/nix-systems#<hostname> --impure
+sudo nixos-rebuild switch --flake github:devswork-in/nix-systems#<hostname> --impure
 ```
 
 ### Rollback
@@ -21,7 +21,7 @@ sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 sudo nixos-rebuild switch --rollback
 ```
 
-## Remote Deployment
+## Deploy
 
 ### SSH Config
 
@@ -34,88 +34,50 @@ Host phoenix
     IdentityFile ~/.ssh/id_rsa
 ```
 
-### Deploy
+### Remote
 
 ```bash
 nix run nixpkgs#deploy-rs -- .#phoenix
-nix run nixpkgs#deploy-rs -- github:creator54/nix-systems#phoenix
-nix run nixpkgs#deploy-rs -- .#server --hostname=phoenix  # Different profile
+nix run nixpkgs#deploy-rs -- github:devswork-in/nix-systems#phoenix
+nix run nixpkgs#deploy-rs -- .#server --hostname=phoenix
 ```
 
-### VM Testing
+### VM Test
 
 ```bash
 nix run nixpkgs#nixos-rebuild -- build-vm --flake .#phoenix --fast
 ./result/bin/run-*-vm
 ```
 
-## System Management
+## Systems
 
-### Add New System
+### New System
 
 ```bash
 mkdir -p systems/newsystem
-```
-
-Create `systems/newsystem/configuration.nix`:
-
-```nix
-{ config, pkgs, userConfig, ... }:
-{
-  imports = [ ./hardware.nix ./fileSystems.nix ];
-  networking.hostName = "newsystem";
-}
-```
-
-Generate hardware config:
-
-```bash
 nixos-generate-config --show-hardware-config > systems/newsystem/hardware.nix
 ```
 
-Add to [`flake.nix`](../flake.nix):
-
-```nix
-nixosConfigurations.newsystem = mkSystem {
-  system = "x86_64-linux";
-  hostname = "newsystem";
-  modules = [
-    ./systems/newsystem
-    ./profiles/desktop.nix
-    inputs.home-manager.nixosModules.default
-  ];
-};
-```
-
-Build:
+- See [systems/omnix/configuration.nix](../systems/omnix/configuration.nix) for structure
+- Add to [`flake.nix`](../flake.nix), see [flake.nix](../flake.nix) for patterns
 
 ```bash
 sudo nixos-rebuild switch --flake .#newsystem --impure
 ```
 
-### Switch Profiles
+### Switch Profile
 
-Edit [`flake.nix`](../flake.nix):
-
-```nix
-modules = [
-  ./systems/mysystem
-  ./profiles/server.nix  # Changed from desktop.nix
-];
-```
-
-Rebuild:
+- Edit [`flake.nix`](../flake.nix) (desktop.nix, server.nix)
+- See [flake.nix](../flake.nix) for usage
 
 ```bash
 sudo nixos-rebuild switch --flake .#mysystem --impure
 ```
 
-## Repo-Sync
+## Sync
 
 ```bash
-repo-sync-force                    # Force sync
-repo-sync-logs                     # View logs
-systemctl status repo-sync.service # Check status
+nix-repo-sync-force                # Force sync
+nix-repo-sync-logs                 # View logs
+systemctl status nix-repo-sync.service # Status
 ```
-
-See [`modules/services/repo-sync/`](../modules/services/repo-sync/) for implementation.

@@ -1,87 +1,68 @@
 # Modules
 
-Available modules and services.
+System modules and services.
 
-## Essential Modules
+## Core
 
-Core functionality included via profiles. See [`modules/essential/`](../modules/essential/).
+Core functionality. See [`modules/core/`](../modules/core/).
 
-- `base/` - System configuration
-- `packages/` - Package sets (common, server, desktop)
-- `configs/` - Config files (common, server, desktop)
+- `base/` - System configs
+- `packages/` - Package sets
+- `configs/` - Config files
+- `networking/` - Network configs
+- `command-scheduler/` - Command scheduling
 
-## Addon Modules
+## Desktop
 
-Optional features, explicitly imported. See [`modules/addons/`](../modules/addons/).
+Desktop configurations. See [`modules/desktop-utils/`](../modules/desktop-utils/).
 
-### Desktop
+### Utilities
 
-**GNOME + Pop Shell** - [`pop-shell.nix`](../modules/addons/desktop/pop-shell.nix)
+- `bluetooth.nix`, `gtk-config.nix`, `performance-optimization.nix`, `plymouth.nix`, `redshift.nix`, `tlp.nix`
+- Configs: `kitty.conf`, `gromit-mpx.ini`, `flameshot/flameshot.ini`
 
-```nix
-imports = [ ./modules/addons/desktop/pop-shell.nix ];
-```
+### Environments
 
-**Other:**
-- `pantheon.nix` - Pantheon desktop
-- `bluetooth.nix` - Bluetooth support
-- `plymouth.nix` - Boot splash
-- `redshift.nix` - Screen temperature
-- `tlp.nix` - Power management
+- `modules/desktops/gnome/`, `modules/desktops/pantheon/`, `modules/desktops/wayland/`
 
-### Applications
+## Apps
 
-**AppImages** - [`apps/appimages/`](../modules/addons/apps/appimages/)
+Application packages. See [`modules/apps/`](../modules/apps/).
 
-```nix
-imports = [
-  ./modules/addons/apps/appimages/zen-browser.nix
-  ./modules/addons/apps/appimages/obsidian.nix
-];
-```
+- AppImages: [zen-browser.nix](../modules/apps/appimages/zen-browser.nix), [obsidian.nix](../modules/apps/appimages/obsidian.nix)
+- `modules/apps/kiro/` - Kiro apps
 
-### Services
+## Services
 
-```nix
-imports = [ ./modules/addons/services/docker ];
-services.flatpak.enable = true;
-services.snapd.enable = true;
-```
+System services. See [`modules/services/`](../modules/services/).
 
-## Web Services
+### Package Management
 
-Configure in [`config.nix`](../config.nix). See [`modules/addons/services/website/`](../modules/addons/services/website/).
+- `docker/`, `flatpak.nix`, `snaps.nix`
 
-```nix
-services = {
-  nextCloud = { enable = true; adminUser = "admin"; host = "cloud.domain.com"; };
-  jellyfin = { enable = true; user = "user"; host = "tv.domain.com"; port = 8096; };
-  plex = { enable = true; user = "user"; host = "plex.domain.com"; port = 32400; };
-  whoogle = { enable = true; host = "search.domain.com"; port = "8050"; };
-  codeServer = { enable = true; host = "code.domain.com"; user = "user"; port = 5000; };
-  adguard = { enable = true; host = "ag.domain.com"; port = 3000; };
-  website = { enable = true; https = true; };
-};
-```
+### Web Services
 
-## Enable/Disable
+- Configure in [`config.nix`](../config.nix)
+- See [`modules/services/website/`](../modules/services/website/)
+- Examples: [next-cloud.nix](../modules/services/website/next-cloud.nix), [jellyfin.nix](../modules/services/website/jellyfin.nix), [plex-server.nix](../modules/services/website/plex-server.nix), [whoogle.nix](../modules/services/website/whoogle.nix), [code-server.nix](../modules/services/website/code-server.nix), [adguard.nix](../modules/services/website/adguard.nix)
 
-Edit [`config.nix`](../config.nix):
+### Other
 
-```nix
-services.nextCloud.enable = true;
-```
+- `mysql.nix`, `steam.nix`, `virtManager.nix`
 
-Or add imports to system's `configuration.nix`:
+## Server
 
-```nix
-imports = [
-  ../../modules/addons/services/docker
-  ../../modules/addons/apps/appimages/zen-browser.nix
-];
-```
+Server configs. See [`modules/server/`](../modules/server/).
 
-Rebuild:
+## Extras
+
+Additional modules. See [`modules/extras/`](../modules/extras/).
+
+## Usage
+
+- Configure services in [`config.nix`](../config.nix)
+- Import modules in `configuration.nix`
+- Examples: [omnix/configuration.nix](../systems/omnix/configuration.nix), [server/configuration.nix](../systems/server/configuration.nix)
 
 ```bash
 sudo nixos-rebuild switch --flake .#<hostname> --impure

@@ -1,23 +1,29 @@
 # Structure
 
-Repository organization and architecture.
+Repository architecture.
 
-## Directory Layout
+## Layout
 
 ```
 .
 ├── lib/                    # Helper functions
 │   ├── mkSystemConfig.nix  # System builder
 │   └── mkAppImage.nix      # AppImage packager
-├── nix-repo-sync/         # Config sync library (standalone flake)
-├── profiles/               # Reusable configurations
+├── profiles/               # Reusable configs
 │   ├── base.nix           # Common settings
 │   ├── desktop.nix        # Desktop config
 │   └── server.nix         # Server config
 ├── modules/
-│   ├── essential/         # Core modules (base, packages, configs)
-│   └── addons/           # Optional modules (desktop, apps, services)
-├── systems/              # Machine configs (omnix, blade, cospi, server, phoenix)
+│   ├── addons/            # Addon modules
+│   ├── apps/              # App modules
+│   ├── core/              # Core modules
+│   ├── desktop-utils/     # Desktop configs
+│   ├── desktops/          # Desktop envs
+│   ├── server/            # Server configs
+│   ├── services/          # Service modules
+│   └── extras/            # Additional modules
+├── scheduled-scripts/   # Scheduled scripts
+├── systems/             # Machine configs
 ├── flake.nix            # Main flake
 ├── config.nix           # User config
 └── sync-config.nix      # Sync config
@@ -27,53 +33,40 @@ Repository organization and architecture.
 
 ### lib/
 
-**[`mkSystemConfig.nix`](../lib/mkSystemConfig.nix)** - Creates system configurations
-
-**[`mkAppImage.nix`](../lib/mkAppImage.nix)** - Packages AppImages with desktop integration
-
-### nix-repo-sync/
-
-**[`nix-repo-sync`](../nix-repo-sync/)** - Standalone flake library for configuration synchronization (git repos and symlinks)
+[`mkSystemConfig.nix`](../lib/mkSystemConfig.nix), [`mkAppImage.nix`](../lib/mkAppImage.nix)
 
 ### profiles/
 
-**[`base.nix`](../profiles/base.nix)** - Common settings (Nix config, essential packages, user setup, SSH)
-
-**[`desktop.nix`](../profiles/desktop.nix)** - Desktop systems (extends base, adds desktop packages, NetworkManager, boot config)
-
-**[`server.nix`](../profiles/server.nix)** - Server systems (extends base, adds server packages, firewall, web server)
+[`base.nix`](../profiles/base.nix), [`desktop.nix`](../profiles/desktop.nix), [`server.nix`](../profiles/server.nix)
 
 ### modules/
 
-**Essential** - Core functionality, included via profiles
-- `base/` - System configuration
-- `packages/` - Package sets (common, server, desktop)
-- `configs/` - Config files (common, server, desktop)
+**Core**: `core/base/`, `core/packages/`, `core/configs/`, `core/networking/`, `core/command-scheduler/`
 
-**Addons** - Optional features, explicitly imported
-- `desktop/` - Desktop environments
-- `apps/` - Applications
-- `services/` - Services
+**Desktop**: `desktop-utils/`, `desktops/` (gnome, pantheon, wayland)
+
+**Apps**: `apps/` (appimages, kiro)
+
+**Services**: `services/` (docker, flatpak, mysql, snaps, steam, etc.)
+
+**Server**: `server/`
+
+**Extras**: `extras/`
 
 ### systems/
 
-Machine-specific configurations:
-- `configuration.nix` - System settings
-- `hardware.nix` - Hardware config
-- `fileSystems.nix` - Filesystem mounts
+- `configuration.nix` - system settings
+- `hardware.nix` - hardware config
+- `fileSystems.nix` - mounts
+- Additional files (hibernation.nix, ollama.nix, etc.)
 
-### Configuration Files
+### Config Files
 
-**[`config.nix`](../config.nix)** - User settings, service toggles, sync config
-
-**[`sync-config.nix`](../sync-config.nix)** - Dotfile sync (common, desktop, server)
-
-**[`flake.nix`](../flake.nix)** - System definitions, deploy-rs, inputs
+[`config.nix`](../config.nix), [`sync-config.nix`](../sync-config.nix), [`flake.nix`](../flake.nix)
 
 ## Design
 
 - Profiles eliminate duplication
 - Lib functions provide reusable utilities
-- Essential modules shared via profiles
-- Single-purpose modules with consistent `userConfig` parameter
-- No hardcoded paths, portable across systems
+- Modules have consistent structure
+- Portable across systems
