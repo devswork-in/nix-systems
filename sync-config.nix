@@ -20,6 +20,11 @@ in
     }
     {
       type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/scripts";
+      dest = "~/.local/bin";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/scheduled-scripts";
       dest = "~/.config/scheduled-scripts";
     }

@@ -1,22 +1,17 @@
-# Nix Repo Sync
+# Repo-Sync
 
-Configuration synchronization system using [`nix-repo-sync`](https://github.com/Creator54/nix-repo-sync).
+Sync system using [nix-repo-sync](https://github.com/Creator54/nix-repo-sync).
 
-See the [nix-repo-sync README](https://github.com/Creator54/nix-repo-sync/README.md) for installation and usage details.
+## Config
 
-## This Repository's Configuration
+- [`sync-config.nix`](../sync-config.nix)
+- See [sync-config.nix](../sync-config.nix) for structure
 
-Edit [`sync-config.nix`](../sync-config.nix) to manage sync items:
+## Commands
 
-```nix
-{
-  common = [ /* synced on all systems */ ];
-  desktop = [ /* desktop-only syncs */ ];
-  server = [ /* server-only syncs */ ];
-}
-```
-
-Rebuild with `--impure` flag:
 ```bash
-sudo nixos-rebuild switch --flake .#<hostname> --impure
+sudo nixos-rebuild switch --flake .#<hostname> --impure  # Rebuild with --impure flag
+nix-repo-sync-force                                     # Force sync
+nix-repo-sync-logs                                      # View logs
+systemctl status nix-repo-sync.service                  # Service status
 ```

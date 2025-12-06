@@ -6,43 +6,44 @@ This directory contains various NixOS modules organized by their purpose and fun
 
 ### Core Modules (Essential system functionality)
 - `core/base/` - Base NixOS system configurations (filesystems, basic services)
-- `core/core/` - Core system configurations required for any system
-- `core/networking/` - Network-related modules (Wireguard, hosts, etc.)
 - `core/packages/` - Common packages used by most systems
-- `core/configs/common/` - Common configuration files (fish, htop, git, etc.)
+- `core/configs/` - Common configuration files (fish, htop, git, etc.)
+- `core/networking/` - Network-related modules
+- `core/command-scheduler/` - System command scheduling
 
-### Feature Modules (Domain-specific functionality)
-- `desktop/` - Desktop environment configurations
-  - `desktop/default.nix` - Complete desktop configuration entry point
-  - `desktop/packages/` - Desktop-specific packages
+### Desktop Modules (Desktop-specific functionality)
+- `desktop-utils/` - Desktop utilities and configurations (bluetooth, gtk-config, performance-optimization, etc.)
+- `desktops/` - Desktop environment modules (gnome, pantheon, wayland)
+
+### Server Modules (Server-specific functionality)
 - `server/` - Server configurations
-  - `server/default.nix` - Complete server configuration entry point
-  - `server/packages/` - Server-specific packages
 
-### Optional Modules
-- `apps/` - Application packages and configurations
-- `extras/` - Extra configurations and system enhancements
-- `services/` - Service-related modules (Steam, VirtManager, Flatpak, Docker, MySQL, etc.)
+### Service Modules (System services)
+- `services/` - Service-related modules (Docker, Flatpak, MySQL, Snaps, Steam, VirtManager, etc.)
+
+### Application Modules (Application packages)
+- `apps/` - Application packages and configurations (appimages, kiro)
+
+### Extra Modules
+- `extras/` - Additional configurations and system enhancements
 
 ## Usage
 
 The architecture supports clean, non-redundant configurations:
 
-1. **Server setup**: Import server default module
+1. **Server setup**: Import server modules
    ```nix
    imports = [
      ./modules/server/default.nix
    ];
    ```
-   *Note: `modules/server/default.nix` automatically imports `modules/core`.*
 
-2. **Desktop setup**: Import desktop default module
+2. **Desktop setup**: Import desktop modules
    ```nix
    imports = [
      ./modules/desktop-utils/default.nix
    ];
    ```
-   *Note: `modules/desktop-utils/default.nix` automatically imports `modules/core`.*
 
 3. **Layering**: Add additional services as needed
    ```nix
@@ -57,16 +58,19 @@ The architecture supports clean, non-redundant configurations:
 
 The structure eliminates code duplication by organizing configurations into logical, reusable components:
 - Common packages are defined in `core/packages/`
-- Server/Desktop packages are in their respective modules
-- Clear separation between Core, Desktop, and Server domains
+- Desktop utilities in `desktop-utils/`
+- Services in `services/`
+- Clear separation between different domain configurations
 
 ## Adding New Modules
 
 When adding new modules:
 1. For core system functionality: Place in appropriate `core/` subdirectory
-2. For common packages: Place in `core/packages/`
-3. For server-specific features: Place in `server/`
-4. For desktop-specific features: Place in `desktop/`
-5. For optional apps/services: Place in `apps/` or `services/`
-6. Include proper documentation within the module
-7. Update the relevant system configurations to use the new module
+2. For desktop utilities: Place in `desktop-utils/`
+3. For desktop environments: Place in `desktops/`
+4. For server-specific features: Place in `server/`
+5. For services: Place in `services/`
+6. For applications: Place in `apps/`
+7. For extras: Place in `extras/`
+8. Include proper documentation within the module
+9. Update the relevant system configurations to use the new module
