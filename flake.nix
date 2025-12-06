@@ -83,7 +83,7 @@
           else builtins.toString self.outPath;
 
       # Import desktop settings
-      desktopSettings = import ./modules/desktop/desktop-settings.nix {};
+      desktopSettings = import ./modules/desktop-utils/desktop-settings.nix {};
 
       # Optional secrets overlay (git-ignored, falls back to config.nix if not present)
       secrets = if builtins.pathExists ./secrets/user-secrets.nix 
@@ -155,7 +155,7 @@
           hostname = "omnix";
           modules = [
             ./systems/omnix
-            ./modules/desktop/default.nix
+            ./modules/desktop-utils/default.nix
             inputs.home-manager.nixosModules.default
             inputs.nix-snapd.nixosModules.default
             nix-repo-sync.nixosModules.default
@@ -188,7 +188,7 @@
           hostname = "cospi";
           modules = [
             ./systems/cospi
-            ./modules/desktop/default.nix
+            ./modules/desktop-utils/default.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
             inputs.nix-repo-sync.nixosModules.default

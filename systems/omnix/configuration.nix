@@ -13,9 +13,9 @@
     
     # Addon modules
     ../../modules/services
-    ../../modules/desktop/pop-shell.nix
-    ../../modules/desktop/tlp.nix
-    ../../modules/desktop/performance-optimization.nix
+    ../../modules/desktops/gnome/pop-shell.nix
+    ../../modules/desktop-utils/tlp.nix
+    ../../modules/desktop-utils/performance-optimization.nix
     ../../modules/apps/kiro
     ../../modules/extras/kernels/xanmod.nix
   ];

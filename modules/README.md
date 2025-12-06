@@ -39,15 +39,15 @@ The architecture supports clean, non-redundant configurations:
 2. **Desktop setup**: Import desktop default module
    ```nix
    imports = [
-     ./modules/desktop/default.nix
+     ./modules/desktop-utils/default.nix
    ];
    ```
-   *Note: `modules/desktop/default.nix` automatically imports `modules/core`.*
+   *Note: `modules/desktop-utils/default.nix` automatically imports `modules/core`.*
 
 3. **Layering**: Add additional services as needed
    ```nix
    imports = [
-     ./modules/desktop/default.nix
+     ./modules/desktop-utils/default.nix
      ./modules/services/docker
      ./modules/services/flatpak
    ];
