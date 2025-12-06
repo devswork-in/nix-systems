@@ -4,7 +4,7 @@
   # Pop Shell Configuration
   # Import base GNOME configuration
   imports = [
-    ./gnome-base.nix
+    ./base.nix
   ];
 
   # Pop Shell specific configuration
@@ -106,7 +106,7 @@ in
     };
 
     imports = [
-      ./gtk-config.nix
+      ../../desktop-utils/gtk-config.nix
     ];
 
     dconf.settings = {
