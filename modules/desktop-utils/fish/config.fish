@@ -1,8 +1,6 @@
 set -gx NNN_PLUG 'f:finder;o:fzopen;p:preview-tui;d:diffs;t:nmount;v:imgview;g:!git log;'
 set -gx NNN_FIFO '/tmp/nnn.fifo'
 
-fish_add_path -g $HOME/.local/bin/ $HOME/.npm-global/bin $HOME/.bun/bin
-
 # Note: Editor and other generic environment variables are now managed
 # through the centralized environment system in modules/essential/configs/common/environment.nix
 
@@ -10,7 +8,7 @@ fish_add_path -g $HOME/.local/bin/ $HOME/.npm-global/bin $HOME/.bun/bin
 # (modules/essential/configs/common/fish/config.fish)
 
 # Start with custom prompts by default (use Ctrl+P to toggle to starship)
-set -g PROMPT_MODE "custom"
+set -g PROMPT_MODE custom
 
 # Python virtual environment management
 function activate_venv -d "Activate default Python virtual environment at ~/.venv"
@@ -31,3 +29,4 @@ end
 alias x "rm -rf $argv"
 alias l 'v (ls | fzf )'
 alias d "cd ~/dev"
+
