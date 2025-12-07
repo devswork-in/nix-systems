@@ -48,6 +48,11 @@ in
       source = "${nixSystemsRoot}/modules/core/configs/common/fish";
       dest = "~/.config/fish";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/npmrc";
+      dest = "~/.npmrc";
+    }
   ];
 
   # Server-specific sync items
