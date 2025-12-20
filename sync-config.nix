@@ -2,10 +2,8 @@
 # Sync configuration for nix-repo-sync
 # See nix-repo-sync/README.md for usage details
 
-let
-  nixSystemsRoot = flakeRoot;
-in
-{
+let nixSystemsRoot = flakeRoot;
+in {
   # Synced on all systems
   common = [
     {
@@ -53,6 +51,11 @@ in
       source = "${nixSystemsRoot}/modules/core/configs/common/npmrc";
       dest = "~/.npmrc";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/vars/common.sh";
+      dest = "~/.config/env/common.sh";
+    }
   ];
 
   # Server-specific sync items
@@ -67,6 +70,11 @@ in
       type = "git";
       source = "https://github.com/creator54/blog.creator54.me";
       dest = "${paths.base}/blog.${user.domain}";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/vars/server.sh";
+      dest = "~/.config/env/server.sh";
     }
   ];
 
@@ -85,7 +93,8 @@ in
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/desktop-utils/flameshot/flameshot.ini";
+      source =
+        "${nixSystemsRoot}/modules/desktop-utils/flameshot/flameshot.ini";
       dest = "~/.config/flameshot/flameshot.ini";
     }
     {
@@ -127,13 +136,27 @@ in
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/waybar-config.json";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/niri/waybar-config.json";
       dest = "~/.config/waybar/config";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/waybar-style.css";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/niri/waybar-style.css";
       dest = "~/.config/waybar/style.css";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/vars/desktop.sh";
+      dest = "~/.config/env/desktop.sh";
+    }
   ];
+
+  # Omnix-specific sync items
+  omnix = [{
+    type = "local";
+    source = "${nixSystemsRoot}/modules/core/vars/omnix.sh";
+    dest = "~/.config/env/omnix.sh";
+  }];
 }

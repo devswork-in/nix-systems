@@ -2,14 +2,12 @@
 { userConfig, ... }:
 
 {
-  imports = [
-    ../core
-  ];
+  imports = [ ../core ];
 
   home-manager.users."${userConfig.user.name}" = { ... }: {
     imports = [
       ./packages
-      ./environment.nix
+
     ];
   };
 }

@@ -5,9 +5,7 @@
 
 {
   # Import base profile
-  imports = [
-    ./base.nix
-  ];
+  imports = [ ./base.nix ../modules/core/vars/server.nix ];
 
   # Boot configuration for servers
   boot.tmp.cleanOnBoot = true;
@@ -15,12 +13,7 @@
   # Networking configuration for servers
   networking = {
     firewall.enable = lib.mkDefault true;
-    nameservers = lib.mkDefault [
-      "8.8.4.4"
-      "8.8.8.8"
-      "1.1.1.1"
-      "9.9.9.9"
-    ];
+    nameservers = lib.mkDefault [ "8.8.4.4" "8.8.8.8" "1.1.1.1" "9.9.9.9" ];
   };
 
   # Server services
@@ -33,7 +26,7 @@
         PermitRootLogin = "yes";
       };
     };
-    
+
     # Journal configuration to limit disk usage
     journald.extraConfig = "SystemMaxUse=100M";
   };
@@ -54,7 +47,7 @@
       hashedPassword = userConfig.user.hashedPassword;
       openssh.authorizedKeys.keys = userConfig.user.sshKeys;
     };
-    
+
     # Regular user configuration
     "${userConfig.user.name}" = {
       shell = pkgs.fish;
@@ -67,12 +60,10 @@
   };
 
   # Default swap configuration for servers
-  swapDevices = lib.mkDefault [
-    {
-      device = "/swapfile";
-      size = 4096;  # 4GB swap file
-    }
-  ];
+  swapDevices = lib.mkDefault [{
+    device = "/swapfile";
+    size = 4096; # 4GB swap file
+  }];
 
   # Tmux configuration for servers
   programs.tmux = {
@@ -84,22 +75,17 @@
     '';
   };
 
-  # Enable tmux auto-start for servers
-  environment.variables.TMUX_AUTO_START = "1";
-
   # Configuration sync service (common + server syncs)
-  services.nix-repo-sync = 
-    let
-      syncConfig = import ../sync-config.nix { 
-        inherit (userConfig) user paths;
-        inherit flakeRoot;
-      };
-    in {
-      enable = lib.mkDefault true;
-      user = userConfig.user.name;
-      syncItems = lib.mkDefault (
-        (syncConfig.common or []) ++ 
-        (syncConfig.server or [])
-      );
+  services.nix-repo-sync = let
+    syncConfig = import ../sync-config.nix {
+      inherit (userConfig) user paths;
+      inherit flakeRoot;
     };
+  in {
+    enable = lib.mkDefault true;
+    user = userConfig.user.name;
+    syncItems = lib.mkDefault ((syncConfig.common or [ ])
+      ++ (syncConfig.server or [ ])
+      ++ (syncConfig.${config.networking.hostName} or [ ]));
+  };
 }

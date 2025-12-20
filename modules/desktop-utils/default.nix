@@ -2,11 +2,7 @@
 { lib, userConfig, ... }:
 
 {
-  imports = [
-    ../core
-    ./copyq
-    ../apps/appimages
-  ];
+  imports = [ ../core ./copyq ../apps/appimages ];
 
   # Enable CopyQ clipboard manager
   services.copyq.enable = true;
@@ -14,7 +10,7 @@
   home-manager.users."${userConfig.user.name}" = { ... }: {
     imports = [
       ./packages
-      ./environment.nix
+
       ./fusuma.nix
     ];
   };

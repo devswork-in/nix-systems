@@ -9,6 +9,16 @@ if [ -f ~/.config/aliases ]; then
   source ~/.config/aliases
 fi
 
+# Source imperative environment variables
+# Hierarchy: Common -> Desktop/Server -> System (Hostname)
+if [ -d "$HOME/.config/env" ]; then
+    HOSTNAME=$(hostname)
+    for target in "common" "desktop" "server" "$HOSTNAME"; do
+        env_file="$HOME/.config/env/$target.sh"
+        [ -f "$env_file" ] && source "$env_file"
+    done
+fi
+
 # Auto-activate default Python virtual environment
 if [ -d "$HOME/.venv" ]; then
     source "$HOME/.venv/bin/activate" 2>/dev/null || true
