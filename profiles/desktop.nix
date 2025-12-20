@@ -7,6 +7,7 @@
   # Import base profile
   imports = [
     ./base.nix
+    ../modules/core/vars/desktop.nix
     ../modules/services/flatpak.nix
     inputs.nix-flatpak.nixosModules.nix-flatpak
   ];
@@ -18,7 +19,7 @@
         enable = lib.mkDefault true;
         memtest86.enable = lib.mkDefault true;
       };
-      timeout = lib.mkDefault 0;  # Press Esc while booting if needed
+      timeout = lib.mkDefault 0; # Press Esc while booting if needed
       efi.canTouchEfiVariables = lib.mkDefault true;
     };
     tmp.cleanOnBoot = lib.mkDefault true;
@@ -27,12 +28,7 @@
   # Networking configuration for desktops
   networking = {
     networkmanager.enable = lib.mkDefault true;
-    nameservers = lib.mkDefault [
-      "8.8.8.8"
-      "9.9.9.9"
-      "1.1.1.1"
-      "8.8.4.4"
-    ];
+    nameservers = lib.mkDefault [ "8.8.8.8" "9.9.9.9" "1.1.1.1" "8.8.4.4" ];
   };
 
   # Enable man page generation and caching for fish completion
@@ -40,21 +36,15 @@
 
   # Desktop environment configuration
   environment = {
-    pathsToLink = [ "/share/fish" ];  # For fish shell completions
+    pathsToLink = [ "/share/fish" ]; # For fish shell completions
   };
 
   # User configuration for desktop systems
   users.users.${userConfig.user.name} = {
     shell = pkgs.fish;
     isNormalUser = true;
-    extraGroups = [
-      "power"
-      "storage"
-      "wheel"
-      "audio"
-      "video"
-      "networkmanager"
-    ];
+    extraGroups =
+      [ "power" "storage" "wheel" "audio" "video" "networkmanager" ];
     hashedPassword = userConfig.user.hashedPassword;
   };
 
@@ -73,18 +63,16 @@
   time.hardwareClockInLocalTime = true;
 
   # Configuration sync service (common + desktop syncs)
-  services.nix-repo-sync = 
-    let
-      syncConfig = import ../sync-config.nix { 
-        inherit (userConfig) user paths;
-        inherit flakeRoot;
-      };
-    in {
-      enable = lib.mkDefault true;
-      user = userConfig.user.name;
-      syncItems = lib.mkDefault (
-        (syncConfig.common or []) ++ 
-        (syncConfig.desktop or [])
-      );
+  services.nix-repo-sync = let
+    syncConfig = import ../sync-config.nix {
+      inherit (userConfig) user paths;
+      inherit flakeRoot;
     };
+  in {
+    enable = lib.mkDefault true;
+    user = userConfig.user.name;
+    syncItems = lib.mkDefault ((syncConfig.common or [ ])
+      ++ (syncConfig.desktop or [ ])
+      ++ (syncConfig.${config.networking.hostName} or [ ]));
+  };
 }

@@ -3,17 +3,17 @@
 {
   # Base GNOME Desktop Environment Configuration
   # This module contains common settings shared between vanilla GNOME and Pop Shell
-  
+
   services.xserver = {
     enable = true;
-    
+
     # Display Manager
     displayManager.gdm = {
       enable = true;
-      wayland = false;  # Use Xorg instead of Wayland
+      wayland = false; # Use Xorg instead of Wayland
       autoSuspend = true;
     };
-    
+
     # Desktop Manager
     desktopManager.gnome.enable = true;
   };
@@ -23,7 +23,7 @@
     evolution-data-server.enable = true;
     gnome-keyring.enable = true;
   };
-  
+
   # Virtual filesystem support (gvfs is enabled separately)
   services.gvfs.enable = true;
 
@@ -37,16 +37,16 @@
     gedit
     gnome-console
     gnome-music
-    epiphany      # GNOME Web browser
-    geary         # Email client
-    evince        # Document viewer (use alternatives)
+    epiphany # GNOME Web browser
+    geary # Email client
+    evince # Document viewer (use alternatives)
     gnome-characters
     gnome-maps
     gnome-software
     gnome-contacts
     gnome-weather
-    yelp          # Help viewer
-    totem         # Video player
+    yelp # Help viewer
+    totem # Video player
     simple-scan
     # GNOME Games
     tali
@@ -56,10 +56,7 @@
   ];
 
   # Essential GNOME packages
-  environment.systemPackages = with pkgs; [
-    gnome-tweaks
-    dconf-editor
-  ];
+  environment.systemPackages = with pkgs; [ gnome-tweaks dconf-editor ];
 
   # Enable dconf for GNOME settings
   programs.dconf.enable = true;
@@ -97,16 +94,16 @@
 
       # Desktop interface settings
       "org/gnome/desktop/interface" = {
-        enable-animations = true;  # Set to false for maximum performance
+        enable-animations = true; # Set to false for maximum performance
         enable-hot-corners = false;
         color-scheme = "prefer-dark";
-        
+
         # Clock settings
         clock-show-weekday = true;
         clock-show-date = true;
         clock-show-seconds = true;
         clock-format = "12h";
-        
+
         # Battery
         show-battery-percentage = true;
       };
@@ -116,30 +113,26 @@
         focus-mode = "sloppy";
         resize-with-right-button = true;
         # num-workspaces is not used when dynamic-workspaces is enabled
-        workspace-names = [];
+        workspace-names = [ ];
       };
 
       # Sound settings
-      "org/gnome/desktop/sound" = {
-        allow-volume-above-100-percent = true;
-      };
+      "org/gnome/desktop/sound" = { allow-volume-above-100-percent = true; };
 
       # Session settings
       "org/gnome/desktop/session" = {
-        idle-delay = 900;  # 15 minutes
+        idle-delay = 900; # 15 minutes
       };
 
       # Touchpad settings
       "org/gnome/desktop/peripherals/touchpad" = {
         tap-to-click = true;
         two-finger-scrolling-enabled = true;
-        natural-scroll = true;  # macOS-style scrolling
+        natural-scroll = true; # macOS-style scrolling
       };
 
       # Workspace settings
-      "org/gnome/shell/overrides" = {
-        workspaces-only-on-primary = false;
-      };
+      "org/gnome/shell/overrides" = { workspaces-only-on-primary = false; };
 
       # Night Light
       "org/gnome/settings-daemon/plugins/color" = {
@@ -158,8 +151,6 @@
     };
 
     # Import GTK configuration
-    imports = [
-      ../../desktop-utils/gtk-config.nix
-    ];
+    imports = [ ../../desktop-utils/gtk-config.nix ];
   };
 }

@@ -1,6 +1,18 @@
 # Source general aliases
 source ~/.config/aliases 2>/dev/null
 
+# Source imperative environment variables
+# Hierarchy: Common -> Desktop/Server -> System (Hostname)
+# Use foreign-env (fenv) to source bash scripts directly
+if test -d ~/.config/env
+    for target in common desktop server (hostname)
+        set -l env_file ~/.config/env/$target.sh
+        if test -f $env_file
+            fenv source $env_file
+        end
+    end
+end
+
 # Auto-start tmux in interactive shells (servers only)
 # Set TMUX_AUTO_START=1 to enable on desktop systems
 if status is-interactive
