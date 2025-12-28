@@ -18,13 +18,10 @@ if command -v dbus-update-activation-environment >/dev/null 2>&1; then
   dbus-update-activation-environment DISPLAY XAUTHORITY
 fi
 
-# Default window manager selection
-if which bspwm; then
-  exec bspwm
-elif which awesome; then
-  exec awesome
-elif which xfce4-session; then
-  exec startxfce4
+# Dynamic window manager selection via environment variable
+if [ -n "$USER_XSESSION_CMD" ]; then
+  eval "$USER_XSESSION_CMD"
 else
+  # Fallback
   exec xterm
 fi
