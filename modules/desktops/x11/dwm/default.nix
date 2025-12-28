@@ -1,4 +1,4 @@
-{ config, pkgs, lib, userConfig, flakeRoot, ... }:
+{ config, pkgs, lib, userConfig, flakeRoot, inputs, ... }:
 
 let
   # dynamic user
@@ -18,23 +18,59 @@ let
 
   # Session Script - Strict Local Execution
   dwmSession = pkgs.writeShellScriptBin "dwm-session" ''
+    # Build flags for NixOS
+    export X11INC="${pkgs.xorg.libX11.dev}/include"
+    export X11LIB="${pkgs.xorg.libX11}/lib"
+    export FREETYPEINC="${pkgs.xorg.libXft.dev}/include/freetype2"
+    BUILD_FLAGS="X11INC=$X11INC X11LIB=$X11LIB FREETYPEINC=$FREETYPEINC"
+
+    # Set Background
+    ${pkgs.feh}/bin/feh --bg-fill ${../../gnome/wallpaper.jpg} &
+
+    # Start Vicinae Server
+    ${inputs.vicinae.packages.${pkgs.system}.default}/bin/vicinae server &
+
     # 1. Start DWMBlocks
-    if [ -x ${localDwmBlocks}/dwmblocks ]; then
-      ${localDwmBlocks}/dwmblocks &
+    if [ -d ${localDwmBlocks} ]; then
+        if [ ! -x ${localDwmBlocks}/dwmblocks ]; then
+            echo "DWMBlocks binary missing. Building..."
+            make -C ${localDwmBlocks} clean
+            make -C ${localDwmBlocks} $BUILD_FLAGS
+        fi
+        ${localDwmBlocks}/dwmblocks &
     fi
 
     # 2. Start DWM
-    if [ -x ${localDwm}/dwm ]; then
-      exec ${localDwm}/dwm
+    if [ -d ${localDwm} ]; then
+        if [ ! -x ${localDwm}/dwm ]; then
+            echo "DWM binary missing. Building..."
+            make -C ${localDwm} clean
+            make -C ${localDwm} $BUILD_FLAGS
+        fi
+        
+        if [ -x ${localDwm}/dwm ]; then
+            exec ${localDwm}/dwm
+        else
+            echo "Failed to build DWM. Falling back to xterm to prevent lockout."
+            exec xterm
+        fi
     else
-      echo "Error: Local DWM binary not found at ${localDwm}/dwm"
-      echo "Please wait for dwm-builder service or build manually."
-      exit 1
+      echo "Error: Local DWM source not found at ${localDwm}"
+      exec xterm
     fi
   '';
 
 in {
   nixpkgs.config.allowUnsupportedSystem = true;
+  programs.dconf.enable = true;
+
+  services.libinput = {
+    enable = true;
+    touchpad.naturalScrolling = true;
+    mouse.naturalScrolling = true;
+  };
+
+  programs.light.enable = true;
 
   services.xserver = {
     enable = true;
@@ -60,8 +96,26 @@ in {
     dunst
     libnotify
     feh
-    rofi
+    feh
+    inputs.vicinae.packages.${pkgs.system}.default
+    flameshot
+    kitty
+    betterlockscreen
+    light
+    gromit-mpx
+    maim
+    xclip
+    sxiv
+    nnn
+    alsa-utils
     xorg.xbacklight
+
+    # Utilities needed for xinitrc
+    picom
+    networkmanagerapplet
+    numlockx
+    xorg.xrdb
+    xterm
   ];
 
   environment.variables.USER_XSESSION_CMD = "${dwmSession}/bin/dwm-session";
@@ -86,11 +140,18 @@ in {
     ];
     serviceConfig = { Type = "oneshot"; };
     script = ''
+      # NixOS-friendly build flags
+      export X11INC="${pkgs.xorg.libX11.dev}/include"
+      export X11LIB="${pkgs.xorg.libX11}/lib"
+      export FREETYPEINC="${pkgs.xorg.libXft.dev}/include/freetype2"
+
+      BUILD_FLAGS="X11INC=$X11INC X11LIB=$X11LIB FREETYPEINC=$FREETYPEINC"
+
       if [ -d "${localDwm}" ]; then
-        make -C "${localDwm}" clean && make -C "${localDwm}"
+        make -C "${localDwm}" clean && make -C "${localDwm}" $BUILD_FLAGS
       fi
       if [ -d "${localDwmBlocks}" ]; then
-        make -C "${localDwmBlocks}" clean && make -C "${localDwmBlocks}"
+        make -C "${localDwmBlocks}" clean && make -C "${localDwmBlocks}" $BUILD_FLAGS
       fi
     '';
   };

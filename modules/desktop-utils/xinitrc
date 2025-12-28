@@ -1,11 +1,29 @@
-systemctl --user start udiskie.service & #for automounting usb drives
-systemctl --user start redshift.service & #eyecare
-dbus-launch nm-applet &
-blueman-applet &
-xrdb -load ~/.Xresources &
-numlockx on &
+# Startup apps with safety checks
+systemctl --user start udiskie.service || true
+systemctl --user start redshift.service || true
+
+if command -v nm-applet >/dev/null; then
+  dbus-launch nm-applet &
+fi
+
+if command -v blueman-applet >/dev/null; then
+  blueman-applet &
+fi
+
+xrdb -load ~/.Xresources || true
+
+if command -v numlockx >/dev/null; then
+  numlockx on &
+fi
+
+xset s off &
+xset -dpms &
 xset -b &
-picom &
+
+# Picom with fallback or check
+if command -v picom >/dev/null; then
+  picom --daemon &
+fi
 # ClipIt removed - replaced with CopyQ (managed via systemd service)
 
 #Setting up the user's D-Bus Daemon from "https://nixos.wiki/wiki/Using_X_without_a_Display_Manager"
@@ -16,6 +34,12 @@ systemctl --user import-environment DISPLAY XAUTHORITY
 
 if command -v dbus-update-activation-environment >/dev/null 2>&1; then
   dbus-update-activation-environment DISPLAY XAUTHORITY
+fi
+
+# Dynamic window manager selection via environment variable
+# Allow manual override via startx arguments (Standard xinit behavior)
+if [ $# -gt 0 ]; then
+  exec "$@"
 fi
 
 # Dynamic window manager selection via environment variable

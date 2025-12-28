@@ -14,7 +14,8 @@
 
     # Addon modules
     ../../modules/services
-    ../../modules/desktops/gnome/pop-shell.nix
+    # ../../modules/desktops/gnome/pop-shell.nix
+    ../../modules/desktops/x11/dwm
     ../../modules/desktop-utils/tlp.nix
     ../../modules/desktop-utils/performance-optimization.nix
     ../../modules/apps/kiro
@@ -23,6 +24,13 @@
 
   # Add NUR overlay for Firefox extensions
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
+
+  # Binary Cache for Vicinae
+  nix.settings = {
+    substituters = [ "https://vicinae.cachix.org" ];
+    trusted-public-keys =
+      [ "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=" ];
+  };
 
   # Ensure home-manager uses the same pkgs with overlays
   home-manager.useGlobalPkgs = true;
