@@ -10,7 +10,7 @@
     # Display Manager
     displayManager.gdm = {
       enable = true;
-      wayland = false; # Use Xorg instead of Wayland
+      wayland = true; # Enable Wayland for Niri and GNOME Wayland sessions
       autoSuspend = true;
     };
 

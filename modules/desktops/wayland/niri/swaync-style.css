@@ -1,0 +1,176 @@
+/* Catppuccin Mocha Theme for SwayNC - Refined */
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.control-center .notification-row:focus,
+.control-center .notification-row:hover {
+    opacity: 1;
+    background: #313244;
+}
+
+.notification-row {
+    outline: none;
+    margin: 6px 12px;
+}
+
+.notification {
+    background: transparent;
+    padding: 0;
+    margin: 0px;
+}
+
+.notification-content {
+    background: #1e1e2e;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #cba6f7;
+    margin: 0;
+}
+
+.close-button {
+    background: #f38ba8;
+    color: #1e1e2e;
+    text-shadow: none;
+    padding: 0;
+    border-radius: 100%;
+    margin-top: 5px;
+    margin-right: 5px;
+    box-shadow: none;
+    border: none;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.close-button:hover {
+    box-shadow: none;
+    background: #eb788b;
+    transition: all 0.15s ease-in-out;
+    border: none;
+}
+
+.notification-action {
+    color: #cdd6f4;
+    background: #1e1e2e;
+    border: 1px solid #cba6f7;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.notification-action:hover {
+    background: #313244;
+}
+
+.summary {
+    font-size: 14px;
+    color: #cdd6f4;
+    text-shadow: none;
+    font-weight: 800;
+}
+
+.time {
+    font-size: 11px;
+    color: #a6adc8;
+    text-shadow: none;
+    margin-right: 24px;
+}
+
+.body {
+    font-size: 13px;
+    color: #cdd6f4;
+    text-shadow: none;
+}
+
+.control-center {
+    background: #1e1e2e;
+    border: 2px solid #cba6f7;
+    border-radius: 12px;
+    color: #cdd6f4;
+}
+
+.control-center-list {
+    background: transparent;
+}
+
+.floating-notifications {
+    background: transparent;
+}
+
+.blank-window {
+    background: alpha(black, 0.2);
+}
+
+.widget-title {
+    color: #cdd6f4;
+    background: #1e1e2e;
+    padding: 8px;
+    margin: 8px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+}
+
+.widget-title>button {
+    font-size: 1rem;
+    color: #cdd6f4;
+    text-shadow: none;
+    background: #313244;
+    box-shadow: none;
+    border-radius: 10px;
+    border: none;
+    padding: 4px 12px;
+}
+
+.widget-title>button:hover {
+    background: #45475a;
+}
+
+.widget-dnd {
+    background: #1e1e2e;
+    padding: 8px;
+    margin: 8px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    color: #cdd6f4;
+}
+
+.widget-dnd>switch {
+    border-radius: 10px;
+    background: #313244;
+}
+
+.widget-dnd>switch:checked {
+    background: #cba6f7;
+}
+
+.widget-dnd>switch slider {
+    background: #cdd6f4;
+    border-radius: 10px;
+}
+
+.widget-mpris {
+    color: #cdd6f4;
+    background: #1e1e2e;
+    padding: 8px;
+    margin: 8px;
+    border-radius: 12px;
+}
+
+.widget-mpris>box>button {
+    border-radius: 10px;
+    background: #313244;
+    margin: 4px;
+}
+
+/* Volume/Backlight Sliders if present */
+scale trough {
+    background: #313244;
+    border-radius: 10px;
+}
+
+scale highlight {
+    background: #cba6f7;
+    border-radius: 10px;
+}
