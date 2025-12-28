@@ -76,26 +76,35 @@ log "All dependencies are present."
 #---------------------------------------
 # Clone or update the nix-systems repository
 #---------------------------------------
-if [[ ! -d "/tmp/nix-systems" ]]; then
-  log "/tmp/nix-systems does not exist. Cloning repository..."
-  if ! git clone https://github.com/devswork-in/nix-systems /tmp/nix-systems; then
+TARGET_DIR="/mnt/etc/nixos"
+
+if [[ ! -d "$TARGET_DIR" ]]; then
+  log "$TARGET_DIR does not exist. Cloning repository..."
+  # Create directory if it doesn't exist (git clone will create the last component if needed, 
+  # but here we want to clone contents INTO /mnt/etc/nixos if we want the repo root to be nixos)
+  # Actually standard practice: git clone <url> /mnt/etc/nixos
+  if ! sudo git clone https://github.com/devswork-in/nix-systems "$TARGET_DIR"; then
     err "Cloning of nix-systems failed!"
   fi
   log "Repository cloned successfully."
 else
   # Optional: Pull the latest changes if directory exists
-  log "/tmp/nix-systems already exists. Updating repository..."
+  log "$TARGET_DIR already exists. Updating repository..."
   (
-    cd /tmp/nix-systems || err "Could not enter /tmp/nix-systems directory."
-    git fetch --all && git pull --rebase || warn "Could not update repository. Proceeding with existing contents."
+    cd "$TARGET_DIR" || err "Could not enter $TARGET_DIR directory."
+    sudo git fetch --all && sudo git pull --rebase || warn "Could not update repository. Proceeding with existing contents."
   )
 fi
+
+# Fix permissions so user can edit later
+log "Fixing permissions on cloned repo..."
+sudo chown -R 1000:100 "$TARGET_DIR"
 
 #---------------------------------------
 # Run mkpart.sh
 #---------------------------------------
 log "Running mkpart.sh on device: $DEVICE"
-if ! echo "yes" | sudo bash /tmp/nix-systems/mkpart.sh "$DEVICE"; then
+if ! echo "yes" | sudo bash "$TARGET_DIR/mkpart.sh" "$DEVICE"; then
   err "mkpart.sh failed."
 fi
 
@@ -105,7 +114,11 @@ log "Partitioning with mkpart.sh completed."
 # Run nixos-install
 #---------------------------------------
 log "Running nixos-install with flake: $FLAKE"
-if ! sudo nixos-install --flake /tmp/nix-systems/#"$FLAKE" --impure; then
+# We export NIX_CONFIG_DIR=/etc/nixos so the flake (running in host) generates 
+# paths pointing to /etc/nixos (where they will be on the target system).
+export NIX_CONFIG_DIR="/etc/nixos"
+
+if ! sudo -E nixos-install --flake "$TARGET_DIR"#"$FLAKE" --impure; then
   err "nixos-install failed!"
 fi
 log "nixos-install completed successfully."
