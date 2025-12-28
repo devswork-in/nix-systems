@@ -148,6 +148,11 @@ in {
     }
     {
       type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/swappy-config";
+      dest = "~/.config/swappy/config";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/modules/core/vars/desktop.sh";
       dest = "~/.config/env/desktop.sh";
     }
