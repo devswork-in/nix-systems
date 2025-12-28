@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# sysupdate: Update Nix flake inputs
+# Usage: sysupdate
+
+FLAKE_DIR="${NIX_CONFIG_DIR:-/etc/nixos}"
+
+echo "Updating flake inputs in '$FLAKE_DIR'..."
+cd "$FLAKE_DIR" || { echo "Error: Cannot access $FLAKE_DIR"; exit 1; }
+exec nix flake update "$@"

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# sysrebuild: Rebuild NixOS configuration
+# Usage: sysrebuild [extra args]
+
+FLAKE_DIR="${NIX_CONFIG_DIR:-/etc/nixos}"
+SYSTEM_NAME="${NIX_SYSTEM:-$(hostname)}"
+
+echo "Rebuilding system '$SYSTEM_NAME' from '$FLAKE_DIR'..."
+exec sudo nixos-rebuild switch --flake "$FLAKE_DIR#$SYSTEM_NAME" --impure "$@"

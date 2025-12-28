@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# sysedit: Edit NixOS configuration
+# Usage: sysedit
+
+FLAKE_DIR="${NIX_CONFIG_DIR:-/etc/nixos}"
+
+if [ -z "$EDITOR" ]; then
+    EDITOR=vim
+fi
+
+echo "Editing configuration in '$FLAKE_DIR'..."
+exec $EDITOR "$FLAKE_DIR"
