@@ -159,4 +159,18 @@ in {
     source = "${nixSystemsRoot}/modules/core/vars/omnix.sh";
     dest = "~/.config/env/omnix.sh";
   }];
+
+  # DWM-specific sync items (Imported by DWM module)
+  dwm = [
+    {
+      type = "git";
+      source = "https://github.com/Creator54/dwm.git";
+      dest = "~/.config/dwm";
+    }
+    {
+      type = "git";
+      source = "https://github.com/Creator54/dwmblocks.git";
+      dest = "~/.config/dwmblocks";
+    }
+  ];
 }
