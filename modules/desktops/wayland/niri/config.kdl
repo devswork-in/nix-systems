@@ -14,10 +14,6 @@ input {
         dwt
         dwtp
     }
-    
-    mouse {
-        natural-scroll false
-    }
 }
 
 // Output configuration - adjust for your monitors
@@ -30,6 +26,15 @@ output "eDP-1" {
 
 layout {
     gaps 8
+    
+    // Add outer gaps (margins) around the screen
+    struts {
+        left 0
+        right 0
+        top 0
+        bottom 0
+    }
+
     center-focused-column "never"
     
     preset-column-widths {
@@ -38,18 +43,16 @@ layout {
         proportion 0.66667
     }
     
-    default-column-width { proportion 0.5; }
+    default-column-width { proportion 1.0; }
     
     focus-ring {
-        width 2
-        active-color "#89b4fa"
-        inactive-color "#45475a"
+        width 1
+        active-gradient from="#cba6f7" to="#89b4fa" angle=45
+        inactive-color "#313244"
     }
     
     border {
-        width 1
-        active-color "#89b4fa"
-        inactive-color "#313244"
+        off
     }
 }
 
@@ -57,8 +60,12 @@ layout {
 binds {
     // Mod key (Super/Windows key)
     Mod+Shift+Return { spawn "kitty"; }
-    Mod+D { spawn "fuzzel"; }
-    Alt+Return { spawn "bash" "-c" "selected_script=$(ls ~/.local/bin | fuzzel --dmenu) && bash ~/.local/bin/$selected_script"; }
+    
+    // Application launcher - Vicinae
+    Mod+Slash { spawn "sh" "-c" "vicinae toggle"; }
+    
+    // Local scripts launcher
+    Alt+Return { spawn "sh" "-c" "selected_script=$(ls ~/.local/bin | rofi -dmenu) && bash ~/.local/bin/$selected_script"; }
     
     // Window management
     Mod+Shift+C { close-window; }
@@ -67,6 +74,9 @@ binds {
     Mod+L { focus-column-right; }
     Mod+J { focus-window-down; }
     Mod+K { focus-window-up; }
+    
+    // Toggle waybar
+    Mod+B { spawn "pkill" "-SIGUSR1" "waybar"; }
     
     Mod+Shift+H { move-column-left; }
     Mod+Shift+L { move-column-right; }
@@ -102,30 +112,57 @@ binds {
     Mod+Shift+9 { move-column-to-workspace 9; }
     Mod+Shift+0 { move-column-to-workspace 10; }
     
-    // Screenshots
-    Print { spawn "grim" "-g" "$(slurp)" "~/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png"; }
-    Mod+Print { spawn "grim" "~/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png"; }
-    Mod+Shift+Print { spawn "grim" "-g" "$(slurp)" "-" "|" "wl-copy"; }
+    // Screenshots - Wayland with notifications and editing
+    // Full screenshot with notification
+    Print { spawn "sh" "-c" "grim - | swappy -f - && notify-send 'Screenshot' 'Full screen captured'"; }
+    // Area selection with swappy editor
+    Mod+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | swappy -f -"; }
+    // Area to clipboard with notification
+    Mod+Shift+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | wl-copy && notify-send 'Screenshot' 'Copied to clipboard'"; }
     
     // Session management
     Mod+Q { spawn "swaylock"; }
-    Mod+Shift+Q { spawn "loginctl" "kill-session" "$(loginctl | tail -n +2 | xargs | cut -d ' ' -f1)"; }
+    Mod+Shift+Q { spawn "sh" "-c" "loginctl kill-session $(loginctl | tail -n +2 | xargs | cut -d ' ' -f1)"; }
     
     // System
     Mod+Ctrl+R { spawn "reboot"; }
     Mod+Ctrl+P { spawn "poweroff"; }
     
+    // Gromit-mpx (drawing tool)
+    Alt+X { spawn "sh" "-c" "pkill gromit-mpx || gromit-mpx -a"; }
+    Alt+Y { spawn "sh" "-c" "pidof gromit-mpx && gromit-mpx -y"; }
+    Alt+Z { spawn "sh" "-c" "pidof gromit-mpx && gromit-mpx -z"; }
+    Alt+V { spawn "sh" "-c" "pidof gromit-mpx && gromit-mpx -v"; }
+    
     // Utilities
-    Mod+Shift+W { spawn "bash" "-c" "WALLPAPER=$(find ~/Wallpapers -type f \\( -name '*.jpg' -o -name '*.png' \\) | shuf -n 1) && swaybg -i $WALLPAPER"; }
+    Mod+Shift+W { spawn "sh" "-c" "WALLPAPER=$(find ~/Wallpapers -type f \\( -name '*.jpg' -o -name '*.png' \\) | shuf -n 1) && swaybg -i $WALLPAPER"; }
     Alt+K { spawn "screenkey" "--no-systray" "-t" "0.4" "--opacity" "0.0"; }
     Alt+Shift+K { spawn "pkill" "screenkey"; }
     Mod+R { spawn "wtype" "-M" "ctrl" "r" "-m" "ctrl"; }
+    
+    // Media keys - Brightness
+    XF86MonBrightnessUp { spawn "brightnessctl" "set" "+5%"; }
+    XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+    
+    // Media keys - Volume
+    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    
+    // Media keys - Playback
+    XF86AudioPlay { spawn "playerctl" "play-pause"; }
+    XF86AudioNext { spawn "playerctl" "next"; }
+    XF86AudioPrev { spawn "playerctl" "previous"; }
 }
 
 // Spawn programs at startup
 spawn-at-startup "waybar"
-spawn-at-startup "mako"
+spawn-at-startup "swaync" "-c" "/home/creator54/nix-systems/modules/desktops/wayland/niri/swaync-config.json" "-s" "/home/creator54/nix-systems/modules/desktops/wayland/niri/swaync-style.css"
 spawn-at-startup "nm-applet" "--indicator"
+spawn-at-startup "blueman-applet"
+spawn-at-startup "vicinae" "server"
+spawn-at-startup "swaybg" "-m" "fill" "-i" "/home/creator54/nix-systems/modules/desktops/gnome/wallpaper.jpg"
 
 // Window rules
 window-rule {
@@ -138,5 +175,22 @@ window-rule {
     default-column-width { proportion 0.66667; }
 }
 
-// Prefer dark theme
+window-rule {
+    match app-id="^[Vv]icinae$"
+    open-floating true
+}
+
+// Default rounded corners for all windows
+window-rule {
+    geometry-corner-radius 10
+    clip-to-geometry true
+}
+
+// Disable client-side decorations (CSD) for all windows
+window-rule {
+    draw-border-with-background false
+}
+
 prefer-no-csd
+
+
