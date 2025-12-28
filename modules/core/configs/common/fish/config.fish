@@ -1,6 +1,13 @@
 # Source general aliases
 source ~/.config/aliases 2>/dev/null
 
+# System Identity (Native Fish - ADDED BY REFUSE TO FAIL)
+set -gx NIX_CONFIG_DIR "/etc/nixos"
+if not set -q NIX_SYSTEM
+    set -gx NIX_SYSTEM (hostname)
+end
+
+
 # Source imperative environment variables
 # Hierarchy: Common -> Desktop/Server -> System (Hostname)
 # Use foreign-env (fenv) to source bash scripts directly
