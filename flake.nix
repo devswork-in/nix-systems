@@ -18,9 +18,7 @@
       inputs.flake-compat.follows = "flake-compat";
     };
 
-    nix-flatpak = {
-      url = "github:gmodena/nix-flatpak/?ref=v0.5.2";
-    };
+    nix-flatpak = { url = "github:gmodena/nix-flatpak/?ref=v0.5.2"; };
 
     #Always use the same nixpkgs for both system + <module>
     nix-snapd = {
@@ -45,55 +43,47 @@
     };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      nix-flatpak,
-      nix-snapd,
-      winapps,
-      nur,
-      nix-repo-sync,
-      ...
-    }@inputs:
+  outputs = { self, nixpkgs, nix-flatpak, nix-snapd, winapps, nur, nix-repo-sync
+    , ... }@inputs:
     let
       # Extract NixOS version from nixpkgs input URL
-      nixosVersion = 
-        let
-          # Get the nixpkgs input URL (e.g., "github:NixOS/nixpkgs/release-25.05")
-          nixpkgsUrl = inputs.nixpkgs.sourceInfo.originalUrl or "release-25.05";
-          # Extract version using regex match
-          versionMatch = builtins.match ".*release-([0-9]+\\.[0-9]+).*" nixpkgsUrl;
-        in
-          if versionMatch != null
-          then builtins.head versionMatch
-          else "25.05"; # fallback
+      nixosVersion = let
+        # Get the nixpkgs input URL (e.g., "github:NixOS/nixpkgs/release-25.05")
+        nixpkgsUrl = inputs.nixpkgs.sourceInfo.originalUrl or "release-25.05";
+        # Extract version using regex match
+        versionMatch =
+          builtins.match ".*release-([0-9]+\\.[0-9]+).*" nixpkgsUrl;
+      in if versionMatch != null then
+        builtins.head versionMatch
+      else
+        "25.05"; # fallback
 
       # Import user configuration (easy to switch: just change which config file to import)
       userConfig = import ./config.nix { inherit (nixpkgs) lib; };
 
-      # Get flake root dynamically using PWD environment variable
-      # This requires building with --impure flag: nixos-rebuild switch --flake .#hostname --impure
-      # This allows config-sync to create symlinks to the actual editable repo, not nix store
-      flakeRoot =
-        let
-          pwd = builtins.getEnv "PWD";
-        in
-          if pwd != "" then pwd
-          else builtins.toString self.outPath;
+      # Get flake root dynamically
+      # Priority: NIX_CONFIG_DIR > PWD > self.outPath
+      flakeRoot = let
+        nixConfigDir = builtins.getEnv "NIX_CONFIG_DIR";
+        pwd = builtins.getEnv "PWD";
+      in if nixConfigDir != "" then
+        nixConfigDir
+      else if pwd != "" then
+        pwd
+      else
+        builtins.toString self.outPath;
 
       # Import desktop settings
-      desktopSettings = import ./modules/desktop-utils/desktop-settings.nix {};
+      desktopSettings = import ./modules/desktop-utils/desktop-settings.nix { };
 
       # Optional secrets overlay (git-ignored, falls back to config.nix if not present)
-      secrets = if builtins.pathExists ./secrets/user-secrets.nix 
-                then import ./secrets/user-secrets.nix 
-                else {};
+      secrets = if builtins.pathExists ./secrets/user-secrets.nix then
+        import ./secrets/user-secrets.nix
+      else
+        { };
 
       # Merge config with secrets
-      finalUserConfig = userConfig // { 
-        user = userConfig.user // secrets;
-      };
+      finalUserConfig = userConfig // { user = userConfig.user // secrets; };
 
       # Merge desktop settings for desktop systems
       desktopUserConfig = finalUserConfig // desktopSettings;
@@ -109,8 +99,7 @@
         inherit nixpkgs inputs nixosVersion flakeRoot;
         userConfig = desktopUserConfig;
       };
-    in
-    {
+    in {
       nixosConfigurations = {
         server = mkSystem {
           system = "x86_64-linux";
@@ -125,29 +114,31 @@
 
         # Helper for Phoenix (Oracle Cloud) systems
         phoenix = let
-          mkPhoenix = system: mkSystem {
-            inherit system;
-            hostname = "phoenix";
-            modules = [
-              ./systems/phoenix
-              ./modules/server/default.nix
-              inputs.home-manager.nixosModules.default
-              inputs.nix-repo-sync.nixosModules.default
-            ];
-          };
+          mkPhoenix = system:
+            mkSystem {
+              inherit system;
+              hostname = "phoenix";
+              modules = [
+                ./systems/phoenix
+                ./modules/server/default.nix
+                inputs.home-manager.nixosModules.default
+                inputs.nix-repo-sync.nixosModules.default
+              ];
+            };
         in mkPhoenix "x86_64-linux";
 
         phoenix-arm = let
-          mkPhoenix = system: mkSystem {
-            inherit system;
-            hostname = "phoenix";
-            modules = [
-              ./systems/phoenix
-              ./modules/server/default.nix
-              inputs.home-manager.nixosModules.default
-              inputs.nix-repo-sync.nixosModules.default
-            ];
-          };
+          mkPhoenix = system:
+            mkSystem {
+              inherit system;
+              hostname = "phoenix";
+              modules = [
+                ./systems/phoenix
+                ./modules/server/default.nix
+                inputs.home-manager.nixosModules.default
+                inputs.nix-repo-sync.nixosModules.default
+              ];
+            };
         in mkPhoenix "aarch64-linux";
 
         omnix = mkDesktopSystem {
@@ -159,15 +150,12 @@
             inputs.home-manager.nixosModules.default
             inputs.nix-snapd.nixosModules.default
             nix-repo-sync.nixosModules.default
-            (
-              { pkgs, ... }:
-              {
-                environment.systemPackages = [
-                  winapps.packages.x86_64-linux.winapps
-                  winapps.packages.x86_64-linux.winapps-launcher # optional
-                ];
-              }
-            )
+            ({ pkgs, ... }: {
+              environment.systemPackages = [
+                winapps.packages.x86_64-linux.winapps
+                winapps.packages.x86_64-linux.winapps-launcher # optional
+              ];
+            })
           ];
         };
 
@@ -202,7 +190,8 @@
           sshUser = "root"; # should be same in ~/.ssh/config
           profiles.system = {
             user = "root";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.server;
+            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos
+              self.nixosConfigurations.server;
           };
         };
 
@@ -211,7 +200,8 @@
           sshUser = "root"; # should be same in ~/.ssh/config
           profiles.system = {
             user = "root";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.phoenix;
+            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos
+              self.nixosConfigurations.phoenix;
           };
         };
 
@@ -220,14 +210,15 @@
           sshUser = "root"; # should be same in ~/.ssh/config
           profiles.system = {
             user = "root";
-            path = inputs.deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.phoenix-arm;
+            path = inputs.deploy-rs.lib.aarch64-linux.activate.nixos
+              self.nixosConfigurations.phoenix-arm;
           };
         };
       };
 
       # This is highly advised, and will prevent many possible mistakes
-      checks = builtins.mapAttrs (
-        system: deployLib: deployLib.deployChecks self.deploy
-      ) inputs.deploy-rs.lib;
+      checks = builtins.mapAttrs
+        (system: deployLib: deployLib.deployChecks self.deploy)
+        inputs.deploy-rs.lib;
     };
 }

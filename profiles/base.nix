@@ -52,6 +52,7 @@
     home-manager
     vim
     fishPlugins.foreign-env
+    openssh
   ];
 
   # Configure vim and set as default editor
@@ -68,4 +69,7 @@
 
   # System state version (derived from flake nixpkgs input)
   system.stateVersion = nixosVersion;
+
+  # Ensure nix-repo-sync has access to git and ssh
+  systemd.services.nix-repo-sync = { path = with pkgs; [ git openssh ]; };
 }

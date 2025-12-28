@@ -15,3 +15,6 @@ alias gl="git log"
 alias gc="git commit"
 alias gr="git remote"
 alias gx="git reset --hard"
+
+# System Management Aliases are now scripts in ~/.local/bin
+# (sysedit, sysrebuild, sysupdate)
