@@ -2,10 +2,10 @@
 { lib, userConfig, ... }:
 
 {
-  imports = [ ../core ./copyq ../apps/appimages ];
+  imports = [ ../core ../apps/appimages ];
 
-  # Enable CopyQ clipboard manager
-  services.copyq.enable = true;
+  # CopyQ removed - using Vicinae clipboard manager instead
+  # services.copyq.enable = true;
 
   home-manager.users."${userConfig.user.name}" = { ... }: {
     imports = [
