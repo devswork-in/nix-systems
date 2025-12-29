@@ -1,35 +1,38 @@
 { config, pkgs, lib, userConfig, inputs, ... }:
 
 {
-  # Niri Wayland Compositor Configuration
-  # A scrollable-tiling Wayland compositor
 
-  # System-level configuration (minimal)
+  # Import common Wayland components and Niri-specific modules
+  imports = [
+    ../common/environment.nix
+    ../common/hyprlock
+    ../common/waybar
+    ../common/swaync
+    ./environment.nix
+    ./session-start.nix
+  ];
+
+  # Enable shared Wayland components
+  wayland.hyprlock = {
+    enable = true;
+    autoLock = true; # Auto-lock on Niri startup
+  };
+  wayland.waybar.enable = true;
+  wayland.swaync.enable = true;
+
+  # Niri compositor
   programs.niri.enable = true;
 
-  # Enable X server for XWayland support (required for Steam and X11 apps)
-  services.xserver.enable = true;
+  # Bluetooth
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+  services.blueman.enable = true;
 
-  # Keep GDM enabled for display manager selection
-  services.xserver.displayManager.gdm.enable = lib.mkForce true;
-
-  # Don't auto-start niri - let user select from display manager
-  # environment.loginShellInit = ''
-  #   if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
-  #     exec niri-session
-  #   fi
-  # '';
-
-  # Wayland packages
+  # System packages (Niri-specific and general Wayland tools)
   environment.systemPackages = with pkgs; [
-    wl-clipboard
-    wl-clipboard-rs
-    grim
-    slurp
-    swappy # Screenshot editor (like Flameshot for Wayland)
-    swaynotificationcenter # Modern notification daemon
-    libnotify # For notifications
-    imv # Image viewer (like sxiv for Wayland)
+    imv
     wlr-randr
     flameshot
     gromit-mpx
@@ -37,61 +40,20 @@
     swaybg
     brightnessctl
     playerctl
-    blueman # Bluetooth manager with applet
+    blueman
     inputs.vicinae.packages.${pkgs.system}.default
-    xwayland-satellite
+    (pkgs.writeShellScriptBin "random-wallpaper" ''
+      ${pkgs.procps}/bin/pkill swaybg || true
+      WALLPAPER=$(find ~/Wallpapers -type f \( -name '*.jpg' -o -name '*.png' \) | ${pkgs.coreutils}/bin/shuf -n 1)
+      ${pkgs.swaybg}/bin/swaybg -m fill -i "$WALLPAPER" &
+    '')
   ];
-
-  # Wayland environment variables
-  environment.variables = {
-    XDG_SESSION_TYPE = "wayland";
-    GDK_BACKEND = "wayland,x11";
-    QT_QPA_PLATFORM = "wayland;xcb";
-    SDL_VIDEODRIVER = "wayland";
-    CLUTTER_BACKEND = "wayland";
-    MOZ_ENABLE_WAYLAND = "1";
-    _JAVA_AWT_WM_NONREPARENTING = "1";
-    NIXOS_OZONE_WL = "1"; # Hint Electron apps to use Wayland
-  };
-
-  # XDG portals for Wayland
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-gtk xdg-desktop-portal-wlr ];
-    config = {
-      common.default = lib.mkForce "gtk";
-      niri.default = lib.mkForce "gtk";
-    };
-    wlr.enable = true;
-  };
-
-  # Enable Bluetooth
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
-  services.blueman.enable = true;
 
   # Home Manager configuration
   home-manager.users."${userConfig.user.name}" = {
     # Import GTK configuration for theming
     imports = [ ../../../desktop-utils/gtk-config.nix ];
 
-    home.packages = with pkgs; [
-      niri
-      fuzzel
-      hyprlock
-      swaynotificationcenter
-      waybar
-      networkmanagerapplet
-      pavucontrol
-    ];
-
-    # Notification daemon
-    # Notification daemon
-    # Notification daemon (Using SwayNC now)
-
-    # Note: Niri config.kdl and swappy config are synced via nix-repo-sync
-    # See sync-config.nix desktop section (lines 131-154)
+    home.packages = with pkgs; [ niri fuzzel networkmanagerapplet pavucontrol ];
   };
 }

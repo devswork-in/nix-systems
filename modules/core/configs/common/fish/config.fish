@@ -108,3 +108,4 @@ alias d "cd ~/dev"
 
 # Enable direnv
 direnv hook fish | source
+

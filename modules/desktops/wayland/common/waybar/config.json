@@ -23,8 +23,7 @@
     "pulseaudio",
     "clock",
     "custom/battery",
-    "tray",
-    "custom/power"
+    "tray"
   ],
   "niri/workspaces": {
     "format": "{icon}",
