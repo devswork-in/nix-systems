@@ -192,8 +192,8 @@ in {
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/swaylock.conf";
-      dest = "~/.config/swaylock/config";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/hyprlock.conf";
+      dest = "~/.config/hypr/hyprlock.conf";
     }
   ];
 
