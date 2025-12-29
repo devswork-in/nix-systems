@@ -121,7 +121,7 @@ binds {
     Mod+Shift+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | wl-copy && notify-send 'Screenshot' 'Copied to clipboard'"; }
     
     // Session management
-    Mod+Q { spawn "swaylock"; }
+    Mod+Q { spawn "swaylock" "-f"; }
     Mod+Shift+Q { quit; }
     
     // System
@@ -192,5 +192,3 @@ window-rule {
 }
 
 prefer-no-csd
-
-

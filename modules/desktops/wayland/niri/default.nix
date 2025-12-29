@@ -7,6 +7,9 @@
   # System-level configuration (minimal)
   programs.niri.enable = true;
 
+  # Enable X server for XWayland support (required for Steam and X11 apps)
+  services.xserver.enable = true;
+
   # Keep GDM enabled for display manager selection
   services.xserver.displayManager.gdm.enable = lib.mkForce true;
 
@@ -36,6 +39,7 @@
     playerctl
     blueman # Bluetooth manager with applet
     inputs.vicinae.packages.${pkgs.system}.default
+    xwayland-satellite
   ];
 
   # Wayland environment variables
@@ -77,7 +81,6 @@
       niri
       fuzzel
       swaylock
-      swayidle
       swaynotificationcenter
       waybar
       networkmanagerapplet
@@ -87,25 +90,6 @@
     # Notification daemon
     # Notification daemon
     # Notification daemon (Using SwayNC now)
-
-    # Idle management and screen locking
-    services.swayidle = {
-      enable = true;
-      timeouts = [
-        {
-          timeout = 300;
-          command = "${pkgs.swaylock}/bin/swaylock -f";
-        }
-        {
-          timeout = 600;
-          command = "${pkgs.systemd}/bin/systemctl suspend";
-        }
-      ];
-      events = [{
-        event = "before-sleep";
-        command = "${pkgs.swaylock}/bin/swaylock -f";
-      }];
-    };
 
     # Note: Niri config.kdl and swappy config are synced via nix-repo-sync
     # See sync-config.nix desktop section (lines 131-154)
