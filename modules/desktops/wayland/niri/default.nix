@@ -80,7 +80,7 @@
     home.packages = with pkgs; [
       niri
       fuzzel
-      swaylock
+      hyprlock
       swaynotificationcenter
       waybar
       networkmanagerapplet
