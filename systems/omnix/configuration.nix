@@ -12,6 +12,9 @@
     ./hibernation.nix
     ./fileSystems.nix
 
+    # Core session management
+    ../../modules/core/session-manager.nix
+
     # Addon modules
     ../../modules/services
     ../../modules/desktops/wayland/niri
@@ -21,6 +24,9 @@
     ../../modules/apps/kiro
     ../../modules/extras/kernels/xanmod.nix
   ];
+
+  # Disable GDM - using TTY auto-login with session-manager
+  services.xserver.displayManager.gdm.enable = lib.mkForce false;
 
   # Add NUR overlay for Firefox extensions
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
