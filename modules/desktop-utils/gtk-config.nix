@@ -34,17 +34,14 @@
   };
 
   # Set consistent GTK theme variable
-  home.sessionVariables = {
-    GTK_THEME = "palenight";
-  };
-
-
-
+  home.sessionVariables = { GTK_THEME = "palenight"; };
 
   # GNOME interface settings that complement GTK
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       gtk-theme = "palenight";
+      color-scheme = "prefer-dark";
+      icon-theme = "Papirus-Dark";
     };
   };
 }
