@@ -190,6 +190,11 @@ in {
         "${nixSystemsRoot}/modules/desktops/wayland/niri/swaync-style.css";
       dest = "~/.config/swaync/style.css";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/swaylock.conf";
+      dest = "~/.config/swaylock/config";
+    }
   ];
 
   # Omnix-specific sync items
