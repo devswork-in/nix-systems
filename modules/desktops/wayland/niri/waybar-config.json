@@ -83,7 +83,7 @@
     "on-click": "nm-connection-editor"
   },
   "custom/battery": {
-    "exec": "/home/creator54/nix-systems/modules/desktops/wayland/niri/battery_monitor.py",
+    "exec": "~/.config/waybar/battery_monitor.py",
     "return-type": "json",
     "interval": 5,
     "format": "{}",
@@ -97,14 +97,14 @@
     "on-click": "swaync-client -t -sw"
   },
   "custom/memory": {
-    "exec": "/home/creator54/nix-systems/modules/desktops/wayland/niri/memory_monitor.py",
+    "exec": "~/.config/waybar/memory_monitor.py",
     "return-type": "json",
     "interval": 5,
     "format": "{}",
     "tooltip": true
   },
   "custom/disk": {
-    "exec": "/home/creator54/nix-systems/modules/desktops/wayland/niri/disk_monitor.py",
+    "exec": "~/.config/waybar/disk_monitor.py",
     "return-type": "json",
     "interval": 30,
     "format": "{}",

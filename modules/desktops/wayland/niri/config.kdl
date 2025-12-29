@@ -158,7 +158,7 @@ binds {
 
 // Spawn programs at startup
 spawn-at-startup "waybar"
-spawn-at-startup "swaync" "-c" "/home/creator54/nix-systems/modules/desktops/wayland/niri/swaync-config.json" "-s" "/home/creator54/nix-systems/modules/desktops/wayland/niri/swaync-style.css"
+spawn-at-startup "swaync"
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "vicinae" "server"
