@@ -59,16 +59,20 @@ def get_battery_info():
                 except:
                     pass
         
-        # Icons: Material Design Battery (0% -> 100%)
-        icons = ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
-        # Map 0-100 to 0-9
-        idx = min(int(percent / 10), 9)
+        # Horizontal Icons: FontAwesome (f244 -> f240)
+        # 0%, 25%, 50%, 75%, 100%
+        icons = ["", "", "", "", "", "", "", "", "", "", ""]
+        # Map 0-100 to 0-10
+        idx = min(int(percent / 10), 10)
         
-        icon = icons[idx]
         if state == "charging":
-             icon = "󰂄" # Charging Bolt
+             # Horizontal Charging Icons (MDI nf-md-battery_charging_*)
+             charging_icons = ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂄"]
+             icon = charging_icons[idx]
+        else:
+             icon = icons[idx]
             
-        text = f"{icon} {percent}%"
+        text = f"{icon}  {percent}%"
         if formatted_time:
             text += f" ({formatted_time})"
             
