@@ -8,7 +8,7 @@
   programs.niri.enable = true;
 
   # Keep GDM enabled for display manager selection
-  # services.xserver.displayManager.gdm.enable = lib.mkForce false;
+  services.xserver.displayManager.gdm.enable = lib.mkForce true;
 
   # Don't auto-start niri - let user select from display manager
   # environment.loginShellInit = ''
@@ -55,8 +55,8 @@
     enable = true;
     extraPortals = with pkgs; [ xdg-desktop-portal-gtk xdg-desktop-portal-wlr ];
     config = {
-      common.default = [ "gtk" ];
-      niri.default = [ "gtk" ];
+      common.default = lib.mkForce "gtk";
+      niri.default = lib.mkForce "gtk";
     };
     wlr.enable = true;
   };
