@@ -1,5 +1,6 @@
 {
   "layer": "top",
+  "fixed-center": false,
   "position": "top",
   "margin-top": 5,
   "margin-bottom": 0,
@@ -38,6 +39,7 @@
     }
   },
   "niri/window": {
+    "expand": true,
     "format": "{title}",
     "max-length": 40,
     "rewrite": {
