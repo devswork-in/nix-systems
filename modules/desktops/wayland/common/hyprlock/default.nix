@@ -1,0 +1,29 @@
+{ config, lib, pkgs, userConfig, ... }:
+
+{
+  options.wayland.hyprlock = {
+    enable = lib.mkEnableOption "Hyprlock screen locker";
+    autoLock = lib.mkEnableOption "Auto-lock on session start";
+  };
+
+  config = lib.mkIf config.wayland.hyprlock.enable {
+    # Add hyprlock package
+    home-manager.users."${userConfig.user.name}".home.packages =
+      [ pkgs.hyprlock ];
+
+    # Auto-lock systemd service (optional)
+    systemd.user.services.hyprlock-autolock =
+      lib.mkIf config.wayland.hyprlock.autoLock {
+        description = "Auto-lock screen on session startup";
+        after = [ "graphical-session.target" ];
+        partOf = [ "graphical-session.target" ];
+        wantedBy = [ "graphical-session.target" ];
+
+        serviceConfig = {
+          Type = "simple";
+          ExecStart = "${pkgs.hyprlock}/bin/hyprlock";
+          Restart = "no";
+        };
+      };
+  };
+}

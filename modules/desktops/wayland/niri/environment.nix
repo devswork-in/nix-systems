@@ -1,0 +1,10 @@
+{ ... }:
+
+{
+  # Niri-specific environment variables (compositor identity)
+  environment.variables = {
+    XDG_CURRENT_DESKTOP = "niri";
+    XDG_SESSION_DESKTOP = "niri";
+    DESKTOP_SESSION = "niri";
+  };
+}

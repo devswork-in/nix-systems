@@ -143,57 +143,54 @@ in {
       source = "${nixSystemsRoot}/modules/desktops/wayland/niri/config.kdl";
       dest = "~/.config/niri/config.kdl";
     }
+    # Shared Wayland component configs
     {
       type = "local";
       source =
-        "${nixSystemsRoot}/modules/desktops/wayland/niri/waybar-config.json";
+        "${nixSystemsRoot}/modules/desktops/wayland/common/hyprlock/hyprlock.conf";
+      dest = "~/.config/hypr/hyprlock.conf";
+    }
+    {
+      type = "local";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/common/waybar/config.json";
       dest = "~/.config/waybar/config";
     }
     {
       type = "local";
       source =
-        "${nixSystemsRoot}/modules/desktops/wayland/niri/waybar-style.css";
+        "${nixSystemsRoot}/modules/desktops/wayland/common/waybar/style.css";
       dest = "~/.config/waybar/style.css";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/swappy-config";
-      dest = "~/.config/swappy/config";
-    }
-    {
-      type = "local";
       source =
-        "${nixSystemsRoot}/modules/desktops/wayland/niri/battery_monitor.py";
+        "${nixSystemsRoot}/modules/desktops/wayland/common/waybar/scripts/battery_monitor.py";
       dest = "~/.config/waybar/battery_monitor.py";
     }
     {
       type = "local";
       source =
-        "${nixSystemsRoot}/modules/desktops/wayland/niri/memory_monitor.py";
+        "${nixSystemsRoot}/modules/desktops/wayland/common/waybar/scripts/memory_monitor.py";
       dest = "~/.config/waybar/memory_monitor.py";
     }
     {
       type = "local";
       source =
-        "${nixSystemsRoot}/modules/desktops/wayland/niri/disk_monitor.py";
+        "${nixSystemsRoot}/modules/desktops/wayland/common/waybar/scripts/disk_monitor.py";
       dest = "~/.config/waybar/disk_monitor.py";
     }
     {
       type = "local";
       source =
-        "${nixSystemsRoot}/modules/desktops/wayland/niri/swaync-config.json";
+        "${nixSystemsRoot}/modules/desktops/wayland/common/swaync/config.json";
       dest = "~/.config/swaync/config.json";
     }
     {
       type = "local";
       source =
-        "${nixSystemsRoot}/modules/desktops/wayland/niri/swaync-style.css";
+        "${nixSystemsRoot}/modules/desktops/wayland/common/swaync/style.css";
       dest = "~/.config/swaync/style.css";
-    }
-    {
-      type = "local";
-      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/hyprlock.conf";
-      dest = "~/.config/hypr/hyprlock.conf";
     }
   ];
 
