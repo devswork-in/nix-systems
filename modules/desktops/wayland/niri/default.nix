@@ -70,6 +70,9 @@
 
   # Home Manager configuration
   home-manager.users."${userConfig.user.name}" = {
+    # Import GTK configuration for theming
+    imports = [ ../../../desktop-utils/gtk-config.nix ];
+
     home.packages = with pkgs; [
       niri
       fuzzel
