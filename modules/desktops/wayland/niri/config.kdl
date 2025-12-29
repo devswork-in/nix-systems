@@ -122,7 +122,7 @@ binds {
     
     // Session management
     Mod+Q { spawn "swaylock"; }
-    Mod+Shift+Q { spawn "sh" "-c" "loginctl kill-session $(loginctl | tail -n +2 | xargs | cut -d ' ' -f1)"; }
+    Mod+Shift+Q { quit; }
     
     // System
     Mod+Ctrl+R { spawn "reboot"; }
