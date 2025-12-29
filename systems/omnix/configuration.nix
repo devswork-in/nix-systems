@@ -14,8 +14,8 @@
 
     # Addon modules
     ../../modules/services
-    ../../modules/desktops/gnome/pop-shell.nix
     ../../modules/desktops/wayland/niri
+    ../../modules/desktop-utils/services.nix
     ../../modules/desktop-utils/tlp.nix
     ../../modules/desktop-utils/performance-optimization.nix
     ../../modules/apps/kiro
