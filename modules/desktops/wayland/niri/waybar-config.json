@@ -1,6 +1,7 @@
 {
   "layer": "top",
   "fixed-center": false,
+  "expand-center": true,
   "position": "top",
   "margin-top": 5,
   "margin-bottom": 0,
@@ -11,7 +12,9 @@
     "niri/workspaces",
     "niri/window"
   ],
-  "modules-center": [],
+  "modules-center": [
+    "custom/fill"
+  ],
   "modules-right": [
     "network",
     "custom/memory",
@@ -41,10 +44,15 @@
   "niri/window": {
     "expand": true,
     "format": "{title}",
-    "max-length": 40,
     "rewrite": {
       "": "Niri"
     }
+  },
+  "custom/fill": {
+    "format": " ",
+    "interval": "once",
+    "tooltip": false,
+    "expand": true
   },
   "pulseaudio": {
     "format": "{icon}  {volume}%",
