@@ -128,7 +128,16 @@ in {
       dest = "~/.icons";
     }
 
-    # Niri Wayland compositor configuration
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/vars/desktop.sh";
+      dest = "~/.config/env/desktop.sh";
+    }
+  ];
+
+  # Niri-specific sync items
+  # Only synced when programs.niri.enable is true
+  niri = [
     {
       type = "local";
       source = "${nixSystemsRoot}/modules/desktops/wayland/niri/config.kdl";
@@ -153,8 +162,33 @@ in {
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/core/vars/desktop.sh";
-      dest = "~/.config/env/desktop.sh";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/niri/battery_monitor.py";
+      dest = "~/.config/waybar/battery_monitor.py";
+    }
+    {
+      type = "local";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/niri/memory_monitor.py";
+      dest = "~/.config/waybar/memory_monitor.py";
+    }
+    {
+      type = "local";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/niri/disk_monitor.py";
+      dest = "~/.config/waybar/disk_monitor.py";
+    }
+    {
+      type = "local";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/niri/swaync-config.json";
+      dest = "~/.config/swaync/config.json";
+    }
+    {
+      type = "local";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/niri/swaync-style.css";
+      dest = "~/.config/swaync/style.css";
     }
   ];
 
