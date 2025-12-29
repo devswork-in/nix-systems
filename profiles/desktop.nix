@@ -73,6 +73,7 @@
     user = userConfig.user.name;
     syncItems = lib.mkDefault ((syncConfig.common or [ ])
       ++ (syncConfig.desktop or [ ])
-      ++ (syncConfig.${config.networking.hostName} or [ ]));
+      ++ (syncConfig.${config.networking.hostName} or [ ])
+      ++ (lib.optionals config.programs.niri.enable (syncConfig.niri or [ ])));
   };
 }
