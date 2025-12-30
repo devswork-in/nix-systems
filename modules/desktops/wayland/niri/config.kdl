@@ -75,6 +75,8 @@ binds {
     Mod+J { focus-window-down; }
     Mod+K { focus-window-up; }
     
+    Mod+M { maximize-column; }
+    
     // Toggle waybar
     Mod+B { spawn "pkill" "-SIGUSR1" "waybar"; }
     
@@ -88,6 +90,11 @@ binds {
     Mod+Equal { set-column-width "+10%"; }
     Mod+Shift+Minus { set-window-height "-10%"; }
     Mod+Shift+Equal { set-window-height "+10%"; }
+    
+    Mod+Ctrl+L { set-column-width "+10%"; }
+    Mod+Ctrl+H { set-column-width "-10%"; }
+    Mod+Ctrl+K { set-window-height "-10%"; }
+    Mod+Ctrl+J { set-window-height "+10%"; }
     
     // Workspaces
     Mod+1 { focus-workspace 1; }
