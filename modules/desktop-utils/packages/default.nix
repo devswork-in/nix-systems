@@ -3,11 +3,12 @@
 
 {
   imports = [
-    ../../core/packages  # Import common packages
+    ../../core/packages # Import common packages
   ];
 
   # Add only desktop-specific packages
   home.packages = with pkgs; [
+    amp-cli
     bc
     openssl
     koji
@@ -40,14 +41,9 @@
     android-tools
     efibootmgr
     websocat
-    xdotool  # Required for fusuma touchpad gestures
-    (kodi.withPackages (
-      p: with p; [
-        inputstream-adaptive
-        pvr-iptvsimple
-        inputstreamhelper
-      ]
-    ))
+    xdotool # Required for fusuma touchpad gestures
+    (kodi.withPackages
+      (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ]))
     #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
     google-chrome
   ];

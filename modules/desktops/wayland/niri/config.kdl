@@ -120,11 +120,13 @@ binds {
     Mod+Shift+0 { move-column-to-workspace 10; }
     
     // Screenshots - Wayland with notifications and editing
-    // Full screenshot with notification
-    Print { spawn "sh" "-c" "grim - | swappy -f - && notify-send 'Screenshot' 'Full screen captured'"; }
-    // Area selection with swappy editor
+    // Full screenshot - save to file
+    Print { spawn "sh" "-c" "filename=~/Screenshots/Screenshot_$(date +%Y%m%d_%I%M%S_%p).png && grim \"$filename\" && notify-send 'Screenshot' \"Saved: $(basename $filename)\""; }
+    // Full screenshot to clipboard
+    Alt+Print { spawn "sh" "-c" "grim - | wl-copy && notify-send 'Screenshot' 'Copied to clipboard'"; }
+    // Area selection with swappy editor (copy or save options)
     Mod+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | swappy -f -"; }
-    // Area to clipboard with notification
+    // Area selection to clipboard
     Mod+Shift+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | wl-copy && notify-send 'Screenshot' 'Copied to clipboard'"; }
     
     // Session management
