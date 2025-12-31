@@ -148,6 +148,7 @@ binds {
     Alt+K { spawn "screenkey" "--no-systray" "-t" "0.4" "--opacity" "0.0"; }
     Alt+Shift+K { spawn "pkill" "screenkey"; }
     Mod+R { spawn "wtype" "-M" "ctrl" "r" "-m" "ctrl"; }
+    Mod+Shift+V { spawn "start-vibe-kanban"; }
     
     // Media keys - Brightness
     XF86MonBrightnessUp { spawn "brightnessctl" "set" "+5%"; }

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Kill any existing vibe-kanban processes (excluding this script's process)
+pkill -f "npx.*vibe-kanban" 2>/dev/null || true
+pkill -f "/vibe-kanban.*" 2>/dev/null || true
+
+# Start the vibe-kanban server in a completely detached background process
+npx vibe-kanban > /tmp/vibe-kanban.log 2>&1 < /dev/null &
+
+# Monitor the log file for the URL with a timeout (checking every 0.5 seconds for up to 15 seconds)
+MAX_WAIT=30  # 30 * 0.5 = 15 seconds total
+WAIT_COUNT=0
+URL=""
+
+while [ $WAIT_COUNT -lt $MAX_WAIT ]; do
+    # Check if the URL is in the log
+    URL=$(grep -o 'http://127.0.0.1:[0-9]*\|http://localhost:[0-9]*' /tmp/vibe-kanban.log | head -1)
+    if [ -n "$URL" ]; then
+        echo "Opening browser at: $URL"
+        /run/current-system/sw/bin/zen-browser --new-window "$URL" 2>/dev/null || /run/current-system/sw/bin/zen-browser "$URL" 2>/dev/null || xdg-open "$URL" 2>/dev/null || open "$URL" 2>/dev/null || echo "Please open your browser at $URL"
+        exit 0
+    fi
+    sleep 0.5  # Sleep half a second between checks
+    ((WAIT_COUNT++))
+done
+
+echo "Could not find server URL in logs within timeout. Check /tmp/vibe-kanban.log"
+cat /tmp/vibe-kanban.log
+exit 1
