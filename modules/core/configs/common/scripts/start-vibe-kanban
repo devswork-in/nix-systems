@@ -18,6 +18,55 @@ while [ $WAIT_COUNT -lt $MAX_WAIT ]; do
     if [ -n "$URL" ]; then
         echo "Opening browser at: $URL"
         /run/current-system/sw/bin/zen-browser --new-window "$URL" 2>/dev/null || /run/current-system/sw/bin/zen-browser "$URL" 2>/dev/null || xdg-open "$URL" 2>/dev/null || open "$URL" 2>/dev/null || echo "Please open your browser at $URL"
+
+        # Start background idle monitor
+        PORT=$(echo "$URL" | cut -d: -f3)
+        (
+            IDLE_TIMEOUT=300 # 5 minutes of inactivity
+            CHECK_INTERVAL=30
+            IDLE_TIME=0
+
+            # Store environment for notifications
+            export DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS
+            export DISPLAY=$DISPLAY
+            export WAYLAND_DISPLAY=$WAYLAND_DISPLAY
+            export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
+
+            while true; do
+                sleep $CHECK_INTERVAL
+                # Check for established TCP connections to the local port
+                CONNS=$(ss -Htn state established "( sport = :$PORT )" | wc -l)
+
+                if [ "$CONNS" -eq 0 ]; then
+                    ((IDLE_TIME += CHECK_INTERVAL))
+                else
+                    IDLE_TIME=0
+                fi
+
+                if [ "$IDLE_TIME" -ge "$IDLE_TIMEOUT" ]; then
+                    if command -v notify-send >/dev/null; then
+                        notify-send -a "Vibe-Kanban" "Idle Shutdown" "Server closed after 5m of inactivity to save RAM."
+                    fi
+
+                    # Give the notification time to reach the daemon
+                    sleep 2
+
+                    # Kill only the server processes, excluding this monitor script
+                    # 1. Kill the node processes running vibe-kanban
+                    pkill -9 -f "node.*vibe-kanban" 2>/dev/null
+                    # 2. Kill the vibe-kanban binary itself
+                    pkill -9 -x "vibe-kanban" 2>/dev/null
+
+                    exit 0
+                fi
+
+                # Exit monitor if server process is already gone
+                if ! pgrep -f "vibe-kanban" >/dev/null; then
+                    exit 0
+                fi
+            done
+        ) & disown
+
         exit 0
     fi
     sleep 0.5  # Sleep half a second between checks
