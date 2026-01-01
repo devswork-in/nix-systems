@@ -16,6 +16,11 @@ input {
     }
 }
 
+// Disable the default hotkey help overlay at startup
+hotkey-overlay {
+    skip-at-startup
+}
+
 // Output configuration - adjust for your monitors
 // Run 'niri msg outputs' to see available outputs
 output "eDP-1" {

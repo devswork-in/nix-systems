@@ -4,7 +4,7 @@
   # Configure session manager for Niri
   sessionManager = {
     enable = true;
-    autoStart = false;
+    autoStart = true;
     sessionType = "wayland";
     sessionCommand = "${pkgs.writeShellScript "start-niri" ''
       # Define variables to import into systemd user session
