@@ -84,7 +84,6 @@
   "custom/battery": {
     "exec": "~/.config/waybar/battery_monitor.py",
     "return-type": "json",
-    "interval": 5,
     "format": "{}",
     "tooltip": true
   },
