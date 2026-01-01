@@ -1,5 +1,7 @@
 { pkgs, config, userConfig, ... }: {
   environment.variables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
     PAGER = "bat";
     BROWSER = "zen-browser";
     TERMINAL = "kitty";
