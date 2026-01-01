@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# niri-edit-config: Edit Niri configuration
+# Usage: niri-edit-config
+
+# Target the user config which is usually where home-manager symlinks to
+CONFIG_PATH="$HOME/.config/niri/config.kdl"
+
+if [ -z "$EDITOR" ]; then
+    # Fallback to nano if EDITOR is not set
+    if command -v nano >/dev/null 2>&1; then
+        EDITOR=nano
+    elif command -v vim >/dev/null 2>&1; then
+        EDITOR=vim
+    else
+        EDITOR=vi
+    fi
+fi
+
+if [ ! -f "$CONFIG_PATH" ]; then
+    echo "Error: Configuration file not found at $CONFIG_PATH"
+    echo "Please ensure Niri is installed and configured."
+    exit 1
+fi
+
+echo "Editing Niri configuration..."
+exec "$EDITOR" "$CONFIG_PATH"

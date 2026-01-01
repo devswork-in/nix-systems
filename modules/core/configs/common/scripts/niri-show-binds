@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# niri-show-binds: Search and display Niri keybindings
+# Usage: niri-show-binds
+
+CONFIG_PATH="$HOME/.config/niri/config.kdl"
+
+if [ ! -f "$CONFIG_PATH" ]; then
+    echo "Error: Configuration file not found at $CONFIG_PATH"
+    exit 1
+fi
+
+# Parsing logic:
+# 1. Extract the binds block
+# 2. Filter comments and empty lines
+# 3. Format nicely using a delimiter and column -t
+# 4. Pipe to fzf with a preview window for long lines
+
+awk '
+  /^[[:space:]]*binds[[:space:]]*\{/ { in_binds=1; next }
+  in_binds && /^[[:space:]]*\}/ { in_binds=0; next }
+  in_binds { print }
+' "$CONFIG_PATH" | \
+grep -vE '^\s*//' | \
+grep -vE '^\s*$' | \
+# Replace the brace/action separator with a tab for column formatting to avoid conflicts with pipes in commands
+sed -E 's/^\s*//; s/[[:space:]]*\{[[:space:]]*/\t/; s/[[:space:]]*\}[[:space:]]*$//; s/;[[:space:]]*$//' | \
+column -t -s $'\t' -o '  ->  ' | \
+fzf --header "Niri Keybindings (Search to filter, CTRL-C to exit)" \
+    --prompt "λ " \
+    --layout=reverse \
+    --border \
+    --info=inline \
+    --preview 'echo {}' \
+    --preview-window 'down:3:wrap'
