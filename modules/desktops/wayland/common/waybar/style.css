@@ -161,6 +161,12 @@ window#waybar {
     color: #f38ba8;
 }
 
-#battery.charging {
-    color: #181825;
+#custom-battery.charging,
+#custom-battery.fully-charged {
+    color: @green;
+}
+
+#battery.charging,
+#battery.fully-charged {
+    color: @green;
 }
