@@ -126,6 +126,10 @@ binds {
     // Local scripts launcher
     Alt+Return { spawn "sh" "-c" "selected_script=$(ls ~/.local/bin | rofi -dmenu) && bash ~/.local/bin/$selected_script"; }
 
+    // Configuration and Help
+    Mod+E { spawn "sh" "-c" "kitty niri-edit-config"; }
+    Mod+Shift+Slash { spawn "sh" "-c" "kitty --class fzf-float niri-show-binds"; }
+
     // Window management
     Mod+Shift+C { close-window; }
     Mod+F { fullscreen-window; }
@@ -248,6 +252,13 @@ window-rule {
 window-rule {
     match app-id="^[Vv]icinae$"
     open-floating true
+}
+
+window-rule {
+    match app-id="^fzf-float$"
+    open-floating true
+    default-column-width { fixed 1650; }
+    default-window-height { fixed 950; }
 }
 
 // Default rounded corners for all windows
