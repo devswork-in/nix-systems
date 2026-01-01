@@ -7,7 +7,7 @@ input {
             layout "us"
         }
     }
-    
+
     touchpad {
         tap
         natural-scroll
@@ -24,9 +24,63 @@ output "eDP-1" {
     position x=0 y=0
 }
 
+animations {
+    // Uncomment to turn off all animations.
+    // You can also put "off" into each individual animation to disable it.
+    // off
+
+    // Slow down all animations by this factor. Values below 1 speed them up instead.
+    // slowdown 3.0
+
+    // Individual animations.
+
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=2000 epsilon=0.0001
+    }
+
+    window-open {
+        duration-ms 75
+        curve "ease-out-expo"
+    }
+
+    window-close {
+        duration-ms 75
+        curve "ease-out-quad"
+    }
+
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
+    }
+
+    window-movement {
+        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
+    }
+
+    window-resize {
+        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
+    }
+
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1500 epsilon=0.001
+    }
+
+    exit-confirmation-open-close {
+        spring damping-ratio=0.6 stiffness=1000 epsilon=0.01
+    }
+
+    screenshot-ui-open {
+        duration-ms 100
+        curve "ease-out-quad"
+    }
+
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
+    }
+}
+
 layout {
     gaps 5
-    
+
     // Add outer gaps (margins) around the screen
     struts {
         left 0
@@ -36,19 +90,19 @@ layout {
     }
 
     center-focused-column "never"
-    
+
     preset-column-widths {
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
     }
-    
+
     default-column-width { proportion 1.0; }
-    
+
     focus-ring {
         off
     }
-    
+
     border {
         width 2
         active-color "#585b70"
@@ -60,13 +114,13 @@ layout {
 binds {
     // Mod key (Super/Windows key)
     Mod+Shift+Return { spawn "kitty"; }
-    
+
     // Application launcher - Vicinae
     Mod+Slash { spawn "sh" "-c" "vicinae toggle"; }
-    
+
     // Local scripts launcher
     Alt+Return { spawn "sh" "-c" "selected_script=$(ls ~/.local/bin | rofi -dmenu) && bash ~/.local/bin/$selected_script"; }
-    
+
     // Window management
     Mod+Shift+C { close-window; }
     Mod+F { fullscreen-window; }
@@ -74,28 +128,28 @@ binds {
     Mod+L { focus-column-right; }
     Mod+J { focus-window-down; }
     Mod+K { focus-window-up; }
-    
+
     Mod+M { maximize-column; }
-    
+
     // Toggle waybar
     Mod+B { spawn "pkill" "-SIGUSR1" "waybar"; }
-    
+
     Mod+Shift+H { move-column-left; }
     Mod+Shift+L { move-column-right; }
     Mod+Shift+J { move-window-down; }
     Mod+Shift+K { move-window-up; }
-    
+
     // Column width
     Mod+Minus { set-column-width "-10%"; }
     Mod+Equal { set-column-width "+10%"; }
     Mod+Shift+Minus { set-window-height "-10%"; }
     Mod+Shift+Equal { set-window-height "+10%"; }
-    
+
     Mod+Ctrl+L { set-column-width "+10%"; }
     Mod+Ctrl+H { set-column-width "-10%"; }
     Mod+Ctrl+K { set-window-height "-10%"; }
     Mod+Ctrl+J { set-window-height "+10%"; }
-    
+
     // Workspaces
     Mod+1 { focus-workspace 1; }
     Mod+2 { focus-workspace 2; }
@@ -107,7 +161,7 @@ binds {
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
     Mod+0 { focus-workspace 10; }
-    
+
     Mod+Shift+1 { move-column-to-workspace 1; }
     Mod+Shift+2 { move-column-to-workspace 2; }
     Mod+Shift+3 { move-column-to-workspace 3; }
@@ -118,7 +172,7 @@ binds {
     Mod+Shift+8 { move-column-to-workspace 8; }
     Mod+Shift+9 { move-column-to-workspace 9; }
     Mod+Shift+0 { move-column-to-workspace 10; }
-    
+
     // Screenshots - Wayland with notifications and editing
     // Full screenshot - save to file
     Print { spawn "sh" "-c" "filename=~/Screenshots/Screenshot_$(date +%Y%m%d_%I%M%S_%p).png && grim \"$filename\" && notify-send 'Screenshot' \"Saved: $(basename $filename)\""; }
@@ -128,38 +182,38 @@ binds {
     Mod+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | swappy -f -"; }
     // Area selection to clipboard
     Mod+Shift+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | wl-copy && notify-send 'Screenshot' 'Copied to clipboard'"; }
-    
+
     // Session management
     Mod+Q { spawn "hyprlock"; }
     Mod+Shift+Q { quit; }
-    
+
     // System
     Mod+Ctrl+R { spawn "reboot"; }
     Mod+Ctrl+P { spawn "poweroff"; }
-    
+
     // Gromit-mpx (drawing tool)
     Alt+X { spawn "sh" "-c" "pkill gromit-mpx || gromit-mpx -a"; }
     Alt+Y { spawn "sh" "-c" "pidof gromit-mpx && gromit-mpx -y"; }
     Alt+Z { spawn "sh" "-c" "pidof gromit-mpx && gromit-mpx -z"; }
     Alt+V { spawn "sh" "-c" "pidof gromit-mpx && gromit-mpx -v"; }
-    
+
     // Utilities
     Mod+Shift+W { spawn "random-wallpaper"; }
     Alt+K { spawn "screenkey" "--no-systray" "-t" "0.4" "--opacity" "0.0"; }
     Alt+Shift+K { spawn "pkill" "screenkey"; }
     Mod+R { spawn "wtype" "-M" "ctrl" "r" "-m" "ctrl"; }
     Mod+Shift+V { spawn "start-vibe-kanban"; }
-    
+
     // Media keys - Brightness
-    XF86MonBrightnessUp { spawn "brightnessctl" "set" "+5%"; }
-    XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
-    
+    XF86MonBrightnessUp { spawn "swayosd-client" "--brightness" "raise"; }
+    XF86MonBrightnessDown { spawn "swayosd-client" "--brightness" "lower"; }
+
     // Media keys - Volume
-    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-    XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-    
+    XF86AudioRaiseVolume { spawn "swayosd-client" "--output-volume" "raise"; }
+    XF86AudioLowerVolume { spawn "swayosd-client" "--output-volume" "lower"; }
+    XF86AudioMute { spawn "swayosd-client" "--output-volume" "mute-toggle"; }
+    XF86AudioMicMute { spawn "swayosd-client" "--input-volume" "mute-toggle"; }
+
     // Media keys - Playback
     XF86AudioPlay { spawn "playerctl" "play-pause"; }
     XF86AudioNext { spawn "playerctl" "next"; }
@@ -172,6 +226,7 @@ spawn-at-startup "swaync"
 // spawn-at-startup "nm-applet" "--indicator"
 // spawn-at-startup "blueman-applet"
 spawn-at-startup "vicinae" "server"
+spawn-at-startup "swayosd-server"
 spawn-at-startup "random-wallpaper"
 
 // Window rules
