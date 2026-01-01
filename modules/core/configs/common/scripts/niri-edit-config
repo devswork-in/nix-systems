@@ -6,11 +6,13 @@
 CONFIG_PATH="$HOME/.config/niri/config.kdl"
 
 if [ -z "$EDITOR" ]; then
-    # Fallback to nano if EDITOR is not set
-    if command -v nano >/dev/null 2>&1; then
-        EDITOR=nano
+    # Fallback to nvim/vim if EDITOR is not set
+    if command -v nvim >/dev/null 2>&1; then
+        EDITOR=nvim
     elif command -v vim >/dev/null 2>&1; then
         EDITOR=vim
+    elif command -v nano >/dev/null 2>&1; then
+        EDITOR=nano
     else
         EDITOR=vi
     fi
