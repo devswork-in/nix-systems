@@ -31,8 +31,14 @@
     wlr.enable = true;
   };
 
+  # Enable dconf (required for GTK apps like Bottles)
+  programs.dconf.enable = true;
+
   # System packages needed for Wayland
   environment.systemPackages = with pkgs; [
+    # Icons for GTK apps (fixes missing icons in Bottles/etc)
+    adwaita-icon-theme
+
     xwayland-satellite
     wlogout
     wl-clipboard
