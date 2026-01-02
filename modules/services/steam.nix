@@ -13,6 +13,14 @@
       enable = true;
       gamescopeSession.enable = true;
 
+      # Override the Steam package to fix missing steamclient.so without polluting
+      # the global environment (which breaks apps like Zen Browser)
+      package = pkgs.steam.override {
+        extraProfile = ''
+          export LD_LIBRARY_PATH=$HOME/.local/share/Steam/ubuntu12_32:$HOME/.local/share/Steam/ubuntu12_64:$LD_LIBRARY_PATH
+        '';
+      };
+
       # Ensure Steam and games install to /home (default behavior)
       # Steam library: ~/.local/share/Steam/steamapps
       # Shader cache: ~/.local/share/Steam/steamapps/shadercache
@@ -104,10 +112,6 @@
     # Steam Proton-GE compatibility tools path
     STEAM_EXTRA_COMPAT_TOOLS_PATHS =
       "\${HOME}/.steam/root/compatibilitytools.d";
-
-    # Fix for missing steamclient.so startup error
-    LD_LIBRARY_PATH =
-      "\${HOME}/.local/share/Steam/ubuntu12_32:\${HOME}/.local/share/Steam/ubuntu12_64:\${LD_LIBRARY_PATH}";
 
     # MangoHud configuration
     # MANGOHUD = "1"; # Disabled global overlay (use 'mangohud %command%' in Steam)
