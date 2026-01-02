@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# niri-kill-process: Interactively kill running processes using fzf
+# Usage: niri-kill-process
+
+# Get list of processes sorted by CPU usage
+# Format: PID, %CPU, %MEM, USER, COMMAND
+# Header included for fzf
+pid=$(ps -eo pid,pcpu,pmem,user,comm --sort=-pcpu | \
+    # Remove kernel threads (often in brackets like [kworker/u16:0])
+    grep -v " \[[^]]*\]$" | \
+    # Use fzf to select a process
+    fzf --header "Kill Process (Search by Name/PID)" \
+        --header-lines=1 \
+        --prompt "☠️ Kill > " \
+        --layout=reverse \
+        --border \
+        --info=inline \
+        --preview 'echo "Process Details:"; ps -p {1} -o pid,ppid,user,group,nice,%cpu,%mem,etime,args' \
+        --preview-window 'down:5:wrap' | \
+    # Extract PID (first column)
+    awk '{print $1}')
+
+if [ -n "$pid" ]; then
+    # Get process name for confirmation message
+    name=$(ps -p "$pid" -o comm=)
+
+    echo -e "\nSelected process: \033[1;31m$name\033[0m (PID: $pid)"
+    read -p "Are you sure you want to kill this process? (y/N): " confirm
+
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        kill -9 "$pid"
+        if [ $? -eq 0 ]; then
+            echo "Process killed."
+            notify-send "Process Killed" "$name (PID: $pid) has been terminated."
+        else
+            echo "Failed to kill process. You might need sudo."
+            read -p "Press Enter to exit..."
+        fi
+    else
+        echo "Operation cancelled."
+    fi
+else
+    echo "No process selected."
+fi
