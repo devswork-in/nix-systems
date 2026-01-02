@@ -147,7 +147,8 @@ binds {
     Mod+Shift+H { move-column-left; }
     Mod+Shift+L { move-column-right; }
     Mod+Shift+J { move-window-down; }
-    Mod+Shift+K { move-window-up; }
+    // Mod+Shift+K { move-window-up; }
+    Mod+Shift+K { spawn "sh" "-c" "kitty --class fzf-float niri-kill-process"; }
 
     // Column width
     Mod+Minus { set-column-width "-10%"; }
