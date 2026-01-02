@@ -105,6 +105,10 @@
     STEAM_EXTRA_COMPAT_TOOLS_PATHS =
       "\${HOME}/.steam/root/compatibilitytools.d";
 
+    # Fix for missing steamclient.so startup error
+    LD_LIBRARY_PATH =
+      "\${HOME}/.local/share/Steam/ubuntu12_32:\${HOME}/.local/share/Steam/ubuntu12_64:\${LD_LIBRARY_PATH}";
+
     # MangoHud configuration
     # MANGOHUD = "1"; # Disabled global overlay (use 'mangohud %command%' in Steam)
     # MANGOHUD_CONFIGFILE = "\${HOME}/.config/MangoHud/MangoHud.conf";
