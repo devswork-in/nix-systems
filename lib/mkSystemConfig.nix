@@ -6,12 +6,19 @@
 { system, modules, hostname }:
 
 nixpkgs.lib.nixosSystem {
-  specialArgs = { 
-    inherit inputs userConfig nixosVersion flakeRoot; 
-  };
+  specialArgs = { inherit inputs userConfig nixosVersion flakeRoot; };
   inherit system;
   modules = [
     # Set hostname with mkDefault to allow system-specific override
-    { networking.hostName = nixpkgs.lib.mkDefault hostname; }
+    {
+      networking.hostName = nixpkgs.lib.mkDefault hostname;
+    }
+    # Global nixpkgs config - allow unfree and insecure packages
+    {
+      nixpkgs.config = {
+        allowUnfree = true;
+        allowInsecurePredicate = _: true;
+      };
+    }
   ] ++ modules;
 }

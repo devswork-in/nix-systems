@@ -41,8 +41,7 @@
     };
   };
 
-  # Allow unfree packages (common requirement)
-  nixpkgs.config.allowUnfree = true;
+  # nixpkgs.config (allowUnfree, allowInsecure) is set in lib/mkSystemConfig.nix
 
   # Enable fish shell globally
   programs.fish.enable = true;
