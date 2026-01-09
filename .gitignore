@@ -2,3 +2,6 @@
 result
 .kiro
 .qwen
+modules/core/configs/common/scripts/Hidamari
+modules/core/configs/common/scripts/WebTorrent
+modules/core/configs/common/scripts/cpu-x
