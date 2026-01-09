@@ -10,9 +10,9 @@
 
   # Delayed start timer
   systemd.timers.libvirtd-delayed = {
-    wantedBy = [ "timers.target" ];
+    wantedBy = [ "graphical.target" ];
     timerConfig = {
-      OnBootSec = "2m";
+      OnActiveSec = "2m";
       Unit = "libvirtd.service";
     };
   };
