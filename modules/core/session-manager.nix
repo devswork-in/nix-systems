@@ -25,20 +25,35 @@
 
   config = lib.mkIf config.sessionManager.enable {
     # TTY1 auto-login
-    services.getty.autologinUser = userConfig.user.name;
+    # services.getty.autologinUser = userConfig.user.name;
 
-    # Shell-agnostic auto-start on TTY1
-    environment.loginShellInit = lib.mkIf config.sessionManager.autoStart ''
-      # Auto-start session on TTY1 only
-      if [ "$(tty 2>/dev/null)" = "/dev/tty1" ]; then
-        # Check if session is already running
-        if ! systemctl --user is-active --quiet niri.service 2>/dev/null; then
-          # Start session asynchronously (non-blocking)
-          (${config.sessionManager.sessionCommand}) &
-          disown
-        fi
-      fi
-    '';
+    # Use greetd for seamless auto-login
+    services.greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${config.sessionManager.sessionCommand}";
+          user = userConfig.user.name;
+        };
+        initial_session = {
+          command = "${config.sessionManager.sessionCommand}";
+          user = userConfig.user.name;
+        };
+      };
+    };
+
+    # Shell-agnostic auto-start on TTY1 (Disabled in favor of greetd)
+    # environment.loginShellInit = lib.mkIf config.sessionManager.autoStart ''
+    #  # Auto-start session on TTY1 only
+    #  if [ "$(tty 2>/dev/null)" = "/dev/tty1" ]; then
+    #    # Check if session is already running
+    #    if ! systemctl --user is-active --quiet niri.service 2>/dev/null; then
+    #      # Start session asynchronously (non-blocking)
+    #      (${config.sessionManager.sessionCommand}) &
+    #      disown
+    #    fi
+    #  fi
+    # '';
 
     # Manual start command
     environment.systemPackages = [

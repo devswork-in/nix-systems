@@ -19,6 +19,7 @@
     ../../modules/services
     ../../modules/desktops/wayland/niri
     ../../modules/desktop-utils/services.nix
+    ../../modules/desktop-utils/plymouth.nix
     ../../modules/desktop-utils/tlp.nix
     ../../modules/desktop-utils/performance-optimization.nix
     ../../modules/apps/kiro

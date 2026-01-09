@@ -175,11 +175,16 @@ in {
       "transparent_hugepage=madvise"
       "nowatchdog"
       "nmi_watchdog=0"
+      "libahci.ignore_sss=1" # Ignore staggered spin-up (faster SSD boot)
+      "no_timer_check" # Don't check timers (faster boot)
       # Zswap configuration (compressed swap in RAM)
       "zswap.enabled=1"
       "zswap.compressor=lz4"
       "zswap.max_pool_percent=20"
     ] ++ optional cfg.kernel.disableMitigations "mitigations=off");
+
+    # Use zstd compression for initrd (faster decompression)
+    boot.initrd.compressor = "zstd";
 
     # I/O Scheduler optimizations
     services.udev.extraRules = mkIf cfg.io.enableSchedulerOptimizations ''
