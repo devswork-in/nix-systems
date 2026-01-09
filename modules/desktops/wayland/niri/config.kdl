@@ -243,8 +243,10 @@ spawn-at-startup "random-wallpaper"
 
 // Window rules
 window-rule {
-    match app-id="^org\.gnome\.Nautilus$"
-    default-column-width { proportion 0.5; }
+    match app-id=r#"^org\.gnome\.Nautilus$"#
+    open-floating true
+    default-column-width { fixed 1200; }
+    default-window-height { fixed 800; }
 }
 
 window-rule {
