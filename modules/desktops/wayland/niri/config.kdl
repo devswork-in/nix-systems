@@ -210,6 +210,7 @@ binds {
 
     // Utilities
     Mod+Shift+W { spawn "random-wallpaper"; }
+    Mod+Shift+Y { spawn "play-live-wallpaper"; }
     Alt+K { spawn "screenkey" "--no-systray" "-t" "0.4" "--opacity" "0.0"; }
     Alt+Shift+K { spawn "pkill" "screenkey"; }
     Mod+R { spawn "wtype" "-M" "ctrl" "r" "-m" "ctrl"; }
