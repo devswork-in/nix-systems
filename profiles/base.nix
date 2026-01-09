@@ -72,5 +72,17 @@
   system.stateVersion = nixosVersion;
 
   # Ensure nix-repo-sync has access to git and ssh
-  systemd.services.nix-repo-sync = { path = with pkgs; [ git openssh ]; };
+  # Run it on a timer to avoid blocking boot
+  systemd.services.nix-repo-sync = {
+    path = with pkgs; [ git openssh ];
+    wantedBy = lib.mkForce [ ]; # Don't start at boot
+  };
+
+  systemd.timers.nix-repo-sync = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = lib.mkForce "1m";
+      Unit = "nix-repo-sync.service";
+    };
+  };
 }
