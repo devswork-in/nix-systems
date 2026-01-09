@@ -232,7 +232,7 @@ binds {
 }
 
 // Spawn programs at startup
-spawn-at-startup "hyprlock" "--immediate" "--no-fade-in"
+spawn-at-startup "hyprlock" "--immediate" "--no-fade-in" "--immediate-render"
 spawn-at-startup "waybar"
 spawn-at-startup "swaync"
 // spawn-at-startup "nm-applet" "--indicator"
@@ -243,7 +243,7 @@ spawn-at-startup "random-wallpaper"
 
 // Window rules
 window-rule {
-    match app-id="^org\\.gnome\\.Nautilus$"
+    match app-id="^org\.gnome\.Nautilus$"
     default-column-width { proportion 0.5; }
 }
 

@@ -13,10 +13,10 @@
       '';
       excludePackages = [ pkgs.xterm ];
     };
-    
+
     # Enable picom compositor to prevent tearing and glitches
     picom = {
-      enable = true;
+      enable = false;
       backend = "glx";
       vSync = true;
       settings = {
@@ -30,7 +30,8 @@
     };
 
     libinput = {
-      enable = true; # touchpad support generally enabled by most display managers
+      enable =
+        true; # touchpad support generally enabled by most display managers
       touchpad.naturalScrolling = true;
     };
 
@@ -92,7 +93,8 @@
     # and sftp on cli was failing
     gvfs.enable = true;
     preload.enable = true;
-    gnome.gnome-keyring.enable = true; # fails to save if enabled via home-manager
+    gnome.gnome-keyring.enable =
+      true; # fails to save if enabled via home-manager
     #cachix-agent = {
     #  # needs /etc/cachix-agent.token fix to have CACHIX_AGENT_TOKEN=<CACHIX_AUTH_TOKEN>
     #  enable = true;
@@ -133,6 +135,7 @@
 
     ccache.enable = true;
     light.enable = true;
-    nix-ld.enable = true; # Run unpatched dynamic binaries on NixOS., check : https://github.com/Mic92/nix-ld
+    nix-ld.enable =
+      true; # Run unpatched dynamic binaries on NixOS., check : https://github.com/Mic92/nix-ld
   };
 }

@@ -129,6 +129,13 @@ in {
         default = true;
         description = "Disable ModemManager service (no mobile broadband chip)";
       };
+
+      disableNetworkManagerWaitOnline = mkOption {
+        type = types.bool;
+        default = true;
+        description =
+          "Disable NetworkManager-wait-online service for faster boot";
+      };
     };
   };
 
@@ -263,6 +270,10 @@ in {
     # Disable ModemManager (no mobile broadband chip)
     systemd.services.ModemManager.enable =
       mkIf cfg.services.disableModemManager (mkForce false);
+
+    # Disable NetworkManager-wait-online service
+    systemd.services.NetworkManager-wait-online.enable =
+      mkIf cfg.services.disableNetworkManagerWaitOnline (mkForce false);
 
   };
 }

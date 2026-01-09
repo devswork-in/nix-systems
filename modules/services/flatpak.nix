@@ -4,13 +4,11 @@
   # Flatpak service - disabled to improve boot time (was causing flatpak-managed-install.service to take 1.8s)
   # To use Flatpak: systemctl enable --now flatpak
   services.flatpak = {
-    enable = false;  # Changed to false to improve boot time
-    remotes = [
-      {
-        name = "flathub";
-        location = "https://flathub.org/repo/flathub.flatpakrepo";
-      }
-    ];
+    enable = true; # Enabled but delayed
+    remotes = [{
+      name = "flathub";
+      location = "https://flathub.org/repo/flathub.flatpakrepo";
+    }];
     packages = [
       {
         appId = "io.github.thetumultuousunicornofdarkness.cpu-x";
@@ -27,8 +25,21 @@
     ];
 
     update.auto = {
-      enable = false;  # Changed to false - was causing flatpak-managed-install at boot
+      enable =
+        false; # Changed to false - was causing flatpak-managed-install at boot
       onCalendar = "weekly"; # Default value
+    };
+  };
+
+  # Prevent managed install service from running at boot
+  systemd.services.flatpak-managed-install.wantedBy = lib.mkForce [ ];
+
+  # Delayed start timer
+  systemd.timers.flatpak-managed-install-delayed = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "2m";
+      Unit = "flatpak-managed-install.service";
     };
   };
 

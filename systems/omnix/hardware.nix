@@ -95,10 +95,9 @@
     wantedBy = [ "multi-user.target" ];
     after = [ "multi-user.target" "tlp.service" ];
     serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
+      Type = "simple";
       ExecStart =
-        "${pkgs.bash}/bin/bash -c 'sleep 2 && echo auto > /sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null || true'";
+        "${pkgs.bash}/bin/bash -c 'sleep 5 && echo auto > /sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null || true'";
     };
   };
 
