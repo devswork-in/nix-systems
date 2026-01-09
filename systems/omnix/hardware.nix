@@ -12,7 +12,7 @@
         [ "nvme" "xhci_pci" "usb_storage" "sd_mod" "sdhci_pci" ];
       kernelModules = [
         # amdgpu loads automatically, only add here if you need early KMS for Plymouth
-        # "amdgpu"
+        "amdgpu"
       ];
     };
     kernelModules = [ "amdgpu" "kvm-amd" ];
