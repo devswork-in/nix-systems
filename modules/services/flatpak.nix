@@ -36,9 +36,9 @@
 
   # Delayed start timer
   systemd.timers.flatpak-managed-install-delayed = {
-    wantedBy = [ "timers.target" ];
+    wantedBy = [ "graphical.target" ];
     timerConfig = {
-      OnBootSec = "2m";
+      OnActiveSec = "2m";
       Unit = "flatpak-managed-install.service";
     };
   };
