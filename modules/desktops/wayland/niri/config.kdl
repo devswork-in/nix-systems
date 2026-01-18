@@ -120,6 +120,10 @@ binds {
     // Mod key (Super/Windows key)
     Mod+Shift+Return { spawn "kitty"; }
 
+    // Window switching (Alt+Tab) - cycles through columns with wrap-around
+    Alt+Tab { focus-column-right-or-first; }
+    Alt+Shift+Tab { focus-column-left-or-last; }
+
     // Application launcher - Vicinae
     Mod+Slash { spawn "sh" "-c" "vicinae toggle"; }
     Mod+C { spawn "sh" "-c" "vicinae deeplink vicinae://extensions/vicinae/clipboard/history"; }
@@ -134,6 +138,7 @@ binds {
     // Window management
     Mod+Shift+C { close-window; }
     Mod+F { fullscreen-window; }
+    Mod+Shift+F { toggle-window-floating; }
     Mod+H { focus-column-left; }
     Mod+L { focus-column-right; }
     Mod+J { focus-window-down; }
@@ -208,8 +213,20 @@ binds {
     Alt+Z { spawn "sh" "-c" "pidof gromit-mpx && gromit-mpx -z"; }
     Alt+V { spawn "sh" "-c" "pidof gromit-mpx && gromit-mpx -v"; }
 
+    // Live Wallpaper Controls
+    Alt+Shift+P { spawn "livewall-control" "toggle-pause"; }
+    Alt+Shift+M { spawn "livewall-control" "toggle-mute"; }
+    Alt+Shift+Right { spawn "livewall-control" "seek-forward"; }
+    Alt+Shift+Left { spawn "livewall-control" "seek-backward"; }
+    Alt+Shift+D { spawn "livewall-control" "download"; }
+    Alt+Shift+O { spawn "livewall-control" "open"; }
+    Alt+Shift+W { spawn "livewall-control" "toggle-pip"; }
+    Alt+Shift+Q { spawn "livewall-control" "cycle-quality"; }
+    Alt+Shift+F { spawn "livewall-control" "cycle-fit"; }
+
     // Utilities
     Mod+Shift+W { spawn "random-wallpaper"; }
+    Mod+Shift+Y { spawn "kitty" "--class" "yt-search" "livewall"; }
     Alt+K { spawn "screenkey" "--no-systray" "-t" "0.4" "--opacity" "0.0"; }
     Alt+Shift+K { spawn "pkill" "screenkey"; }
     Mod+R { spawn "wtype" "-M" "ctrl" "r" "-m" "ctrl"; }
@@ -264,6 +281,14 @@ window-rule {
     open-floating true
     default-column-width { fixed 1650; }
     default-window-height { fixed 950; }
+}
+
+// Livewall window rule - make it smaller than full screen
+window-rule {
+    match app-id="^yt-search$"
+    open-floating true
+    default-column-width { fixed 1400; }
+    default-window-height { fixed 900; }
 }
 
 // Default rounded corners for all windows
