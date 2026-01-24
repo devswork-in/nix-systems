@@ -42,7 +42,7 @@
   networking.hostName = "omnix";
 
   # System-specific packages
-  environment.systemPackages = with pkgs; [ amdgpu_top gparted ];
+  environment.systemPackages = with pkgs; [ amdgpu_top gparted ntfs3g ];
 
   # Performance optimizations for faster app launches
   systemd.services = {
