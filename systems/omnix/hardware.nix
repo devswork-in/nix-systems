@@ -29,6 +29,8 @@
       # Deep sleep support
       "mem_sleep_default=deep"
     ];
+    supportedFilesystems = [ "ntfs-3g" ];
+    blacklistedKernelModules = [ "ntfs3" ];
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
