@@ -38,6 +38,8 @@
     pup
     nixos-option
     screenkey
+    libnotify
+    ntfs3g
     android-tools
     efibootmgr
     websocat
@@ -46,5 +48,8 @@
       (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ]))
     #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
     google-chrome
+
+    # Polkit authentication agent
+    pantheon.pantheon-agent-polkit
   ];
 }

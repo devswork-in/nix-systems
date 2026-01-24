@@ -12,6 +12,8 @@
       ./packages
 
       ./fusuma.nix
+      ./udiskie.nix
+      ./polkit-agent.nix
     ];
   };
 }
