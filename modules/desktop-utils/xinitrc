@@ -1,4 +1,4 @@
-systemctl --user start udiskie.service & #for automounting usb drives
+# systemctl --user start udiskie.service & #for automounting usb drives - Managed by Home Manager now
 systemctl --user start redshift.service & #eyecare
 dbus-launch nm-applet &
 blueman-applet &

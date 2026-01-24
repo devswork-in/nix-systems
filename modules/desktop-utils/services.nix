@@ -119,6 +119,9 @@
 
   # systemd services which i dont like/use mostly cuz increases boot time and i find no issues not having them
   systemd.services = {
+    # Ensure udisks2 has access to ntfs-3g mount helper
+    udisks2.path = [ pkgs.ntfs3g ];
+
     systemd-udev-settle.enable = false;
     NetworkManager-wait-online.enable = false;
     systemd-journal-flush.enable = false;
