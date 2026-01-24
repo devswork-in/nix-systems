@@ -8,6 +8,7 @@
   imports = [
     ./base.nix
     ../modules/core/vars/desktop.nix
+    ../modules/services/audio.nix
     ../modules/services/flatpak.nix
     inputs.nix-flatpak.nixosModules.nix-flatpak
   ];
