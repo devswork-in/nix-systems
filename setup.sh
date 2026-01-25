@@ -4,36 +4,30 @@
 #
 # This script performs the following tasks:
 # 1. Dependency checks for required commands.
-# 2. Partitioning using mkpart.sh (with sudo).
-# 3. Cloning or updating the nix-systems repository.
-# 4. Running nixos-install against the specified flake.
-# 5. Moving the nix-systems repository into the user’s home directory.
+# 2. Clone nix-systems into /tmp and run partitioning from there.
+# 3. Clone nix-systems into /mnt/etc/nixos after mounts are ready.
+# 4. Fix permissions.
+# 5. Running nixos-install against the specified flake.
 #
 # Usage: ./setup.sh <device> <flake>
 #-------------------------------------------------------------------------------
 
-set -o errexit  # Exit immediately on command failure
-set -o nounset  # Treat unset variables as an error
-set -o pipefail # Pipeline fails on the first command which fails
+set -o errexit
+set -o nounset
+set -o pipefail
 
 #---------------------------------------
 # Logging Functions
 #---------------------------------------
 log() {
-  # Prints a log message with a date/time prefix
-  # Usage: log "This is a log message"
   echo "[INFO]  $(date +'%F %T')  $*"
 }
 
 warn() {
-  # Prints a warning message
-  # Usage: warn "This is a warning message"
   echo "[WARN]  $(date +'%F %T')  $*" >&2
 }
 
 err() {
-  # Prints an error message and exits
-  # Usage: err "This is an error message"
   echo "[ERROR] $(date +'%F %T')  $*" >&2
   exit 1
 }
@@ -74,57 +68,70 @@ done
 log "All dependencies are present."
 
 #---------------------------------------
-# Clone or update the nix-systems repository
+# Clone repo into /tmp for partitioning
 #---------------------------------------
-TARGET_DIR="/mnt/etc/nixos"
+TMP_DIR="/tmp/nix-systems"
 
-if [[ ! -d "$TARGET_DIR" ]]; then
-  log "$TARGET_DIR does not exist. Cloning repository..."
-  # Create directory if it doesn't exist (git clone will create the last component if needed, 
-  # but here we want to clone contents INTO /mnt/etc/nixos if we want the repo root to be nixos)
-  # Actually standard practice: git clone <url> /mnt/etc/nixos
-  if ! sudo git clone https://github.com/devswork-in/nix-systems "$TARGET_DIR"; then
-    err "Cloning of nix-systems failed!"
-  fi
-  log "Repository cloned successfully."
-else
-  # Optional: Pull the latest changes if directory exists
-  log "$TARGET_DIR already exists. Updating repository..."
-  (
-    cd "$TARGET_DIR" || err "Could not enter $TARGET_DIR directory."
-    sudo git fetch --all && sudo git pull --rebase || warn "Could not update repository. Proceeding with existing contents."
-  )
+log "Cloning nix-systems repository into $TMP_DIR for partitioning..."
+
+sudo rm -rf "$TMP_DIR"
+if ! sudo git clone https://github.com/devswork-in/nix-systems "$TMP_DIR"; then
+  err "Cloning of nix-systems into /tmp failed!"
 fi
 
-# Fix permissions so user can edit later
-log "Fixing permissions on cloned repo..."
-sudo chown -R 1000:100 "$TARGET_DIR"
+log "Repository cloned into /tmp successfully."
 
 #---------------------------------------
-# Run mkpart.sh
+# Run mkpart.sh from /tmp
 #---------------------------------------
 log "Running mkpart.sh on device: $DEVICE"
-if ! echo "yes" | sudo bash "$TARGET_DIR/mkpart.sh" "$DEVICE"; then
+
+if ! echo "yes" | sudo bash "$TMP_DIR/mkpart.sh" "$DEVICE"; then
   err "mkpart.sh failed."
 fi
 
 log "Partitioning with mkpart.sh completed."
 
 #---------------------------------------
+# Clone repo into /mnt/etc/nixos
+#---------------------------------------
+sudo mkdir -p "/mnt/etc"
+TARGET_DIR="/mnt/etc/nixos"
+
+log "Copy nixos config to $TARGET_DIR..."
+
+sudo rm -rf "$TARGET_DIR"
+if ! sudo cp -r $TMP_DIR "$TARGET_DIR"; then
+  err "Copying to /mnt/etc/nixos failed!"
+fi
+
+log "Repository copied to /mnt/etc/nixos successfully."
+
+#---------------------------------------
 # Run nixos-install
 #---------------------------------------
 log "Running nixos-install with flake: $FLAKE"
-# We export NIX_CONFIG_DIR=/etc/nixos so the flake (running in host) generates 
-# paths pointing to /etc/nixos (where they will be on the target system).
+
 export NIX_CONFIG_DIR="/etc/nixos"
 
 if ! sudo -E nixos-install --flake "$TARGET_DIR"#"$FLAKE" --impure; then
   err "nixos-install failed!"
 fi
+
+#---------------------------------------
+# Fix permissions so user can edit later
+#---------------------------------------
+log "Fixing permissions for the repo..."
+sudo chown -R 1000:100 "$TARGET_DIR"
+
 log "nixos-install completed successfully."
+
 if ! sudo chown -R 1000:100 /mnt/home/*/.*; then
   err "Failed to fix permissions for dotfiles."
 fi
+
 log "Permissions fixed for dotfiles."
 log "Setup completed successfully!"
+
 exit 0
+
