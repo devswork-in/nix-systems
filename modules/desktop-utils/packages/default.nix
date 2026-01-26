@@ -8,12 +8,14 @@
 
   # Add only desktop-specific packages
   home.packages = with pkgs; [
-    amp-cli
+    # amp-cli
     bc
     openssl
-    koji
+    # koji
     nodejs
-    pre-commit
+    (pre-commit.override {
+      dotnet-sdk = pkgs.writeShellScriptBin "dotnet" "echo 'fake dotnet SDK for pre-commit override'";
+    })
     vlc
     tdesktop
     ncftp
@@ -25,8 +27,8 @@
     go
     xcolor
     kitty
-    remmina
-    jmeter
+    # remmina
+    # jmeter
     yt-dlp
     ueberzug
     qbittorrent
@@ -44,8 +46,8 @@
     efibootmgr
     websocat
     xdotool # Required for fusuma touchpad gestures
-    (kodi.withPackages
-      (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ]))
+    # (kodi.withPackages
+    #   (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ]))
     #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
     google-chrome
 

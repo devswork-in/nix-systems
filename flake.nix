@@ -12,12 +12,6 @@
       inputs.flake-compat.follows = "flake-compat";
     };
 
-    winapps = {
-      url = "github:winapps-org/winapps";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-compat.follows = "flake-compat";
-    };
-
     nix-flatpak = { url = "github:gmodena/nix-flatpak/?ref=v0.5.2"; };
 
     #Always use the same nixpkgs for both system + <module>
@@ -45,7 +39,7 @@
     vicinae = { url = "github:vicinaehq/vicinae"; };
   };
 
-  outputs = { self, nixpkgs, nix-flatpak, nix-snapd, winapps, nur, nix-repo-sync
+  outputs = { self, nixpkgs, nix-flatpak, nix-snapd, nur, nix-repo-sync
     , vicinae, ... }@inputs:
     let
       # Extract NixOS version from nixpkgs input URL
@@ -152,12 +146,6 @@
             inputs.home-manager.nixosModules.default
             inputs.nix-snapd.nixosModules.default
             nix-repo-sync.nixosModules.default
-            ({ pkgs, ... }: {
-              environment.systemPackages = [
-                winapps.packages.x86_64-linux.winapps
-                winapps.packages.x86_64-linux.winapps-launcher # optional
-              ];
-            })
           ];
         };
 
