@@ -22,8 +22,8 @@
     ../../modules/desktop-utils/plymouth.nix
     ../../modules/desktop-utils/tlp.nix
     ../../modules/desktop-utils/performance-optimization.nix
-    ../../modules/apps/kiro
-    ../../modules/extras/kernels/xanmod.nix
+    # ../../modules/apps/kiro
+    ../../modules/extras/kernels/zen.nix
   ];
 
   # Disable GDM - using TTY auto-login with session-manager
