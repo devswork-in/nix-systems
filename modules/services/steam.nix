@@ -67,15 +67,6 @@
   environment.systemPackages = with pkgs; [
     # Performance monitoring
     mangohud
-    goverlay # GUI for MangoHud config
-
-    # Game launchers
-    lutris
-    heroic # Epic Games & GOG
-    bottles
-
-    # Proton management
-    protonup-qt # GUI for Proton-GE (better than CLI protonup)
 
     # Performance tools
     gamemode
@@ -83,39 +74,12 @@
 
     # Useful gaming utilities
     steam-run # Run non-Steam games with Steam runtime
-    protontricks # Winetricks for Proton games
-    steamtinkerlaunch # Advanced Steam game tweaking
-
-    # Controller support
-    antimicrox # Map controller to keyboard/mouse
-
-    # Game optimization helper (shows current status)
-    (pkgs.writeShellScriptBin "gaming-status" ''
-      #!/usr/bin/env bash
-      echo "=== Gaming Performance Status ==="
-      echo ""
-      echo "CPU Driver: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver 2>/dev/null || echo 'N/A')"
-      echo "CPU Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null || echo 'N/A')"
-      echo "CPU EPP (Energy Performance): $(cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference 2>/dev/null || echo 'N/A')"
-      echo ""
-      echo "GPU Performance Level: $(cat /sys/class/drm/card*/device/power_dpm_force_performance_level 2>/dev/null || echo 'N/A')"
-      echo ""
-      echo "GameMode Status: $(systemctl --user is-active gamemoded 2>/dev/null || echo 'Not running')"
-      echo ""
-      echo "Note: With amd-pstate-epp driver, 'powersave' governor is normal."
-      echo "      Performance is controlled by EPP (Energy Performance Preference)."
-      echo "      GameMode sets EPP to 'performance' when gaming for max performance."
-    '')
   ];
 
   environment.sessionVariables = {
     # Steam Proton-GE compatibility tools path
     STEAM_EXTRA_COMPAT_TOOLS_PATHS =
       "\${HOME}/.steam/root/compatibilitytools.d";
-
-    # MangoHud configuration
-    # MANGOHUD = "1"; # Disabled global overlay (use 'mangohud %command%' in Steam)
-    # MANGOHUD_CONFIGFILE = "\${HOME}/.config/MangoHud/MangoHud.conf";
 
     # AMD GPU optimizations for gaming
     AMD_VULKAN_ICD = "RADV"; # Use RADV (better performance)
@@ -131,9 +95,6 @@
     # DXVK optimizations (DirectX to Vulkan)
     DXVK_HUD = "compiler"; # Show shader compilation
     DXVK_STATE_CACHE_PATH = "\${HOME}/.cache/dxvk_state_cache";
-
-    # Enable GameMode by default for Steam games
-    # Steam will automatically use GameMode when launching games
   };
 
   # Allow users to use realtime priority (needed for some games)
@@ -172,21 +133,8 @@
     "d /home/${userConfig.user.name}/.steam 0755 ${userConfig.user.name} users -"
     "d /home/${userConfig.user.name}/.steam/root/compatibilitytools.d 0755 ${userConfig.user.name} users -"
 
-    # Lutris directories (auto-created in /home)
-    "d /home/${userConfig.user.name}/.local/share/lutris 0755 ${userConfig.user.name} users -"
-    "d /home/${userConfig.user.name}/.config/lutris 0755 ${userConfig.user.name} users -"
-
     # MangoHud config directory with default config (auto-created in /home)
     "d /home/${userConfig.user.name}/.config/MangoHud 0755 ${userConfig.user.name} users -"
-
-    # Heroic Games Launcher (auto-created in /home)
-    "d /home/${userConfig.user.name}/.config/heroic 0755 ${userConfig.user.name} users -"
-
-    # Bottles (auto-created in /home)
-    "d /home/${userConfig.user.name}/.local/share/bottles 0755 ${userConfig.user.name} users -"
-
-    # Wine prefix directory (auto-created in /home)
-    "d /home/${userConfig.user.name}/.wine 0755 ${userConfig.user.name} users -"
   ];
 
   # Create default MangoHud configuration
