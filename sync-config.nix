@@ -143,6 +143,11 @@ in {
       source = "${nixSystemsRoot}/modules/desktops/wayland/niri/config.kdl";
       dest = "~/.config/niri/config.kdl";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/night-light.frag";
+      dest = "~/.config/niri/night-light.frag";
+    }
     # Shared Wayland component configs
     {
       type = "local";

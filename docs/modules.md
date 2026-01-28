@@ -18,7 +18,7 @@ Desktop configurations. See [`modules/desktop-utils/`](../modules/desktop-utils/
 
 ### Utilities
 
-- `bluetooth.nix`, `gtk-config.nix`, `performance-optimization.nix`, `plymouth.nix`, `redshift.nix`, `tlp.nix`
+- `bluetooth.nix`, `gtk-config.nix`, `performance-optimization.nix`, `plymouth.nix`, `nightlight.nix`, `tlp.nix`
 - Configs: `kitty.conf`, `gromit-mpx.ini`, `flameshot/flameshot.ini`
 
 ### Environments

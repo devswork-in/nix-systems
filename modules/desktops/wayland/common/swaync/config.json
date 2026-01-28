@@ -60,6 +60,12 @@
                     "command": "hyprlock"
                 },
                 {
+                    "label": "󰖔",
+                    "command": "nightlight-toggle",
+                    "type": "toggle",
+                    "update-command": "nightlight-toggle status"
+                },
+                {
                     "label": "󰕾",
                     "command": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
                     "type": "toggle",
