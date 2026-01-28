@@ -4,6 +4,7 @@
 @define-color border #585b70;
 /* Using bordercolor from backup */
 @define-color active_toggle #a6e3a1;
+@define-color yellow #f9e2af;
 
 * {
     font-family: "JetBrainsMono Nerd Font", "Fira Sans Semibold", sans-serif;
@@ -198,6 +199,12 @@ window.control-center {
 /* Toggle Buttons Active State */
 .widget-buttons-grid>flowbox>flowboxchild>button.toggle:checked {
     background: @active_toggle;
+    color: #11111b;
+}
+
+/* Specific styling for the Night Light toggle when active */
+.widget-buttons-grid>flowbox>flowboxchild:nth-child(2)>button.toggle:checked {
+    background: @yellow;
     color: #11111b;
 }
 
