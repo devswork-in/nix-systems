@@ -14,6 +14,7 @@
       ./fusuma.nix
       ./udiskie.nix
       ./polkit-agent.nix
+      ./nightlight.nix
     ];
   };
 }
