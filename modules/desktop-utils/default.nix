@@ -2,7 +2,14 @@
 { lib, userConfig, ... }:
 
 {
-  imports = [ ../core ../apps/appimages ];
+  imports = [
+    ../core
+    ../apps/appimages
+    ./nightlight.nix
+  ];
+
+  # Default enable nightlight
+  nightlight.enable = lib.mkDefault true;
 
   # CopyQ removed - using Vicinae clipboard manager instead
   # services.copyq.enable = true;
@@ -14,7 +21,6 @@
       ./fusuma.nix
       ./udiskie.nix
       ./polkit-agent.nix
-      ./nightlight.nix
     ];
   };
 }
