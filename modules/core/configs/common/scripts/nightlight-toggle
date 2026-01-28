@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Unified Nightlight Toggle Script
+# Works across Wayland (wlsunset) and X11 (gammastep)
+
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    SERVICE="wlsunset.service"
+else
+    # Fallback to gammastep for X11/Other
+    SERVICE="gammastep.service"
+fi
+
+case "$1" in
+    status)
+        systemctl --user is-active "$SERVICE" >/dev/null && echo "true" || echo "false"
+        ;;
+    on)
+        systemctl --user start "$SERVICE"
+        ;;
+    off)
+        systemctl --user stop "$SERVICE"
+        ;;
+    *)
+        # Toggle
+        if systemctl --user is-active "$SERVICE" >/dev/null; then
+            systemctl --user stop "$SERVICE"
+            notify-send "Night Light" "Disabled" -i display-brightness-symbolic -h string:x-canonical-private-synchronous:nightlight
+        else
+            systemctl --user start "$SERVICE"
+            notify-send "Night Light" "Enabled" -i display-brightness-symbolic -h string:x-canonical-private-synchronous:nightlight
+        fi
+        ;;
+esac
