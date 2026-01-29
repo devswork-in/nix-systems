@@ -6,8 +6,7 @@
 
   home-manager.users."${userConfig.user.name}" = { ... }: {
     imports = [
-      ./packages
-
+      ../core/packages
     ];
   };
 }

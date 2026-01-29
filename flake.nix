@@ -109,7 +109,7 @@
         };
 
         # Helper for Phoenix (Oracle Cloud) systems
-        phoenix = let
+        phoenix-x86 = let
           mkPhoenix = system:
             mkSystem {
               inherit system;
@@ -185,13 +185,13 @@
           };
         };
 
-        phoenix = {
+        phoenix-x86 = {
           hostname = "phoenix"; # should be same in ~/.ssh/config
           sshUser = "root"; # should be same in ~/.ssh/config
           profiles.system = {
             user = "root";
             path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos
-              self.nixosConfigurations.phoenix;
+              self.nixosConfigurations.phoenix-x86;
           };
         };
 

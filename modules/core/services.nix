@@ -6,7 +6,7 @@
     openssh = {
       enable = true;
       settings = {
-        PasswordAuthentication = true;
+        PasswordAuthentication = lib.mkDefault true;
         PermitRootLogin = "yes";
       };
     };
