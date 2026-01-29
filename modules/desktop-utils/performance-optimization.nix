@@ -184,6 +184,7 @@ in {
       "nmi_watchdog=0"
       "libahci.ignore_sss=1" # Ignore staggered spin-up (faster SSD boot)
       "no_timer_check" # Don't check timers (faster boot)
+      "amdgpu.ppfeaturemask=0xffffffff" # Unlock AMD GPU power features for CoreCtrl/GameMode
     ] ++ optional cfg.kernel.disableMitigations "mitigations=off");
 
     # Use zstd compression for initrd (faster decompression)
