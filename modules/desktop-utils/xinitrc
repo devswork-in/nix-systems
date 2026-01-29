@@ -18,6 +18,57 @@ if command -v dbus-update-activation-environment >/dev/null 2>&1; then
   dbus-update-activation-environment DISPLAY XAUTHORITY
 fi
 
+# Explicitly set session type for shared scripts (wallpaper, nightlight, etc.)
+export XDG_SESSION_TYPE=x11
+
+# Start systemd graphical session (triggers wallpaper, polkit, etc.)
+# graphical-session.target refuses manual start, so we start the pre-target which triggers dependencies
+# OR we use the standard way: importing environment then relying on services to start.
+# However, for X11 standalone, we often need to trigger a target.
+# Better approach: Start the specific services we need via target, but since we can't start the target directly...
+# We will start "graphical-session.target" indirectly or ignore the error, OR use a different target.
+# Actually, the standard X11 practice in Home Manager is to reach `graphical-session.target` by binding to Xsession.
+# Since we are using startx manually, we should start `graphical-session-pre.target` first?
+
+# FIX: Don't start graphical-session.target directly if it refuses.
+# Instead, start the services that want it. 
+# BUT, we want a target.
+# Let's try starting `dwm-session.target` if we made one, or just `default.target`?
+# No, we want graphical user services.
+
+# Workaround: Use `systemctl --user start` on specific services if target fails, 
+# OR just rely on `WantedBy=graphical-session.target` services being started by... what?
+# Nothing starts them in `startx` unless we do.
+
+# If RefuseManualStart=yes (default for that target), we can't start it.
+# We should create a custom target `x11-session.target` that BindsTo `graphical-session.target`?
+
+# SIMPLE FIX: Just start the services we know we need, or skip the target start command if it fails.
+# But better: Check if the target is startable.
+# The error said: "unit graphical-session.target may be requested by dependency only"
+
+# Let's try starting a service that Wants `graphical-session.target`, effectively pulling it in?
+# Or just remove the line and start services manually/via script.
+# BUT `dwm-builder` and `wallpaper` depend on it.
+
+# Correct Fix: Don't start the target manually. Start `dwm-session` (if it were a service).
+# But `dwm` is a process here.
+
+# I will comment out the failing systemctl start for now and let the user log in.
+# Services might not start, but DWM will.
+# WAIT, the critical error is: "Error: Local DWM binary not found at .../dwm"
+# This is because the builder hasn't run yet!
+
+# CRITICAL FIX: Run the builder MANUALLY in xinitrc if binary is missing!
+
+if [ ! -x ~/.config/dwm/dwm ]; then
+  echo "Compiling DWM..."
+  # Try to trigger the builder service synchronously
+  systemctl --user start dwm-builder.service
+  # Wait a bit?
+  sleep 2
+fi
+
 # Dynamic window manager selection via environment variable
 if [ -n "$USER_XSESSION_CMD" ]; then
   eval "$USER_XSESSION_CMD"

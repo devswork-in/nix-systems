@@ -17,7 +17,8 @@
 
     # Addon modules
     ../../modules/services
-    ../../modules/desktops/wayland/niri
+#    ../../modules/desktops/wayland/niri
+    ../../modules/desktops/x11/dwm
     ../../modules/desktop-utils/services.nix
     ../../modules/desktop-utils/plymouth.nix
     ../../modules/desktop-utils/tlp.nix

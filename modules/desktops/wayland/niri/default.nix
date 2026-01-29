@@ -43,12 +43,6 @@
     blueman
     swayosd
     inputs.vicinae.packages.${pkgs.system}.default
-    (pkgs.writeShellScriptBin "random-wallpaper" ''
-      ${pkgs.procps}/bin/pkill swaybg || true
-      WALLPAPER=$(find ~/Wallpapers -type f \( -name '*.jpg' -o -name '*.png' \) | ${pkgs.coreutils}/bin/shuf -n 1)
-      ln -sf "$WALLPAPER" ~/.current_wallpaper
-      ${pkgs.swaybg}/bin/swaybg -m fill -i "$WALLPAPER" &
-    '')
   ];
 
   # Home Manager configuration

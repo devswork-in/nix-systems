@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# Kill existing wallpaper processes
+pkill swaybg 2>/dev/null
+# X11 feh doesn't need explicit kill usually, it just sets root window
+
+# Select random wallpaper
+WALLPAPER=$(find ~/Wallpapers -type f \( -name '*.jpg' -o -name '*.png' \) 2>/dev/null | shuf -n 1)
+
+if [ -z "$WALLPAPER" ]; then
+    echo "No wallpapers found in ~/Wallpapers"
+    exit 1
+fi
+
+# Update symlink
+ln -sf "$WALLPAPER" ~/.current_wallpaper
+
+# Apply wallpaper based on session
+if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+    swaybg -m fill -i "$WALLPAPER" &
+else
+    # X11 fallback (feh)
+    if command -v feh >/dev/null; then
+        feh --bg-fill "$WALLPAPER"
+    else
+        echo "feh not found for X11 wallpaper"
+    fi
+fi

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+if command -v brightnessctl >/dev/null; then
+    VAL=$(brightnessctl g)
+    MAX=$(brightnessctl m)
+    PERC=$((VAL * 100 / MAX))
+    echo "$PERC%"
+else
+    echo ""
+fi

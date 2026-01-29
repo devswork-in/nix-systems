@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+import subprocess
+import json
+import sys
+import argparse
+
+def get_battery_info():
+    try:
+        # Use BAT1 directly as verified earlier
+        path = "/org/freedesktop/UPower/devices/battery_BAT1"
+        out = subprocess.check_output(["upower", "-i", path]).decode("utf-8")
+
+        info = {}
+        for line in out.splitlines():
+            line = line.strip()
+            if ":" in line:
+                key, val = line.split(":", 1)
+                info[key.strip()] = val.strip()
+
+        percent_str = info.get("percentage", "0%").strip("%")
+        percent = int(float(percent_str)) if percent_str else 0
+        state = info.get("state", "unknown")
+
+        # Determine time remaining string
+        raw_time = ""
+        if state == "charging":
+            raw_time = info.get("time to full", "")
+        elif state == "discharging":
+            raw_time = info.get("time to empty", "")
+
+        formatted_time = ""
+        if raw_time:
+            parts = raw_time.split()
+            if len(parts) >= 2:
+                try:
+                    val = float(parts[0])
+                    unit = parts[1]
+                    hours = 0
+                    minutes = 0
+                    if "hour" in unit:
+                        hours = int(val)
+                        minutes = int((val - hours) * 60)
+                    elif "minute" in unit:
+                        minutes = int(val)
+
+                    if hours > 0:
+                        formatted_time = f"{hours}h {minutes}m"
+                        if minutes == 0:
+                             formatted_time = f"{hours}h"
+                    elif minutes > 0:
+                        formatted_time = f"{minutes}m"
+                except:
+                    pass
+
+        # Horizontal Icons: FontAwesome (f244 -> f240)
+        icons = ["", "", "", "", "", "", "", "", "", "", ""]
+        idx = min(int(percent / 10), 10)
+
+        icon = icons[idx]
+        charging_icon = ""
+        
+        if state in ["charging", "fully-charged"]:
+             # For DWM, we might want to inline the charging bolt
+             charging_icon = " " 
+
+        text = f"{icon}{charging_icon} {percent}%"
+        if formatted_time:
+            text += f" ({formatted_time})"
+
+        tooltip = f"State: {state}\nTime: {raw_time}"
+
+        return {"text": text, "tooltip": tooltip, "class": state}
+
+    except Exception as e:
+        return {"text": " Error", "tooltip": str(e), "class": "error"}
+
+def loop_waybar():
+    # Initial status
+    print(json.dumps(get_battery_info()), flush=True)
+
+    # Monitor upower events
+    proc = subprocess.Popen(
+        ["upower", "--monitor"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True
+    )
+
+    try:
+        for _ in proc.stdout:
+            print(json.dumps(get_battery_info()), flush=True)
+    except KeyboardInterrupt:
+        proc.terminate()
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--waybar", action="store_true", help="Run in Waybar mode (JSON output, event loop)")
+    args = parser.parse_args()
+
+    if args.waybar:
+        loop_waybar()
+    else:
+        # One-shot text output for DWMBlocks
+        data = get_battery_info()
+        print(data["text"])
+
+if __name__ == "__main__":
+    main()

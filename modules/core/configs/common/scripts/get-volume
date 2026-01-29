@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Function to get volume
+get_vol() {
+    # Try wpctl first (PipeWire)
+    if command -v wpctl >/dev/null; then
+        VOL_STR=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+        # Output: Volume: 0.65 [MUTED]
+        VOL=$(echo "$VOL_STR" | awk '{print int($2 * 100)}')
+        MUTED=$(echo "$VOL_STR" | grep -o "MUTED")
+    elif command -v pamixer >/dev/null; then
+        VOL=$(pamixer --get-volume)
+        IS_MUTED=$(pamixer --get-mute)
+        if [ "$IS_MUTED" = "true" ]; then MUTED="MUTED"; fi
+    else
+        echo "No volume tool found"
+        return
+    fi
+
+    if [ "$MUTED" = "MUTED" ]; then
+        ICON=""
+        TEXT="Muted"
+    else
+        if [ "$VOL" -ge 70 ]; then ICON="";
+        elif [ "$VOL" -ge 30 ]; then ICON="";
+        else ICON=""; fi
+        TEXT="${VOL}%"
+    fi
+
+    echo "$ICON $TEXT"
+}
+
+# Output
+get_vol

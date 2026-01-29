@@ -1,0 +1,1746 @@
+xauth:  file /home/creator54/.serverauth.46009 does not exist
+
+
+X.Org X Server 1.21.1.20
+X Protocol Version 11, Revision 0
+Current Operating System: Linux omnix 6.18.2-zen2 #1-NixOS ZEN SMP PREEMPT_DYNAMIC Tue Jan  1 00:00:00 UTC 1980 x86_64
+Kernel command line: initrd=\EFI\nixos\ajawij0n2z3d772qjvgwg44hcz8m3r4n-initrd-linux-zen-6.18.2-initrd.efi init=/nix/store/p81qlq04hxf2lq9199wwk6vqyngi4fn6-nixos-system-omnix-25.05.20260117.3e3f3c7/init transparent_hugepage=madvise nowatchdog nmi_watchdog=0 libahci.ignore_sss=1 no_timer_check zswap.enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=20 quiet loglevel=3 systemd.show_status=false rd.systemd.show_status=false rd.udev.log_level=3 splash vga=current udev.log_priority=3 fbcon=nodefer vt.global_cursor_default=0 nowatchdog modprobe.blacklist=iTCO_wdt plymouth.force-splash resume_offset=4685824 amd_pstate=active amdgpu.ppfeaturemask=0xffffffff amdgpu.dc=1 amdgpu.dpm=1 amdgpu.gpu_recovery=1 amdgpu.dcdebugmask=0x10 mem_sleep_default=deep splash loglevel=0 lsm=landlock,yama,bpf
+ 
+Current version of pixman: 0.44.2
+	Before reporting problems, check http://wiki.x.org
+	to make sure that you have the latest version.
+Markers: (--) probed, (**) from config file, (==) default setting,
+	(++) from command line, (!!) notice, (II) informational,
+	(WW) warning, (EE) error, (NI) not implemented, (??) unknown.
+(==) Log file: "/home/creator54/.local/share/xorg/Xorg.0.log", Time: Thu Jan 29 05:29:17 2026
+(++) Using config file: "/nix/store/pc4xg59w6xjdqkw9cw1g27zjnxgychq6-xserver.conf"
+(==) Using config directory: "/etc/X11/xorg.conf.d"
+(==) Using system config directory "/nix/store/f9nyq02plppm68j3w5if3sb7ndk7s45w-xorg-server-21.1.20/share/X11/xorg.conf.d"
+(==) ServerLayout "Layout[all]"
+(**) |-->Screen "Screen-amdgpu[0]" (0)
+(**) |   |-->Monitor "<default monitor>"
+(**) |   |-->Device "Device-amdgpu[0]"
+(==) No monitor specified for screen "Screen-amdgpu[0]".
+	Using a default monitor configuration.
+(**) Option "DontZap" "on"
+(**) Option "AllowMouseOpenFail" "on"
+(**) Allowing byte-swapped clients
+(==) Automatically adding devices
+(==) Automatically enabling devices
+(==) Automatically adding GPU devices
+(==) Automatically binding GPU devices
+(==) Max clients allowed: 256, resource mask: 0x1fffff
+(**) FontPath set to:
+	/nix/store/r4iicyrp703jkphxlwf2xi8babmgl4ya-font-cursor-misc-1.0.4/lib/X11/fonts/misc,
+	/nix/store/7wcphalyz7pcqllmnyx6smzbajm0lb0v-font-misc-misc-1.1.3/lib/X11/fonts/misc,
+	/nix/store/1km8xarqavf88xm542hij64akqb3bcdw-unifont-16.0.03/share/fonts,
+	/nix/store/mmibb4x16s8fa6bg3kw4d7ym85f839bg-font-adobe-100dpi-1.0.4/lib/X11/fonts/100dpi,
+	/nix/store/kyxxwil0g425mrm6j8i435k9ng0lvhxs-font-adobe-75dpi-1.0.4/lib/X11/fonts/75dpi,
+	/nix/store/mc6v1v1xzn602pfm2s7bxq4fh4k4kami-X11-fonts/share/X11/fonts
+(**) ModulePath set to "/nix/store/i68swddsbcdkn34cc7xnc4l8xfmh95bz-xf86-video-amdgpu-23.0.0/lib/xorg/modules,/nix/store/f9nyq02plppm68j3w5if3sb7ndk7s45w-xorg-server-21.1.20/lib/xorg/modules,/nix/store/zaw3g17n2r7p0qpls8p02l71k9brvw4j-xf86-input-evdev-2.11.0/lib/xorg/modules,/nix/store/xjgpgdq9i9m8pym1k7wf0zjf2ijzi5wl-xf86-input-libinput-1.5.0/lib/xorg/modules"
+(II) The server relies on udev to provide the list of input devices.
+	If no devices become available, reconfigure udev or disable AutoAddDevices.
+(II) Loader magic: 0x659e60
+(II) Module ABI versions:
+	X.Org ANSI C Emulation: 0.4
+	X.Org Video Driver: 25.2
+	X.Org XInput driver : 24.4
+	X.Org Server Extension : 10.0
+(++) using VT number 1
+
+(II) systemd-logind: took control of session /org/freedesktop/login1/session/_35
+(II) xfree86: Adding drm device (/dev/dri/card1)
+(II) Platform probe for /sys/devices/pci0000:00/0000:00:08.1/0000:04:00.0/drm/card1
+(II) systemd-logind: got fd for /dev/dri/card1 226:1 fd 13 paused 0
+(--) PCI:*(4@0:0:0) 1002:1900:17aa:3807 rev 204, Mem @ 0x7ee0000000/268435456, 0xc0000000/2097152, 0xc0500000/524288, I/O @ 0x00001000/256
+(WW) Open ACPI failed (/var/run/acpid.socket) (No such file or directory)
+(II) "glx" will be loaded by default.
+(II) LoadModule: "glx"
+(II) Loading /nix/store/f9nyq02plppm68j3w5if3sb7ndk7s45w-xorg-server-21.1.20/lib/xorg/modules/extensions/libglx.so
+(II) Module glx: vendor="X.Org Foundation"
+	compiled for 1.21.1.20, module version = 1.0.0
+	ABI class: X.Org Server Extension, version 10.0
+(II) LoadModule: "amdgpu"
+(II) Loading /nix/store/i68swddsbcdkn34cc7xnc4l8xfmh95bz-xf86-video-amdgpu-23.0.0/lib/xorg/modules/drivers/amdgpu_drv.so
+(II) Module amdgpu: vendor="X.Org Foundation"
+	compiled for 1.21.1.20, module version = 23.0.0
+	Module class: X.Org Video Driver
+	ABI class: X.Org Video Driver, version 25.2
+(II) AMDGPU: Driver for AMD Radeon:
+	All GPUs supported by the amdgpu kernel driver
+(WW) VGA arbiter: cannot open kernel arbiter, no multi-card support
+(II) AMDGPU(0): Creating default Display subsection in Screen section
+	"Screen-amdgpu[0]" for depth/fbbpp 24/32
+(==) AMDGPU(0): Depth 24, (--) framebuffer bpp 32
+(II) AMDGPU(0): Pixel depth = 24 bits stored in 4 bytes (32 bpp pixmaps)
+(==) AMDGPU(0): Default visual is TrueColor
+(**) AMDGPU(0): Option "TearFree" "true"
+(**) AMDGPU(0): Option "VariableRefresh" "true"
+(**) AMDGPU(0): Option "AsyncFlipSecondaries" "true"
+(==) AMDGPU(0): RGB weight 888
+(II) AMDGPU(0): Using 8 bits per RGB (8 bit DAC)
+(--) AMDGPU(0): Chipset: "AMD Radeon 780M Graphics" (ChipID = 0x1900)
+(II) Loading sub module "fb"
+(II) LoadModule: "fb"
+(II) Module "fb" already built-in
+(II) Loading sub module "dri2"
+(II) LoadModule: "dri2"
+(II) Module "dri2" already built-in
+(II) Loading sub module "glamoregl"
+(II) LoadModule: "glamoregl"
+(II) Loading /nix/store/f9nyq02plppm68j3w5if3sb7ndk7s45w-xorg-server-21.1.20/lib/xorg/modules/libglamoregl.so
+(II) Module glamoregl: vendor="X.Org Foundation"
+	compiled for 1.21.1.20, module version = 1.0.1
+	ABI class: X.Org ANSI C Emulation, version 0.4
+(II) AMDGPU(0): glamor: Using OpenGL 4.6 context.
+(II) AMDGPU(0): glamor X acceleration enabled on AMD Radeon 780M Graphics (radeonsi, phoenix, LLVM 19.1.7, DRM 3.64, 6.18.2-zen2)
+(II) AMDGPU(0): glamor detected, initialising EGL layer.
+(**) AMDGPU(0): TearFree property default: on
+(**) AMDGPU(0): VariableRefresh: enabled
+(**) AMDGPU(0): AsyncFlipSecondaries: enabled
+(II) AMDGPU(0): KMS Pageflipping: enabled
+(II) AMDGPU(0): Output eDP has no monitor section
+(II) AMDGPU(0): Output HDMI-A-0 has no monitor section
+(II) AMDGPU(0): Output DisplayPort-0 has no monitor section
+(II) AMDGPU(0): Output DisplayPort-1 has no monitor section
+(II) AMDGPU(0): Output DisplayPort-2 has no monitor section
+(II) AMDGPU(0): Output DisplayPort-3 has no monitor section
+(II) AMDGPU(0): Output DisplayPort-4 has no monitor section
+(II) AMDGPU(0): Output DisplayPort-5 has no monitor section
+(WW) AMDGPU(0): 8 ZaphodHeads crtcs unavailable. Some outputs will stay off.
+(II) AMDGPU(0): EDID for output eDP
+(II) AMDGPU(0): Manufacturer: LEN  Model: 9156  Serial#: 0
+(II) AMDGPU(0): Year: 2022  Week: 26
+(II) AMDGPU(0): EDID Version: 1.4
+(II) AMDGPU(0): Digital Display Input
+(II) AMDGPU(0): 8 bits per channel
+(II) AMDGPU(0): Digital interface is DisplayPort
+(II) AMDGPU(0): Max Image Size [cm]: horiz.: 34  vert.: 22
+(II) AMDGPU(0): Gamma: 2.20
+(II) AMDGPU(0): No DPMS capabilities specified
+(II) AMDGPU(0): Supported color encodings: RGB 4:4:4 
+(II) AMDGPU(0): First detailed timing is preferred mode
+(II) AMDGPU(0): Preferred mode is native pixel format and refresh rate
+(II) AMDGPU(0): Display is continuous-frequency
+(II) AMDGPU(0): redX: 0.569 redY: 0.343   greenX: 0.344 greenY: 0.584
+(II) AMDGPU(0): blueX: 0.164 blueY: 0.123   whiteX: 0.313 whiteY: 0.329
+(II) AMDGPU(0): Manufacturer's mask: 0
+(II) AMDGPU(0): Supported detailed timing:
+(II) AMDGPU(0): clock: 157.5 MHz   Image Size:  344 x 215 mm
+(II) AMDGPU(0): h_active: 1920  h_sync: 2028  h_sync_end 2076 h_blank_end 2120 h_border: 0
+(II) AMDGPU(0): v_active: 1200  v_sync: 1210  v_sync_end 1220 v_blanking: 1238 v_border: 0
+(II) AMDGPU(0): Ranges: V min: 40 V max: 60 Hz, H min: 75 H max: 75 kHz, PixClock max 165 MHz
+(II) AMDGPU(0):  LENOVO
+(II) AMDGPU(0):  LEN160WUXGA
+(II) AMDGPU(0): EDID (in hex):
+(II) AMDGPU(0): 	00ffffffffffff0030ae569100000000
+(II) AMDGPU(0): 	1a200104a522167803f225915758952a
+(II) AMDGPU(0): 	1f505400000001010101010101010101
+(II) AMDGPU(0): 	010101010101863d80c870b026406c30
+(II) AMDGPU(0): 	aa0058d710000018000000fd00283c4b
+(II) AMDGPU(0): 	4b10010a202020202020000000fe004c
+(II) AMDGPU(0): 	454e4f564f0a202020202020000000fe
+(II) AMDGPU(0): 	004c454e3136305755584741202000e6
+(II) AMDGPU(0): Printing probed modes for output eDP
+(II) AMDGPU(0): Modeline "1920x1200"x60.0  157.50  1920 2028 2076 2120  1200 1210 1220 1238 -hsync -vsync (74.3 kHz eP)
+(II) AMDGPU(0): Modeline "1920x1080"x60.0  157.50  1920 2028 2076 2120  1080 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): Modeline "1600x1200"x60.0  162.00  1600 1664 1856 2160  1200 1201 1204 1250 +hsync +vsync (75.0 kHz e)
+(II) AMDGPU(0): Modeline "1680x1050"x60.0  157.50  1680 2028 2076 2120  1050 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): Modeline "1280x1024"x60.0  157.50  1280 2028 2076 2120  1024 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): Modeline "1440x900"x60.0  157.50  1440 2028 2076 2120  900 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): Modeline "1280x800"x60.0  157.50  1280 2028 2076 2120  800 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): Modeline "1280x720"x60.0  157.50  1280 2028 2076 2120  720 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): Modeline "1024x768"x60.0  157.50  1024 2028 2076 2120  768 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): Modeline "800x600"x60.0  157.50  800 2028 2076 2120  600 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): Modeline "640x480"x60.0  157.50  640 2028 2076 2120  480 1210 1220 1238 -hsync -vsync (74.3 kHz e)
+(II) AMDGPU(0): EDID for output HDMI-A-0
+(II) AMDGPU(0): EDID for output DisplayPort-0
+(II) AMDGPU(0): EDID for output DisplayPort-1
+(II) AMDGPU(0): EDID for output DisplayPort-2
+(II) AMDGPU(0): EDID for output DisplayPort-3
+(II) AMDGPU(0): EDID for output DisplayPort-4
+(II) AMDGPU(0): EDID for output DisplayPort-5
+(II) AMDGPU(0): Output eDP connected
+(II) AMDGPU(0): Output HDMI-A-0 disconnected
+(II) AMDGPU(0): Output DisplayPort-0 disconnected
+(II) AMDGPU(0): Output DisplayPort-1 disconnected
+(II) AMDGPU(0): Output DisplayPort-2 disconnected
+(II) AMDGPU(0): Output DisplayPort-3 disconnected
+(II) AMDGPU(0): Output DisplayPort-4 disconnected
+(II) AMDGPU(0): Output DisplayPort-5 disconnected
+(II) AMDGPU(0): Using exact sizes for initial modes
+(II) AMDGPU(0): Output eDP using initial mode 1920x1200 +0+0
+(II) AMDGPU(0): mem size init: gart size :1adbf0000 vram size: s:7aa4c000 visible:7aa4c000
+(==) AMDGPU(0): DPI set to (96, 96)
+(==) AMDGPU(0): Using gamma correction (1.0, 1.0, 1.0)
+(II) Loading sub module "ramdac"
+(II) LoadModule: "ramdac"
+(II) Module "ramdac" already built-in
+(II) AMDGPU(0): [DRI2] Setup complete
+(II) AMDGPU(0): [DRI2]   DRI driver: radeonsi
+(II) AMDGPU(0): [DRI2]   VDPAU driver: radeonsi
+(II) AMDGPU(0): Front buffer pitch: 7680 bytes
+(II) AMDGPU(0): SYNC extension fences enabled
+(II) AMDGPU(0): Present extension enabled
+(==) AMDGPU(0): DRI3 enabled
+(==) AMDGPU(0): Backing store enabled
+(II) AMDGPU(0): Direct rendering enabled
+(II) AMDGPU(0): Use GLAMOR acceleration.
+(II) AMDGPU(0): Acceleration enabled
+(==) AMDGPU(0): DPMS enabled
+(==) AMDGPU(0): Silken mouse enabled
+(II) AMDGPU(0): Set up textured video (glamor)
+(II) Initializing extension Generic Event Extension
+(II) Initializing extension SHAPE
+(II) Initializing extension MIT-SHM
+(II) Initializing extension XInputExtension
+(II) Initializing extension XTEST
+(II) Initializing extension BIG-REQUESTS
+(II) Initializing extension SYNC
+(II) Initializing extension XKEYBOARD
+(II) Initializing extension XC-MISC
+(II) Initializing extension SECURITY
+(II) Initializing extension XFIXES
+(II) Initializing extension RENDER
+(II) Initializing extension RANDR
+(II) Initializing extension COMPOSITE
+(II) Initializing extension DAMAGE
+(II) Initializing extension MIT-SCREEN-SAVER
+(II) Initializing extension DOUBLE-BUFFER
+(II) Initializing extension RECORD
+(II) Initializing extension DPMS
+(II) Initializing extension Present
+(II) Initializing extension DRI3
+(II) Initializing extension X-Resource
+(II) Initializing extension XVideo
+(II) Initializing extension XVideo-MotionCompensation
+(II) Initializing extension GLX
+(II) GLX: Initialized glamor GL provider for screen 0
+(II) GLX: Another vendor is already registered for screen 0
+(II) Initializing extension XFree86-VidModeExtension
+(II) Initializing extension XFree86-DGA
+(II) Initializing extension XFree86-DRI
+(II) Initializing extension DRI2
+(II) AMDGPU(0): Setting screen physical size to 508 x 317
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+> Warning:          Could not resolve keysym XF86RefreshRateToggle
+> Warning:          Could not resolve keysym XF86Accessibility
+> Warning:          Could not resolve keysym XF86DoNotDisturb
+Errors from xkbcomp are not fatal to the X server
+(II) config/udev: Adding input device Video Bus (/dev/input/event0)
+(**) Video Bus: Applying InputClass "Keyboard catchall"
+(**) Video Bus: Applying InputClass "evdev keyboard catchall"
+(**) Video Bus: Applying InputClass "libinput keyboard catchall"
+(II) LoadModule: "libinput"
+(II) Loading /nix/store/xjgpgdq9i9m8pym1k7wf0zjf2ijzi5wl-xf86-input-libinput-1.5.0/lib/xorg/modules/input/libinput_drv.so
+(II) Module libinput: vendor="X.Org Foundation"
+	compiled for 1.21.1.20, module version = 1.5.0
+	Module class: X.Org XInput Driver
+	ABI class: X.Org XInput driver, version 24.4
+(II) Using input driver 'libinput' for 'Video Bus'
+(II) systemd-logind: got fd for /dev/input/event0 13:64 fd 25 paused 0
+(**) Video Bus: always reports core events
+(**) Option "Device" "/dev/input/event0"
+(II) event0  - Video Bus: is tagged by udev as: Keyboard
+(II) event0  - Video Bus: device is a keyboard
+(II) event0  - Video Bus: device removed
+(**) Option "config_info" "udev:/sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:13/LNXVIDEO:00/input/input0/event0"
+(II) XINPUT: Adding extended input device "Video Bus" (type: KEYBOARD, id 6)
+(**) Option "xkb_model" "pc104"
+(**) Option "xkb_layout" "us"
+(WW) Option "xkb_variant" requires a string value
+(**) Option "xkb_options" "terminate:ctrl_alt_bksp"
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+> Warning:          Could not resolve keysym XF86RefreshRateToggle
+> Warning:          Could not resolve keysym XF86Accessibility
+> Warning:          Could not resolve keysym XF86DoNotDisturb
+Errors from xkbcomp are not fatal to the X server
+(II) event0  - Video Bus: is tagged by udev as: Keyboard
+(II) event0  - Video Bus: device is a keyboard
+(II) config/udev: Adding input device Lid Switch (/dev/input/event3)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device Power Button (/dev/input/event2)
+(**) Power Button: Applying InputClass "Keyboard catchall"
+(**) Power Button: Applying InputClass "evdev keyboard catchall"
+(**) Power Button: Applying InputClass "libinput keyboard catchall"
+(II) Using input driver 'libinput' for 'Power Button'
+(II) systemd-logind: got fd for /dev/input/event2 13:66 fd 28 paused 0
+(**) Power Button: always reports core events
+(**) Option "Device" "/dev/input/event2"
+(II) event2  - Power Button: is tagged by udev as: Keyboard
+(II) event2  - Power Button: device is a keyboard
+(II) event2  - Power Button: device removed
+(**) Option "config_info" "udev:/sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0C:00/input/input2/event2"
+(II) XINPUT: Adding extended input device "Power Button" (type: KEYBOARD, id 7)
+(**) Option "xkb_model" "pc104"
+(**) Option "xkb_layout" "us"
+(WW) Option "xkb_variant" requires a string value
+(**) Option "xkb_options" "terminate:ctrl_alt_bksp"
+(II) event2  - Power Button: is tagged by udev as: Keyboard
+(II) event2  - Power Button: device is a keyboard
+(II) config/udev: Adding input device HD-Audio Generic HDMI/DP,pcm=8 (/dev/input/event7)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device HD-Audio Generic HDMI/DP,pcm=3 (/dev/input/event5)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device HD-Audio Generic HDMI/DP,pcm=7 (/dev/input/event6)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device HDA Digital PCBeep (/dev/input/event10)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device HD-Audio Generic Mic (/dev/input/event11)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device HD-Audio Generic Headphone (/dev/input/event12)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device Ideapad extra buttons (/dev/input/event4)
+(**) Ideapad extra buttons: Applying InputClass "Keyboard catchall"
+(**) Ideapad extra buttons: Applying InputClass "evdev keyboard catchall"
+(**) Ideapad extra buttons: Applying InputClass "libinput keyboard catchall"
+(II) Using input driver 'libinput' for 'Ideapad extra buttons'
+(II) systemd-logind: got fd for /dev/input/event4 13:68 fd 29 paused 0
+(**) Ideapad extra buttons: always reports core events
+(**) Option "Device" "/dev/input/event4"
+(II) event4  - Ideapad extra buttons: is tagged by udev as: Keyboard
+(II) event4  - Ideapad extra buttons: device is a keyboard
+(II) event4  - Ideapad extra buttons: device removed
+(**) Option "config_info" "udev:/sys/devices/pci0000:00/0000:00:14.3/PNP0C09:00/VPC2004:00/input/input4/event4"
+(II) XINPUT: Adding extended input device "Ideapad extra buttons" (type: KEYBOARD, id 8)
+(**) Option "xkb_model" "pc104"
+(**) Option "xkb_layout" "us"
+(WW) Option "xkb_variant" requires a string value
+(**) Option "xkb_options" "terminate:ctrl_alt_bksp"
+(II) event4  - Ideapad extra buttons: is tagged by udev as: Keyboard
+(II) event4  - Ideapad extra buttons: device is a keyboard
+(II) config/udev: Adding input device ELAN06FA:00 04F3:327E Mouse (/dev/input/event8)
+(**) ELAN06FA:00 04F3:327E Mouse: Applying InputClass "evdev pointer catchall"
+(**) ELAN06FA:00 04F3:327E Mouse: Applying InputClass "libinput pointer catchall"
+(**) ELAN06FA:00 04F3:327E Mouse: Applying InputClass "libinput mouse configuration"
+(II) Using input driver 'libinput' for 'ELAN06FA:00 04F3:327E Mouse'
+(II) systemd-logind: got fd for /dev/input/event8 13:72 fd 30 paused 0
+(**) ELAN06FA:00 04F3:327E Mouse: always reports core events
+(**) Option "Device" "/dev/input/event8"
+(II) event8  - ELAN06FA:00 04F3:327E Mouse: is tagged by udev as: Mouse Pointingstick
+(II) event8  - ELAN06FA:00 04F3:327E Mouse: device is a pointer
+(II) event8  - ELAN06FA:00 04F3:327E Mouse: device removed
+(**) Option "AccelProfile" "adaptive"
+(II) libinput: ELAN06FA:00 04F3:327E Mouse: Step value 0 was provided, libinput Fallback acceleration function is used.
+(II) libinput: ELAN06FA:00 04F3:327E Mouse: Step value 0 was provided, libinput Fallback acceleration function is used.
+(II) libinput: ELAN06FA:00 04F3:327E Mouse: Step value 0 was provided, libinput Fallback acceleration function is used.
+(**) Option "NaturalScrolling" "off"
+(**) Option "SendEventsMode" "enabled"
+(**) Option "LeftHanded" "off"
+(**) Option "ScrollMethod" "twofinger"
+(**) Option "HorizontalScrolling" "on"
+(**) Option "config_info" "udev:/sys/devices/platform/AMDI0010:00/i2c-0/i2c-ELAN06FA:00/0018:04F3:327E.0001/input/input14/event8"
+(II) XINPUT: Adding extended input device "ELAN06FA:00 04F3:327E Mouse" (type: MOUSE, id 9)
+(EE) libinput: ELAN06FA:00 04F3:327E Mouse: Failed to set scroll to twofinger
+(**) Option "AccelerationScheme" "none"
+(**) ELAN06FA:00 04F3:327E Mouse: (accel) selected scheme none/0
+(**) ELAN06FA:00 04F3:327E Mouse: (accel) acceleration factor: 2.000
+(**) ELAN06FA:00 04F3:327E Mouse: (accel) acceleration threshold: 4
+(II) event8  - ELAN06FA:00 04F3:327E Mouse: is tagged by udev as: Mouse Pointingstick
+(II) event8  - ELAN06FA:00 04F3:327E Mouse: device is a pointer
+(EE) libinput: ELAN06FA:00 04F3:327E Mouse: Failed to set scroll to twofinger
+(II) config/udev: Adding input device ELAN06FA:00 04F3:327E Mouse (/dev/input/mouse0)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device ELAN06FA:00 04F3:327E Touchpad (/dev/input/event9)
+(**) ELAN06FA:00 04F3:327E Touchpad: Applying InputClass "evdev touchpad catchall"
+(**) ELAN06FA:00 04F3:327E Touchpad: Applying InputClass "libinput touchpad catchall"
+(**) ELAN06FA:00 04F3:327E Touchpad: Applying InputClass "libinput touchpad configuration"
+(II) Using input driver 'libinput' for 'ELAN06FA:00 04F3:327E Touchpad'
+(II) systemd-logind: got fd for /dev/input/event9 13:73 fd 31 paused 0
+(**) ELAN06FA:00 04F3:327E Touchpad: always reports core events
+(**) Option "Device" "/dev/input/event9"
+(II) event9  - ELAN06FA:00 04F3:327E Touchpad: is tagged by udev as: Touchpad
+(II) event9  - ELAN06FA:00 04F3:327E Touchpad: device is a touchpad
+(II) event9  - ELAN06FA:00 04F3:327E Touchpad: device removed
+(**) Option "Tapping" "on"
+(**) Option "TappingDragLock" "on"
+(**) Option "AccelProfile" "adaptive"
+(II) libinput: ELAN06FA:00 04F3:327E Touchpad: Step value 0 was provided, libinput Fallback acceleration function is used.
+(II) libinput: ELAN06FA:00 04F3:327E Touchpad: Step value 0 was provided, libinput Fallback acceleration function is used.
+(II) libinput: ELAN06FA:00 04F3:327E Touchpad: Step value 0 was provided, libinput Fallback acceleration function is used.
+(**) Option "NaturalScrolling" "on"
+(**) Option "SendEventsMode" "enabled"
+(**) Option "LeftHanded" "off"
+(**) Option "ScrollMethod" "twofinger"
+(**) Option "MiddleEmulation" "on"
+(**) Option "DisableWhileTyping" "off"
+(**) Option "HorizontalScrolling" "on"
+(**) Option "config_info" "udev:/sys/devices/platform/AMDI0010:00/i2c-0/i2c-ELAN06FA:00/0018:04F3:327E.0001/input/input16/event9"
+(II) XINPUT: Adding extended input device "ELAN06FA:00 04F3:327E Touchpad" (type: TOUCHPAD, id 10)
+(**) Option "AccelerationScheme" "none"
+(**) ELAN06FA:00 04F3:327E Touchpad: (accel) selected scheme none/0
+(**) ELAN06FA:00 04F3:327E Touchpad: (accel) acceleration factor: 2.000
+(**) ELAN06FA:00 04F3:327E Touchpad: (accel) acceleration threshold: 4
+(II) event9  - ELAN06FA:00 04F3:327E Touchpad: is tagged by udev as: Touchpad
+(II) event9  - ELAN06FA:00 04F3:327E Touchpad: device is a touchpad
+(II) config/udev: Adding input device ELAN06FA:00 04F3:327E Touchpad (/dev/input/mouse1)
+(II) No input driver specified, ignoring this device.
+(II) This device may have been added with another device file.
+(II) config/udev: Adding input device AT Translated Set 2 keyboard (/dev/input/event1)
+(**) AT Translated Set 2 keyboard: Applying InputClass "Keyboard catchall"
+(**) AT Translated Set 2 keyboard: Applying InputClass "evdev keyboard catchall"
+(**) AT Translated Set 2 keyboard: Applying InputClass "libinput keyboard catchall"
+(II) Using input driver 'libinput' for 'AT Translated Set 2 keyboard'
+(II) systemd-logind: got fd for /dev/input/event1 13:65 fd 32 paused 0
+(**) AT Translated Set 2 keyboard: always reports core events
+(**) Option "Device" "/dev/input/event1"
+(II) event1  - AT Translated Set 2 keyboard: is tagged by udev as: Keyboard
+(II) event1  - AT Translated Set 2 keyboard: device is a keyboard
+(II) event1  - AT Translated Set 2 keyboard: device removed
+(**) Option "config_info" "udev:/sys/devices/platform/i8042/serio0/input/input1/event1"
+(II) XINPUT: Adding extended input device "AT Translated Set 2 keyboard" (type: KEYBOARD, id 11)
+(**) Option "xkb_model" "pc104"
+(**) Option "xkb_layout" "us"
+(WW) Option "xkb_variant" requires a string value
+(**) Option "xkb_options" "terminate:ctrl_alt_bksp"
+(II) event1  - AT Translated Set 2 keyboard: is tagged by udev as: Keyboard
+(II) event1  - AT Translated Set 2 keyboard: device is a keyboard
+[ 01/29/2026 05:29:17.295 sanitize_options ERROR ] Backend not specified. You must choose one explicitly. Valid ones are: 
+[ 01/29/2026 05:29:17.295 sanitize_options ERROR ] 	dummy
+[ 01/29/2026 05:29:17.295 sanitize_options ERROR ] 	xrender
+[ 01/29/2026 05:29:17.295 sanitize_options ERROR ] 	egl
+[ 01/29/2026 05:29:17.295 sanitize_options ERROR ] 	glx
+[ 01/29/2026 05:29:17.295 session_init FATAL ERROR ] Failed to get configuration, usually mean you have specified invalid options.
+[ 01/29/2026 05:29:17.295 main FATAL ERROR ] Failed to create new session.
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+Couldn't exec nm-applet: No such file or directory
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+blueman-applet 05.29.17 WARNING  PluginManager:153 __load_plugin: Not loading PPPSupport because its conflict has higher priority
+blueman-applet 05.29.17 WARNING  TransferService:212 _make_share_path: Failed to get Download dir from XDG
+blueman-applet 05.29.17 WARNING  PluginManager:153 __load_plugin: Not loading DhcpClient because its conflict has higher priority
+blueman-applet 05.29.17 WARNING  DiscvManager:122 update_menuitems: warning: Adapter is None
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+[0.129] Failed to enable transparency. This happens when your desktop environment does not support compositing.
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+QLayout: Attempting to add QLayout "" to SidePanelWidget "", which already has a layout
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+flameshot: info: Capture saved as /home/creator54/Screenshots/Screenshot_2026-01-29_05-29-33_AM.png
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+[0.126] Failed to enable transparency. This happens when your desktop environment does not support compositing.
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+[0.132] Failed to enable transparency. This happens when your desktop environment does not support compositing.
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+QLayout: Attempting to add QLayout "" to SidePanelWidget "", which already has a layout
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+flameshot: info: Capture saved as /home/creator54/Screenshots/Screenshot_2026-01-29_05-30-09_AM.png
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+Job for gammastep.service canceled.
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+Job for gammastep.service canceled.
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+sh: line 1: ram: command not found
+sh: line 1: cpu: command not found
+sh: line 1: wifiInterface: command not found
+sh: line 1: net: command not found
+sh: line 1: audio: command not found
+sh: line 1: battery: command not found
+(EE) event2  - Power Button: client bug: event processing lagging behind by 473ms, your system is too slow
+(II) AMDGPU(0): EDID vendor "LEN", prod id 37206
+(II) AMDGPU(0): Using EDID range info for horizontal sync
+(II) AMDGPU(0): Using EDID range info for vertical refresh
+(II) AMDGPU(0): Printing DDC gathered Modelines:
+(II) AMDGPU(0): Modeline "1920x1200"x0.0  157.50  1920 2028 2076 2120  1200 1210 1220 1238 -hsync -vsync (74.3 kHz eP)
+fish: Unknown command: betterlockscreen
+fish: 
+betterlockscreen -l blur
+^~~~~~~~~~~~~~~^
+slock: unable to disable OOM killer. Make sure to suid or sgid slock.
+fish: Unknown command: betterlockscreen
+fish: 
+betterlockscreen -l blur
+^~~~~~~~~~~~~~~^
+slock: unable to disable OOM killer. Make sure to suid or sgid slock.
+fish: Unknown command: betterlockscreen
+fish: 
+betterlockscreen -l blur
+^~~~~~~~~~~~~~~^
+slock: unable to disable OOM killer. Make sure to suid or sgid slock.
+slock: unable to disable OOM killer. Make sure to suid or sgid slock.
+fish: Unknown command: betterlockscreen
+fish: 
+betterlockscreen -l blur
+^~~~~~~~~~~~~~~^
+fish: Unknown command: vicinae
+fish: 
+vicinae open
+^~~~~~^
+fish: Unknown command: vicinae
+fish: 
+vicinae open
+^~~~~~^
+fish: Unknown command: vicinae
+fish: 
+vicinae toggle
+^~~~~~^
+fish: Unknown command: vicinae
+fish: 
+vicinae toggle
+^~~~~~^
+(II) AMDGPU(0): EDID vendor "LEN", prod id 37206
+(II) AMDGPU(0): Using hsync ranges from config file
+(II) AMDGPU(0): Using vrefresh ranges from config file
+(II) AMDGPU(0): Printing DDC gathered Modelines:
+(II) AMDGPU(0): Modeline "1920x1200"x0.0  157.50  1920 2028 2076 2120  1200 1210 1220 1238 -hsync -vsync (74.3 kHz eP)
+[0.127] Failed to enable transparency. This happens when your desktop environment does not support compositing.
+[0.135] Failed to enable transparency. This happens when your desktop environment does not support compositing.
+xinit: connection to X server lost
+X connection to :0 broken (explicit kill or server shutdown).
+
+waiting for X server to shut down .X connection to :0 broken (explicit kill or server shutdown).
+(**) Option "fd" "25"
+(II) event0  - Video Bus: device removed
+(**) Option "fd" "28"
+(II) event2  - Power Button: device removed
+(**) Option "fd" "29"
+(II) event4  - Ideapad extra buttons: device removed
+(**) Option "fd" "30"
+(II) event8  - ELAN06FA:00 04F3:327E Mouse: device removed
+(**) Option "fd" "31"
+(II) event9  - ELAN06FA:00 04F3:327E Touchpad: device removed
+(**) Option "fd" "32"
+(II) event1  - AT Translated Set 2 keyboard: device removed
+(II) UnloadModule: "libinput"
+(II) systemd-logind: releasing fd for 13:65
+(II) UnloadModule: "libinput"
+(II) systemd-logind: releasing fd for 13:73
+(II) UnloadModule: "libinput"
+(II) systemd-logind: releasing fd for 13:72
+(II) UnloadModule: "libinput"
+(II) systemd-logind: releasing fd for 13:68
+(II) UnloadModule: "libinput"
+(II) systemd-logind: releasing fd for 13:66
+(II) UnloadModule: "libinput"
+(II) systemd-logind: releasing fd for 13:64
+(WW) xf86CloseConsole: KDSETMODE failed: Input/output error
+(WW) xf86CloseConsole: VT_GETMODE failed: Input/output error
+(WW) xf86OpenConsole: VT_GETSTATE failed: Input/output error
+(II) Server terminated successfully (0). Closing log file.
+
+xinit: unexpected signal 15
+Couldn't get a file descriptor referring to the console.

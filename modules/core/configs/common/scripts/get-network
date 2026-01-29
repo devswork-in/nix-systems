@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Check for wifi
+if command -v nmcli >/dev/null; then
+    SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
+    if [ -n "$SSID" ]; then
+        echo " $SSID"
+        exit 0
+    fi
+fi
+
+# Check for ethernet
+# Basic check for default route interface
+IFACE=$(ip route | grep default | awk '{print $5}' | head -1)
+if [ -n "$IFACE" ]; then
+    echo " Connected"
+else
+    echo " Disconnected"
+fi

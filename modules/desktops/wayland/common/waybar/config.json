@@ -82,7 +82,7 @@
     "on-click": "nm-connection-editor"
   },
   "custom/battery": {
-    "exec": "~/.config/waybar/battery_monitor.py",
+    "exec": "~/.local/bin/get-battery --waybar",
     "return-type": "json",
     "format": "{}",
     "tooltip": true
