@@ -2,7 +2,7 @@
   description = "Simple flake to manage my NixOS Systems";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/release-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-25.11";
 
     flake-compat.url = "github:edolstra/flake-compat";
 
@@ -22,7 +22,7 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -44,15 +44,15 @@
     let
       # Extract NixOS version from nixpkgs input URL
       nixosVersion = let
-        # Get the nixpkgs input URL (e.g., "github:NixOS/nixpkgs/release-25.05")
-        nixpkgsUrl = inputs.nixpkgs.sourceInfo.originalUrl or "release-25.05";
+        # Get the nixpkgs input URL (e.g., "github:NixOS/nixpkgs/release-25.11")
+        nixpkgsUrl = inputs.nixpkgs.sourceInfo.originalUrl or "release-25.11";
         # Extract version using regex match
         versionMatch =
           builtins.match ".*release-([0-9]+\\.[0-9]+).*" nixpkgsUrl;
       in if versionMatch != null then
         builtins.head versionMatch
       else
-        "25.05"; # fallback
+        "25.11"; # fallback
 
       # Import user configuration (easy to switch: just change which config file to import)
       userConfig = import ./config.nix { inherit (nixpkgs) lib; };

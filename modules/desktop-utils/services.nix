@@ -92,7 +92,6 @@
     # had direnv and startship running via bashrc due to which ssh conn in nautilus was failing
     # and sftp on cli was failing
     gvfs.enable = true;
-    preload.enable = true;
     gnome.gnome-keyring.enable =
       true; # fails to save if enabled via home-manager
     #cachix-agent = {

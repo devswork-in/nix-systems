@@ -74,7 +74,7 @@
   # Diagnostic and monitoring tools
   environment.systemPackages = with pkgs; [
     # Verification tools
-    glxinfo # Check OpenGL: glxinfo | grep "OpenGL renderer"
+    mesa-demos # Check OpenGL: glxinfo | grep "OpenGL renderer"
     vulkan-tools # Check Vulkan: vulkaninfo
     clinfo # Check OpenCL: clinfo
     libva-utils # Check VA-API: vainfo
