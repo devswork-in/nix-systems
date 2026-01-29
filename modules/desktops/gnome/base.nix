@@ -15,7 +15,7 @@
     };
 
     # Desktop Manager
-    desktopManager.gnome.enable = true;
+    services.desktopManager.gnome.enable = true;
   };
 
   # GNOME Services
