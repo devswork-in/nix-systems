@@ -76,6 +76,11 @@
     steam-run # Run non-Steam games with Steam runtime
   ];
 
+  programs.corectrl = {
+    enable = true;
+    gpuOverclock.enable = true;
+  };
+
   environment.sessionVariables = {
     # Steam Proton-GE compatibility tools path
     STEAM_EXTRA_COMPAT_TOOLS_PATHS =
@@ -84,6 +89,7 @@
     # AMD GPU optimizations for gaming
     AMD_VULKAN_ICD = "RADV"; # Use RADV (better performance)
     RADV_PERFTEST = "gpl,nggc"; # Enable GPL shader compiler and NGG culling
+    MESA_DISK_CACHE_SINGLE_FILE = "1"; # Use single file cache to reduce stutter
 
     # Ensure games use /home for shader cache
     __GL_SHADER_DISK_CACHE_PATH = "\${HOME}/.cache/mesa_shader_cache";
