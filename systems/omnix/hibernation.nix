@@ -13,13 +13,13 @@
 
     #https://wiki.archlinux.org/title/getty
     #NAutoVTs specifys no of tty's we can have
-    extraConfig = ''
-      IdleAction=suspend
-      IdleActionSec=2min
-      HandlePowerKey=suspend
-      PowerKeyIgnoreInhibited=yes
-      NAutoVTs=1
-    '';
+    settings.Login = {
+      IdleAction = "suspend";
+      IdleActionSec = "2min";
+      HandlePowerKey = "suspend";
+      PowerKeyIgnoreInhibited = "yes";
+      NAutoVTs = 1;
+    };
     killUserProcesses = true; # on logout kill all user processes
   };
 }

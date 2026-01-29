@@ -17,7 +17,7 @@
       dotnet-sdk = pkgs.writeShellScriptBin "dotnet" "echo 'fake dotnet SDK for pre-commit override'";
     })
     vlc
-    tdesktop
+    telegram-desktop
     ncftp
     comma
     capitaine-cursors

@@ -1,6 +1,6 @@
 # Nix-Systems (NixOS)
 
-[![NixOS](https://img.shields.io/badge/NixOS-25.05-blue.svg?logo=nixos)](https://nixos.org)
+[![NixOS](https://img.shields.io/badge/NixOS-25.11-blue.svg?logo=nixos)](https://nixos.org)
 [![Flakes](https://img.shields.io/badge/Nix-Flakes-informational.svg?logo=nixos)](https://nixos.wiki/wiki/Flakes)
 
 Opinionated NixOS configs for my devices.
