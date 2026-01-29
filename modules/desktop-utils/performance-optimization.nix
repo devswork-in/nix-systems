@@ -12,7 +12,7 @@ let
       minCpuFreqAC = 400000;
       cpuEPP = "balance_performance";
       compositorPriority = -10;
-      zramPercent = 25;
+      zramPercent = 100;
       enableCpuBoostAC = true;
     };
 
@@ -21,7 +21,7 @@ let
       minCpuFreqAC = 1400000;
       cpuEPP = "balance_performance";
       compositorPriority = -15;
-      zramPercent = 20;
+      zramPercent = 100;
       enableCpuBoostAC = true;
     };
 
@@ -30,7 +30,7 @@ let
       minCpuFreqAC = 400000;
       cpuEPP = "balance_power";
       compositorPriority = -5;
-      zramPercent = 30;
+      zramPercent = 100;
       enableCpuBoostAC = false;
     };
   };
@@ -184,10 +184,6 @@ in {
       "nmi_watchdog=0"
       "libahci.ignore_sss=1" # Ignore staggered spin-up (faster SSD boot)
       "no_timer_check" # Don't check timers (faster boot)
-      # Zswap configuration (compressed swap in RAM)
-      "zswap.enabled=1"
-      "zswap.compressor=lz4"
-      "zswap.max_pool_percent=20"
     ] ++ optional cfg.kernel.disableMitigations "mitigations=off");
 
     # Use zstd compression for initrd (faster decompression)
@@ -212,7 +208,7 @@ in {
     # Zram compressed swap configuration
     zramSwap = mkIf cfg.memory.enableZram {
       enable = mkDefault true;
-      algorithm = mkForce "lz4"; # Override default zstd for faster compression
+      algorithm = mkForce "zstd"; # Use zstd for better compression ratio
       memoryPercent = mkForce activeProfile.zramPercent;
       priority = mkForce 10; # Higher priority than default
     };
