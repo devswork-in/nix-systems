@@ -12,6 +12,7 @@
       HandleLidSwitch = "suspend";
       HandleLidSwitchDocked = "suspend";
       HandleLidSwitchExternalPower = "suspend";
+      LidSwitchIgnoreInhibited = "yes";
       HandlePowerKey = "suspend";
       IdleAction = "suspend";
       IdleActionSec = "2min";
