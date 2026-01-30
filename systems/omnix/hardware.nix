@@ -26,8 +26,8 @@
       "amdgpu.gpu_recovery=1"
       # Reduce GPU power state transition glitches
       "amdgpu.dcdebugmask=0x10"
-      # Deep sleep support
-      "mem_sleep_default=deep"
+      # Modern Standby (S0ix) support - faster wake
+      "mem_sleep_default=s2idle"
     ];
     supportedFilesystems = [ "ntfs-3g" ];
     blacklistedKernelModules = [ "ntfs3" ];
