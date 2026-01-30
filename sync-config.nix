@@ -1,8 +1,8 @@
-{ user, paths, flakeRoot }:
+{ user, paths, flakeRoot ? null, pkgs ? null, ... }:
 # Sync configuration for nix-repo-sync
 # See nix-repo-sync/README.md for usage details
 
-let nixSystemsRoot = flakeRoot;
+let nixSystemsRoot = if flakeRoot != null then flakeRoot else "./.";
 in {
   # Synced on all systems
   common = [
@@ -56,6 +56,16 @@ in {
       source = "${nixSystemsRoot}/modules/core/vars/common.sh";
       dest = "~/.config/env/common.sh";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/gitconfig";
+      dest = "~/.gitconfig";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/bat";
+      dest = "~/.config/bat";
+    }
   ];
 
   # Server-specific sync items
@@ -70,6 +80,11 @@ in {
       type = "git";
       source = "https://github.com/creator54/blog.creator54.me";
       dest = "${paths.base}/blog.${user.domain}";
+      # Build the site after sync
+      postSync = if pkgs != null then
+        "${pkgs.nix}/bin/nix-shell -p bundler ruby libffi zlib gcc gnumake --run 'bundle install && bundle exec jekyll build'"
+      else
+        "nix-shell -p bundler ruby libffi zlib gcc gnumake --run 'bundle install && bundle exec jekyll build'";
     }
     {
       type = "local";
