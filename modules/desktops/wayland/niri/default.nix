@@ -6,6 +6,7 @@
   imports = [
     ../common/environment.nix
     ../common/hyprlock
+    ../common/hypridle
     ../common/waybar
     ../common/swaync
     ./environment.nix
@@ -17,6 +18,7 @@
     enable = true;
     autoLock = true; # Auto-lock on Niri startup
   };
+  wayland.hypridle.enable = true;
   wayland.waybar.enable = true;
   wayland.swaync.enable = true;
 
