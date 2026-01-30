@@ -103,7 +103,7 @@
           modules = [
             ./modules/server/default.nix
             ./systems/server/configuration.nix
-            inputs.home-manager.nixosModules.default
+            # Note: No home-manager - servers use nix-repo-sync for user configs
             inputs.nix-repo-sync.nixosModules.default
           ];
         };
@@ -117,25 +117,23 @@
               modules = [
                 ./systems/phoenix
                 ./modules/server/default.nix
-                inputs.home-manager.nixosModules.default
+                # Note: No home-manager - servers use nix-repo-sync for user configs
                 inputs.nix-repo-sync.nixosModules.default
               ];
             };
         in mkPhoenix "x86_64-linux";
 
-        phoenix-arm = let
-          mkPhoenix = system:
-            mkSystem {
-              inherit system;
-              hostname = "phoenix";
-              modules = [
-                ./systems/phoenix
-                ./modules/server/default.nix
-                inputs.home-manager.nixosModules.default
-                inputs.nix-repo-sync.nixosModules.default
-              ];
-            };
-        in mkPhoenix "aarch64-linux";
+        phoenix-arm = mkSystem {
+          system = "aarch64-linux";
+          # No buildSystem = builds natively on ARM host, using binary cache
+          hostname = "phoenix";
+          modules = [
+            ./systems/phoenix
+            ./modules/server/default.nix
+            # Note: No home-manager - servers use nix-repo-sync for user configs
+            inputs.nix-repo-sync.nixosModules.default
+          ];
+        };
 
         omnix = mkDesktopSystem {
           system = "x86_64-linux";
