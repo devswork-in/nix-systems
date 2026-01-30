@@ -1,17 +1,26 @@
 # Helper function to create NixOS system configurations
 # Simplifies system creation in flake.nix by providing consistent structure
+# Supports cross-compilation when buildSystem differs from target system
 
 { nixpkgs, inputs, userConfig, nixosVersion, flakeRoot }:
 
-{ system, modules, hostname }:
+{ system, modules, hostname, buildSystem ? null }:
 
+let
+  # Determine if we're cross-compiling
+  isCross = buildSystem != null && buildSystem != system;
+in
 nixpkgs.lib.nixosSystem {
   specialArgs = { inherit inputs userConfig nixosVersion flakeRoot; };
-  inherit system;
+  # Use nixpkgs.hostPlatform instead of deprecated system parameter
   modules = [
     # Set hostname with mkDefault to allow system-specific override
     {
       networking.hostName = nixpkgs.lib.mkDefault hostname;
+    }
+    # Set the target platform (replaces deprecated 'system' parameter)
+    {
+      nixpkgs.hostPlatform = system;
     }
     # Global nixpkgs config - allow unfree and insecure packages
     {
@@ -20,5 +29,10 @@ nixpkgs.lib.nixosSystem {
         allowInsecurePredicate = _: true;
       };
     }
+    # Cross-compilation settings when buildSystem is specified
+    (nixpkgs.lib.mkIf isCross {
+      nixpkgs.buildPlatform = buildSystem;
+    })
   ] ++ modules;
 }
+

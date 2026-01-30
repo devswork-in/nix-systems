@@ -79,7 +79,7 @@
   services.nix-repo-sync = let
     syncConfig = import ../sync-config.nix {
       inherit (userConfig) user paths;
-      inherit flakeRoot;
+      inherit flakeRoot pkgs;
     };
   in {
     enable = lib.mkDefault true;
