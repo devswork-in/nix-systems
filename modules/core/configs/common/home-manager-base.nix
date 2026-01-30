@@ -21,9 +21,7 @@
         stateVersion = "${nixosVersion}";
       };
       
-      # Allow unfree packages in home-manager
-      # Note: If using home-manager.useGlobalPkgs, this is inherited from system config
-      nixpkgs.config.allowUnfree = true;
+
     };
   };
 }
