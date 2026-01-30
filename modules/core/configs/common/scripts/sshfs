@@ -1,0 +1,163 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p sshfs
+set -e
+
+# The real sshfs is provided by nix-shell
+REAL_SSHFS=""
+IFS=: read -ra PATHS <<< "$PATH"
+for p in "${PATHS[@]}"; do
+    if [[ -x "$p/sshfs" && ! "$p/sshfs" -ef "$0" ]]; then
+        REAL_SSHFS="$p/sshfs"
+        break
+    fi
+done
+
+if [[ -z "$REAL_SSHFS" ]]; then
+    echo "Error: sshfs not available from nix-shell." >&2
+    exit 1
+fi
+
+# Base directory for sshfs mounts (in home dir so file managers detect it)
+SSHFS_BASE="$HOME/mnt"
+
+# Helper function for notifications
+notify() {
+    local title="$1"
+    local message="$2"
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -a "SSHFS" "$title" "$message"
+    fi
+    echo "$title: $message"
+}
+
+# Check if a host exists in SSH config
+host_exists() {
+    local host="$1"
+    ssh -G "$host" 2>/dev/null | grep -q "^hostname" && return 0
+    return 1
+}
+
+# Get list of SSH hosts from config
+list_hosts() {
+    echo "Available SSH hosts:"
+    grep -E "^Host\s+" ~/.ssh/config 2>/dev/null | awk '{print "  " $2}' | grep -v '\*'
+    echo ""
+    echo "Mounted SSHFS filesystems:"
+    if [ -d "$SSHFS_BASE" ]; then
+        for dir in "$SSHFS_BASE"/*/; do
+            if [ -d "$dir" ]; then
+                host=$(basename "$dir")
+                if mount | grep -q "$SSHFS_BASE/$host"; then
+                    echo "  $host -> $SSHFS_BASE/$host"
+                fi
+            fi
+        done
+    fi
+}
+
+# Mount a host
+mount_host() {
+    local host="$1"
+    local mount_point="$SSHFS_BASE/$host"
+    
+    # Check if already mounted
+    if mount | grep -q "$mount_point"; then
+        notify "Already Mounted" "$host is already mounted at $mount_point"
+        exit 0
+    fi
+    
+    # Validate host exists in SSH config
+    if ! host_exists "$host"; then
+        notify "Error" "Host '$host' not found in SSH config"
+        exit 1
+    fi
+    
+    # Create base directory and mount point
+    mkdir -p "$mount_point"
+    
+    notify "Mounting..." "Mounting $host:/ to $mount_point"
+    
+    # Mount with useful options
+    if "$REAL_SSHFS" "$host:/" "$mount_point" \
+        -o reconnect \
+        -o ServerAliveInterval=15 \
+        -o ServerAliveCountMax=3 \
+        -o follow_symlinks \
+        -o cache=yes \
+        -o kernel_cache; then
+        notify "Mounted" "$host mounted at $mount_point"
+    else
+        notify "Error" "Failed to mount $host"
+        rmdir "$mount_point" 2>/dev/null
+        exit 1
+    fi
+}
+
+# Unmount a host
+unmount_host() {
+    local host="$1"
+    local mount_point="$SSHFS_BASE/$host"
+    
+    if ! mount | grep -q "$mount_point"; then
+        notify "Not Mounted" "$host is not mounted"
+        # Clean up empty directory
+        rmdir "$mount_point" 2>/dev/null || true
+        # Clean up base dir if empty
+        rmdir "$SSHFS_BASE" 2>/dev/null || true
+        exit 0
+    fi
+    
+    notify "Unmounting..." "Unmounting $host"
+    
+    if fusermount -u "$mount_point"; then
+        notify "Unmounted" "$host has been unmounted"
+        rmdir "$mount_point" 2>/dev/null || true
+        # Clean up base dir if empty
+        rmdir "$SSHFS_BASE" 2>/dev/null || true
+    else
+        notify "Error" "Failed to unmount $host (maybe files are open?)"
+        exit 1
+    fi
+}
+
+# Show usage
+usage() {
+    echo "SSHFS Wrapper - Mount SSH hosts easily"
+    echo ""
+    echo "Usage:"
+    echo "  sshfs <hostname>        Mount an SSH host"
+    echo "  sshfs -u <hostname>     Unmount an SSH host"
+    echo "  sshfs -l                List available hosts and mounts"
+    echo "  sshfs [standard args]   Pass through to real sshfs"
+    echo ""
+    echo "Mount location: $SSHFS_BASE/<hostname>"
+}
+
+# Main logic
+case "${1:-}" in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+    -l|--list)
+        list_hosts
+        exit 0
+        ;;
+    -u|--unmount)
+        if [[ -z "${2:-}" ]]; then
+            echo "Error: hostname required for unmount" >&2
+            exit 1
+        fi
+        unmount_host "$2"
+        exit 0
+        ;;
+    *)
+        # Check if single argument that looks like a hostname (no colon, no slash)
+        if [[ "$#" -eq 1 && "$1" != *":"* && "$1" != *"/"* && "$1" != -* ]]; then
+            mount_host "$1"
+            exit 0
+        fi
+        # Pass through to real sshfs for all other cases
+        exec "$REAL_SSHFS" "$@"
+        ;;
+esac
