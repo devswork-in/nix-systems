@@ -122,11 +122,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767310845,
-        "narHash": "sha256-j70lYn2/YHG+HV8Gr8a7f1R8CthBsQcifMQijn9J5Mw=",
+        "lastModified": 1769794201,
+        "narHash": "sha256-VSddnM5sZhW0vTgj3FuLtL+UtXbF6twPdS324ARk1fM=",
         "owner": "Creator54",
         "repo": "nix-repo-sync",
-        "rev": "1146bb0783b6150df54f341a732b8d4f154704c4",
+        "rev": "7011ebfd2b1fba2f0058aa963dea0df6284dd012",
         "type": "github"
       },
       "original": {
