@@ -42,7 +42,7 @@
     playerctl
     blueman
     swayosd
-    inputs.vicinae.packages.${pkgs.system}.default
+    inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "random-wallpaper" ''
       ${pkgs.procps}/bin/pkill swaybg || true
       WALLPAPER=$(find ~/Wallpapers -type f \( -name '*.jpg' -o -name '*.png' \) | ${pkgs.coreutils}/bin/shuf -n 1)
