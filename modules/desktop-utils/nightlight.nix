@@ -11,7 +11,7 @@ let
   isX11 = (lib.attrByPath ["sessionManager" "sessionType"] "" config) == "x11"
     || (lib.attrByPath ["services" "xserver" "windowManager" "dwm" "enable"] false config)
     || (lib.attrByPath ["services" "xserver" "windowManager" "i3" "enable"] false config)
-    || (lib.attrByPath ["services" "xserver" "desktopManager" "gnome" "enable"] false config);
+    || (lib.attrByPath ["services" "desktopManager" "gnome" "enable"] false config);
 
   # Common nightlight settings
   latitude = "12.9";
