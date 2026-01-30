@@ -7,6 +7,9 @@
   };
 
   config = lib.mkIf config.wayland.hyprlock.enable {
+    # System-level hyprlock for PAM support
+    programs.hyprlock.enable = true;
+
     # Add hyprlock package
     home-manager.users."${userConfig.user.name}".home.packages =
       [ pkgs.hyprlock ];
