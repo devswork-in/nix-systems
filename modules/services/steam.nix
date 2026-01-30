@@ -76,10 +76,8 @@
     steam-run # Run non-Steam games with Steam runtime
   ];
 
-  programs.corectrl = {
-    enable = true;
-    gpuOverclock.enable = true;
-  };
+  programs.corectrl.enable = true;
+  hardware.amdgpu.overdrive.enable = true;
 
   environment.sessionVariables = {
     # Steam Proton-GE compatibility tools path

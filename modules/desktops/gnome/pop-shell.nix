@@ -111,7 +111,7 @@
           [Desktop Entry]
           Type=Application
           Exec=${
-            inputs.vicinae.packages.${pkgs.system}.default
+            inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
           }/bin/vicinae server
           Hidden=false
           NoDisplay=false
@@ -366,7 +366,7 @@
           {
             name = "Launch Vicinae";
             command = "${
-                inputs.vicinae.packages.${pkgs.system}.default
+                inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
               }/bin/vicinae toggle";
             binding = "<Super>slash";
           };
@@ -564,9 +564,9 @@
 
     # ---- Pop Shell Specific System Configuration ----
 
-    # Set default session to GNOME on Xorg
+    # Set default session to GNOME (Wayland by default in NixOS 25.xx)
     # Note: Pop Shell works on both X11 and Wayland
-    services.displayManager.defaultSession = "gnome-xorg";
+    services.displayManager.defaultSession = "gnome";
 
     # KDE Connect (GSConnect)
     programs.kdeconnect = {
@@ -578,7 +578,7 @@
     environment.systemPackages = with pkgs; [
       rofi
       pop-launcher
-      inputs.vicinae.packages.${pkgs.system}.default
+      inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
 
     # Apply overlay for panel-free extension v10

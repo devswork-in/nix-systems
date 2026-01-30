@@ -64,8 +64,8 @@
       #driSupport = true; #hardware acceleration for the Mesa implementation of OpenGL
       enable32Bit = true;
       extraPackages = with pkgs; [
-        vaapiIntel
-        vaapiVdpau
+        intel-vaapi-driver
+        libva-vdpau-driver
         libvdpau-va-gl
         intel-media-driver
         intel-media-sdk # switch to onevpl-intel-gpu or vpl-gpu-rt
