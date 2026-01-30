@@ -1,0 +1,17 @@
+[user]
+	name = creator54
+	email = nicholasjohn654@gmail.com
+[init]
+	defaultBranch = main
+[core]
+	editor = vim
+[push]
+	autoSetupRemote = true
+[pull]
+	rebase = true
+[rebase]
+	autoStash = true
+[credential]
+	helper = store
+[safe]
+	directory = *
