@@ -4,18 +4,16 @@
   # Base GNOME Desktop Environment Configuration
   # This module contains common settings shared between vanilla GNOME and Pop Shell
 
-  services.xserver = {
+  services.xserver.enable = true;
+
+  # Desktop Manager (moved to top-level services.desktopManager in NixOS 25.xx)
+  services.desktopManager.gnome.enable = true;
+
+  # Display Manager (moved to top-level services.displayManager in NixOS 25.xx)
+  services.displayManager.gdm = {
     enable = true;
-
-    # Display Manager
-    displayManager.gdm = {
-      enable = true;
-      wayland = true; # Enable Wayland for Niri and GNOME Wayland sessions
-      autoSuspend = true;
-    };
-
-    # Desktop Manager
-    services.desktopManager.gnome.enable = true;
+    wayland = true; # Enable Wayland for Niri and GNOME Wayland sessions
+    autoSuspend = true;
   };
 
   # GNOME Services
