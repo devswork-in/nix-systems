@@ -10,6 +10,9 @@
     # System-level hyprlock for PAM support
     programs.hyprlock.enable = true;
 
+    # Explicitly enable PAM service for hyprlock to avoid "init first step" errors
+    security.pam.services.hyprlock = { };
+
     # Add hyprlock package
     home-manager.users."${userConfig.user.name}".home.packages =
       [ pkgs.hyprlock ];
