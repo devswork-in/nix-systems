@@ -23,6 +23,7 @@
     "pulseaudio",
     "clock",
     "custom/battery",
+    "custom/vpn",
     "tray"
   ],
   "niri/workspaces": {
@@ -80,6 +81,15 @@
     "format-disconnected": " Disconnected",
     "tooltip-format": "{ifname}: {ipaddr}/{cidr} via {gwaddr}",
     "on-click": "nm-connection-editor"
+  },
+  "custom/vpn": {
+    "exec": "~/.local/bin/sshuttle -w -j",
+    "return-type": "json",
+    "interval": 30,
+    "signal": 5,
+    "format": "{text}",
+    "on-click": "kitty --class sshuttle-vpn sh -c 'exec ~/.local/bin/sshuttle -t phoenix'",
+    "tooltip": true
   },
   "custom/battery": {
     "exec": "~/.config/waybar/battery_monitor.py",
