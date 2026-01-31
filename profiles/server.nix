@@ -10,6 +10,11 @@
   # Boot configuration for servers
   boot.tmp.cleanOnBoot = true;
 
+  # System packages
+  environment.systemPackages = with pkgs; [
+    kitty.terminfo
+  ];
+
   # Networking configuration for servers
   networking = {
     firewall.enable = lib.mkDefault true;
