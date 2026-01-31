@@ -45,6 +45,8 @@
   # This forces use of global nameservers (8.8.8.8, etc.) defined in desktop profile
   networking.networkmanager.dns = "none";
 
+  services.tailscale.enable = true;
+
   # System-specific packages
   environment.systemPackages = with pkgs; [ amdgpu_top gparted ntfs3g ];
 
