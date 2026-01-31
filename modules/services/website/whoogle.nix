@@ -9,9 +9,12 @@ in
     oci-containers = {
       backend = "docker";
       containers.whoogle-search = {
-        image = "benbusby/whoogle-search:1.1.0";
+        image = "benbusby/whoogle-search:1.1.2";
         autoStart = true;
         ports = [ "${whoogle.port}:5000" ];
+        environment = {
+          WHOOGLE_CONFIG_USE_LETA = "0";
+        };
       };
     };
   };
