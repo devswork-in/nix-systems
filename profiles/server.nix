@@ -10,6 +10,15 @@
   # Boot configuration for servers
   boot.tmp.cleanOnBoot = true;
 
+  # Optimizations for headless server
+  documentation = {
+    enable = false;
+    man.enable = false;
+    nixos.enable = false;
+  };
+
+  programs.command-not-found.enable = false;
+
   # System packages
   environment.systemPackages = with pkgs; [
     kitty.terminfo
