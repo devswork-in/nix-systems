@@ -1,0 +1,256 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p sshuttle jq curl
+
+set -e
+
+# Use sshuttle from path (provided by nix-shell)
+REAL_SSHUTTLE="sshuttle"
+
+# PID directory for tracking active tunnels
+SSHUTTLE_PIDDIR="$HOME/.local/state/sshuttle"
+
+# Helper function for notifications
+notify() {
+    local title="$1"
+    local message="$2"
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -a "sshuttle" "$title" "$message"
+    fi
+    echo "$title: $message"
+}
+
+# Send signal to Waybar to refresh custom/vpn module
+refresh_waybar() {
+    # Waybar uses SIGRTMIN+N. Signal 5 is used here.
+    pkill -RTMIN+5 waybar || true
+}
+
+# Check if a host exists in SSH config
+host_exists() {
+    local host="$1"
+    ssh -G "$host" 2>/dev/null | grep -q "^hostname" && return 0
+    return 1
+}
+
+# Get list of SSH hosts from config
+list_hosts() {
+    echo "Available SSH hosts:"
+    grep -E "^Host\s+" ~/.ssh/config 2>/dev/null | awk '{print "  " $2}' | grep -v '\*'
+    echo ""
+    echo "Active sshuttle tunnels:"
+    pgrep -af "sshuttle.*-r" | grep -v "grep" | while read -r line; do
+        local h
+        h=$(echo "$line" | awk -F '-r ' '{print $2}' | awk '{print $1}')
+        local pid
+        pid=$(echo "$line" | awk '{print $1}')
+        echo "  $h (PID: $pid)"
+    done
+}
+
+# Get PID file path for a host
+get_pidfile() {
+    echo "$SSHUTTLE_PIDDIR/$1.pid"
+}
+
+# Check if tunnel is active for a host
+is_tunnel_active() {
+    local host="$1"
+    if pgrep -f "sshuttle.*-r $host" > /dev/null 2>&1; then
+        return 0
+    fi
+    return 1
+}
+
+# Get the server IP from SSH config
+get_server_ip() {
+    local host="$1"
+    ssh -G "$host" 2>/dev/null | awk '/^hostname / {print $2}'
+}
+
+# Start sshuttle tunnel
+start_tunnel() {
+    local host="$1"
+    local subnet="${2:-0/0}"
+    local background="${3:-true}"
+    local pidfile
+    pidfile=$(get_pidfile "$host")
+
+    # Check if already running
+    if is_tunnel_active "$host"; then
+        notify "Ignored" "Tunnel to $host already active."
+        echo "Tunnel active."
+        exit 0
+    fi
+
+    # Enforce single instance
+    stop_all_tunnels >/dev/null 2>&1
+
+    if ! host_exists "$host"; then
+        echo "Error: Host '$host' not found in SSH config" >&2
+        exit 1
+    fi
+
+    local server_ip
+    server_ip=$(get_server_ip "$host")
+    if [[ -z "$server_ip" ]]; then
+        echo "Error: Could not resolve IP for '$host'" >&2
+        exit 1
+    fi
+
+    mkdir -p "$SSHUTTLE_PIDDIR"
+
+    if [[ "$background" == "true" ]]; then
+        # Ensure sudo access for background mode
+        if ! sudo -n true 2>/dev/null; then
+            echo "Asking for sudo (required for firewall)..."
+            if ! sudo -v; then
+                echo "Sudo failed." >&2
+                exit 1
+            fi
+        fi
+        
+        notify "Connecting..." "Tunneling to $host..."
+        local logfile="$SSHUTTLE_PIDDIR/$host.log"
+        
+        # Run as user for SSH, but root for firewall. 
+        local target_user="${SUDO_USER:-$USER}"
+        local ssh_cmd="sudo -u $target_user ssh"
+        
+        # Background using nohup and redirect all to detach properly from terminal
+        nohup sudo "$REAL_SSHUTTLE" \
+            -r "$host" \
+            -x "$server_ip" \
+            --ssh-cmd "$ssh_cmd" \
+            "$subnet" \
+            -v >"$logfile" 2>&1 < /dev/null &
+        
+        # Give it a second to initialize
+        sleep 2
+        
+        local pid
+        # Use simple pgrep to find the child
+        pid=$(pgrep -f "sshuttle.*-r $host" | tail -n 1)
+        
+        if [[ -n "$pid" ]]; then
+            echo "$pid" > "$pidfile"
+            refresh_waybar
+            notify "Connected" "Tunnel to $host active (PID: $pid)"
+            echo "Connected (PID: $pid). Log: $logfile"
+            exit 0
+        else
+            echo "Failed to start. Check logs:" >&2
+            cat "$logfile" >&2
+            notify "Error" "Failed to start tunnel to $host"
+            rm -f "$pidfile"
+            exit 1
+        fi
+    else
+        # Foreground
+        echo "Starting tunnel to $host (Ctrl+C to stop)..."
+        exec "$REAL_SSHUTTLE" \
+            -r "$host" \
+            -x "$server_ip" \
+            "$subnet" \
+            -v
+    fi
+}
+
+# Stop tunnel
+stop_tunnel() {
+    local host="$1"
+    if pgrep -f "sshuttle.*-r $host" > /dev/null 2>&1; then
+        sudo pkill -f "sshuttle.*-r $host"
+        rm -f "$(get_pidfile "$host")"
+        refresh_waybar
+        notify "Stopped" "Tunnel to $host stopped."
+        echo "Stopped."
+    else
+        echo "No active tunnel found for $host."
+        # Cleanup any stale pidfile anyway
+        rm -f "$(get_pidfile "$host")"
+    fi
+}
+
+# Stop all
+stop_all_tunnels() {
+    if pgrep -f "sshuttle.*-r" >/dev/null; then
+        sudo pkill -f "sshuttle.*-r"
+        rm -f "$SSHUTTLE_PIDDIR"/*.pid 2>/dev/null || true
+        refresh_waybar
+        echo "Tunnels stopped."
+    else
+        echo "No active tunnels."
+    fi
+}
+
+# Toggle
+toggle_tunnel() {
+    local host="$1"
+    if is_tunnel_active "$host"; then
+        stop_tunnel "$host"
+    else
+        start_tunnel "$1" "${2:-0/0}" "true"
+    fi
+}
+
+# Check current location/IP
+check_location() {
+    local json_output=false
+    if [[ "$1" == "-j" || "$1" == "--json" ]]; then
+        json_output=true
+    fi
+
+    if ! command -v curl >/dev/null 2>&1; then
+        echo "Error: curl is required." >&2
+        exit 1
+    fi
+
+    if [ "$json_output" = true ]; then
+        if ! command -v jq >/dev/null 2>&1; then
+             echo "Error: jq is required for JSON output." >&2
+             exit 1
+        fi
+        
+        local active_host
+        active_host=$(pgrep -af "sshuttle.*-r" | grep -v "grep" | awk -F '-r ' '{print $2}' | awk '{print $1}' | tail -n 1)
+
+        if [[ -n "$active_host" ]]; then
+            local server_ip
+            server_ip=$(ssh -G "$active_host" 2>/dev/null | awk '/^hostname / {print $2}')
+            echo "{\"text\": \"  $server_ip\", \"alt\": \"connected\", \"class\": \"connected\", \"tooltip\": \"Connected to $active_host ($server_ip)\"}"
+        else
+            echo "{\"text\": \"  Off\", \"alt\": \"disconnected\", \"class\": \"disconnected\", \"tooltip\": \"VPN Disconnected\"}"
+        fi
+    else
+        echo "Checking location (via ipinfo.io)..."
+        curl -s ipinfo.io
+        echo ""
+    fi
+}
+
+# Show usage
+usage() {
+    echo "sshuttle Wrapper - managing VPN tunnels"
+    echo "Usage:"
+    echo "  sshuttle <host> [subnet]          Start tunnel (background)"
+    echo "  sshuttle -k                       Stop tunnel"
+    echo "  sshuttle -t <host>                Toggle tunnel"
+    echo "  sshuttle -w                       Check location (whereami)"
+}
+
+case "${1:-}" in
+    -h|--help|"") usage; exit 0 ;;
+    l|list|-l|--list) list_hosts; exit 0 ;;
+    killall|k|-k|stop) stop_all_tunnels; exit 0 ;;
+    toggle|t|-t)
+        [[ -z "$2" ]] && { echo "Host required"; exit 1; }
+        toggle_tunnel "$2" "${3:-0/0}"; exit 0 ;;
+    whereami|w|which|-w|--where)
+          shift
+          check_location "$@"; exit 0 ;;
+    *)
+        if [[ "$#" -ge 1 && "$1" != -* ]]; then
+            start_tunnel "$1" "${2:-0/0}" "true"; exit 0
+        fi
+        exec sshuttle "$@" ;;
+esac
