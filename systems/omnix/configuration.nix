@@ -60,6 +60,10 @@
   # Enable QEMU binfmt emulation for cross-architecture builds (e.g., aarch64)
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
+  # Fix for "sudo: PAM account management error" during boot
+  # Disable the upstream nix-repo-sync activation script which attempts to use sudo before PAM is ready
+  system.activationScripts.nixRepoSyncPreActivation.text = lib.mkForce "";
+
   # System-specific user groups (extends profile groups)
   users.users.${userConfig.user.name}.extraGroups = [ "input" ];
 
