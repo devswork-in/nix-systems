@@ -4,6 +4,11 @@
   virtualisation.docker = {
     enable = true;
     enableOnBoot = false;
+    autoPrune = {
+      enable = true;
+      dates = "weekly";
+      flags = [ "--all" ];
+    };
     rootless = {
       enable = true;
       setSocketVariable = true;
