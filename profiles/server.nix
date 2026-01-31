@@ -28,6 +28,7 @@
   # System packages
   environment.systemPackages = with pkgs; [
     kitty.terminfo
+    nodejs_22
   ];
 
   # Networking configuration for servers
