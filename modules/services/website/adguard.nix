@@ -2,12 +2,12 @@
 
 let
   adguard = userConfig.services.adguard;
+  httpsSettings = import ./https-settings.nix { inherit userConfig; };
 in
 {
   services = {
     nginx.virtualHosts."${adguard.host}" = {
-      forceSSL = userConfig.services.website.https;
-      enableACME = userConfig.services.website.https;
+      inherit (httpsSettings) enableACME forceSSL;
       locations."/".proxyPass = "http://localhost:" + builtins.toString adguard.port;
     };
     adguardhome = {
