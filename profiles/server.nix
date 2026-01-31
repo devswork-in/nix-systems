@@ -16,8 +16,14 @@
     man.enable = false;
     nixos.enable = false;
   };
-
   programs.command-not-found.enable = false;
+
+  # Optimize RAM with ZRAM
+  zramSwap.enable = true;
+
+  # Disable unnecessary hardware support
+  services.printing.enable = false;
+  services.pulseaudio.enable = false;
 
   # System packages
   environment.systemPackages = with pkgs; [
