@@ -105,6 +105,7 @@ window#waybar {
 #custom-disk,
 #temperature,
 #group-hardware,
+#custom-vpn,
 #pulseaudio {
     background-color: rgba(17, 17, 27, 0.95);
     color: @module_text;
@@ -159,6 +160,22 @@ window#waybar {
 /* Specifics */
 #network.disconnected {
     color: #f38ba8;
+}
+
+#custom-vpn {
+    background-color: rgba(17, 17, 27, 0.95);
+    color: @module_text;
+    border-radius: 5px;
+    margin: 2px;
+    padding: 2px 12px;
+}
+
+#custom-vpn.disconnected {
+    color: #f38ba8;
+}
+
+#custom-vpn.connected {
+    color: @green;
 }
 
 #custom-battery.charging,

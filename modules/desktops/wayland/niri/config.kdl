@@ -227,6 +227,7 @@ binds {
     // Utilities
     Mod+Shift+W { spawn "random-wallpaper"; }
     Mod+Shift+Y { spawn "kitty" "--class" "yt-search" "livewall"; }
+    Mod+V { spawn "kitty" "--class" "sshuttle-vpn" "sh" "-c" "exec ~/.local/bin/sshuttle -t phoenix"; }
     Alt+K { spawn "screenkey" "--no-systray" "-t" "0.4" "--opacity" "0.0"; }
     Alt+Shift+K { spawn "pkill" "screenkey"; }
     Mod+R { spawn "wtype" "-M" "ctrl" "r" "-m" "ctrl"; }
@@ -306,3 +307,11 @@ window-rule {
 }
 
 prefer-no-csd
+
+// SSHuttle VPN floating window
+window-rule {
+    match app-id="^sshuttle-vpn$"
+    open-floating true
+    default-column-width { fixed 600; }
+    default-window-height { fixed 400; }
+}
