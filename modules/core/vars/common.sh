@@ -12,9 +12,3 @@ export NIX_CONFIG_DIR="/etc/nixos"
 if [ -z "$NIX_SYSTEM" ]; then
     export NIX_SYSTEM="$(hostname)"
 fi
-
-# System Identity (Explicitly set for shell)
-export NIX_CONFIG_DIR="/etc/nixos"
-if [ -z "$NIX_SYSTEM" ]; then
-    export NIX_SYSTEM="$(hostname)"
-fi
