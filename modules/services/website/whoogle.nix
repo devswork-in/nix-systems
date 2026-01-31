@@ -1,23 +1,21 @@
-{ userConfig, ... }:
+{ userConfig, lib, ... }:
 
 let
   whoogle = userConfig.services.whoogle;
-  httpsSettings = {
-    enableACME = userConfig.services.website.https;
-    forceSSL = userConfig.services.website.https;
-  };
+  httpsSettings = import ./https-settings.nix { inherit userConfig; };
 in
 {
   virtualisation = {
     oci-containers = {
       backend = "docker";
       containers.whoogle-search = {
-        image = "benbusby/whoogle-search:latest";
+        image = "benbusby/whoogle-search:1.1.0";
         autoStart = true;
-        ports = [ "${whoogle.port}:5000" ]; # server localhost : docker localhost
+        ports = [ "${whoogle.port}:5000" ];
       };
     };
   };
+
   services.nginx.virtualHosts = {
     "${whoogle.host}" = {
       inherit (httpsSettings) enableACME forceSSL;

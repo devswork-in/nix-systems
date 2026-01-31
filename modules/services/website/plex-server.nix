@@ -2,10 +2,7 @@
 
 let
   plex = userConfig.services.plex;
-  httpsSettings = {
-    enableACME = userConfig.services.website.https;
-    forceSSL = userConfig.services.website.https;
-  };
+  httpsSettings = import ./https-settings.nix { inherit userConfig; };
 in
 {
   services = {
