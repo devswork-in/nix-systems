@@ -32,9 +32,17 @@
 
   # Networking configuration for servers
   networking = {
-    firewall.enable = lib.mkDefault true;
+    firewall = {
+      enable = lib.mkDefault true;
+      # Allow Tailscale traffic and trusted interface
+      trustedInterfaces = [ "tailscale0" ];
+      checkReversePath = lib.mkForce "loose";
+    };
     nameservers = lib.mkDefault [ "8.8.4.4" "8.8.8.8" "1.1.1.1" "9.9.9.9" ];
   };
+  
+  # Tailscale VPN
+  services.tailscale.enable = true;
 
   # Server services
   services = {
