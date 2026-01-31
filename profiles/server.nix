@@ -45,7 +45,7 @@
   # Tailscale VPN
   services.tailscale = {
     enable = true;
-    extraUpFlags = [ "--ssh" ];
+    extraUpFlags = [ "--ssh" "--accept-dns" ];
   };
 
   # Server services
