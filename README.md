@@ -54,6 +54,20 @@ nix-cleanup                                             # Full cleanup
 nix run nixpkgs#nixos-rebuild -- build-vm --flake .#<hostname> --fast  # VM test
 ```
 
+## Deployment
+
+### Phoenix (ARM)
+
+**Remote Build** (Builds on target, fast):
+```bash
+nixos-rebuild --flake .#phoenix-arm --target-host phoenix --build-host phoenix switch --no-reexec -S
+```
+
+**Local Build** (Builds locally & pushes):
+```bash
+nixos-rebuild --flake .#phoenix-arm --target-host phoenix switch --no-reexec
+```
+
 ## Docs
 
 - [Setup](docs/setup.md)
