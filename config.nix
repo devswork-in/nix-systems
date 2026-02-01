@@ -66,6 +66,14 @@ let
       host = "search.${user.domain}";
       port = "8050";
     };
+
+
+
+    openclaw = {
+      enable = true;
+      host = "bots.${user.domain}";
+      port = 18789;
+    };
   };
 
 in
