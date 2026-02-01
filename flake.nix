@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/release-25.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     flake-compat.url = "github:edolstra/flake-compat";
 
@@ -39,8 +40,8 @@
     vicinae = { url = "github:vicinaehq/vicinae"; };
   };
 
-  outputs = { self, nixpkgs, nix-flatpak, nix-snapd, nur, nix-repo-sync
-    , vicinae, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nix-flatpak, nix-snapd, nur
+    , nix-repo-sync, vicinae, ... }@inputs:
     let
       # Extract NixOS version from nixpkgs input URL
       nixosVersion = let
@@ -86,13 +87,13 @@
 
       # Helper function for creating system configurations
       mkSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs inputs nixosVersion flakeRoot;
+        inherit nixpkgs nixpkgs-unstable inputs nixosVersion flakeRoot;
         userConfig = finalUserConfig;
       };
 
       # Helper function for creating desktop system configurations
       mkDesktopSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs inputs nixosVersion flakeRoot;
+        inherit nixpkgs nixpkgs-unstable inputs nixosVersion flakeRoot;
         userConfig = desktopUserConfig;
       };
     in {

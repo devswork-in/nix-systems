@@ -11,5 +11,8 @@
     (if userConfig.services.codeServer.enable then ./code-server.nix else { })
 
     (if userConfig.services.openclaw.enable then ./openclaw.nix else { })
+    (if userConfig.services.windmill.enable then ./windmill.nix else { })
+
+    ./tailscale-dns.nix
   ];
 }

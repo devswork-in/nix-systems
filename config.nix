@@ -74,6 +74,12 @@ let
       host = "bots.${user.domain}";
       port = 18789;
     };
+
+    windmill = {
+      enable = true;
+      host = "windmill.${user.domain}";
+      port = 8001;
+    };
   };
 
 in

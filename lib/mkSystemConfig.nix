@@ -2,7 +2,7 @@
 # Simplifies system creation in flake.nix by providing consistent structure
 # Supports cross-compilation when buildSystem differs from target system
 
-{ nixpkgs, inputs, userConfig, nixosVersion, flakeRoot }:
+{ nixpkgs, nixpkgs-unstable, inputs, userConfig, nixosVersion, flakeRoot }:
 
 { system, modules, hostname, buildSystem ? null }:
 
@@ -11,7 +11,13 @@ let
   isCross = buildSystem != null && buildSystem != system;
 in
 nixpkgs.lib.nixosSystem {
-  specialArgs = { inherit inputs userConfig nixosVersion flakeRoot; };
+  specialArgs = {
+    inherit inputs userConfig nixosVersion flakeRoot;
+    pkgs-unstable = import nixpkgs-unstable {
+      inherit system;
+      config.allowUnfree = true;
+    };
+  };
   # Use nixpkgs.hostPlatform instead of deprecated system parameter
   modules = [
     # Set hostname with mkDefault to allow system-specific override
