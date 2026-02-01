@@ -9,5 +9,7 @@
     (if userConfig.services.jellyfin.enable then ./jellyfin.nix else { })
     (if userConfig.services.nextCloud.enable then ./next-cloud.nix else { })
     (if userConfig.services.codeServer.enable then ./code-server.nix else { })
+
+    (if userConfig.services.openclaw.enable then ./openclaw.nix else { })
   ];
 }
