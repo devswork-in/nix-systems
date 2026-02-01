@@ -19,6 +19,7 @@ in {
       proxyWebsockets = true;
       extraConfig = ''
         allow 100.64.0.0/10;
+        allow fd7a:115c:a1e0::/48;
         allow 127.0.0.1;
         allow ::1;
         deny all;
@@ -41,25 +42,4 @@ in {
       '';
     };
   };
-
-  # Internal DNS for Tailscale Split DNS
-  services.coredns = {
-    enable = true;
-    config = ''
-      ${userConfig.user.domain} {
-        bind 100.72.57.14 127.0.0.1
-        hosts {
-          100.72.57.14 ${domain}
-
-          fallthrough
-        }
-        log
-        errors
-      }
-    '';
-  };
-
-  # Open DNS ports for Tailscale devices to query Phoenix
-  networking.firewall.allowedUDPPorts = [ 53 ];
-  networking.firewall.allowedTCPPorts = [ 53 ];
 }
