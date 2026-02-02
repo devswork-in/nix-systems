@@ -27,6 +27,7 @@
       # Reduce GPU power state transition glitches
       "amdgpu.dcdebugmask=0x10"
       # Modern Standby (S0ix) support - faster wake
+      # NOTE: 'deep' sleep is not supported on this hardware (verified via /sys/power/mem_sleep)
       "mem_sleep_default=s2idle"
     ];
     supportedFilesystems = [ "ntfs-3g" ];
