@@ -34,6 +34,15 @@ in
     };
   };
 
+  # Enable persistent logs to debug freeze/hibernate failures
+  services.journald.extraConfig = "Storage=persistent";
+
+  # Force hibernation after 15min of suspend (default is 2h or battery-based)
+  # This MUST be in sleep.conf, NOT logind.conf
+  systemd.sleep.extraConfig = ''
+    HibernateDelaySec=15min
+  '';
+
   systemd.services.update-resume-offset = {
     description = "Automatically update resume-offset if swapfile offset changes";
     wantedBy = [ "multi-user.target" ];
