@@ -78,6 +78,17 @@
     wantedBy = lib.mkForce [ ]; # Don't start at boot
   };
 
+  # Create symlink for bash in /bin/bash for compatibility with scripts
+  system.activationScripts.create-bin-bash = {
+    text = ''
+      # Ensure /bin/bash exists as a symlink to the installed bash
+      mkdir -p /bin
+      rm -f /bin/bash  # Remove if it exists (whether file or broken symlink)
+      ln -s ${pkgs.bash}/bin/bash /bin/bash
+    '';
+    deps = [ ];
+  };
+
   systemd.timers.nix-repo-sync = {
     wantedBy = [ "timers.target" ];
     timerConfig = {
