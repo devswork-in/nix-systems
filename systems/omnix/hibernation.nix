@@ -36,6 +36,11 @@ in
 
   # Enable persistent logs to debug freeze/hibernate failures
   services.journald.extraConfig = "Storage=persistent";
+  
+  # Ensure the directory exists with correct permissions
+  systemd.tmpfiles.rules = [
+    "d /var/log/journal 2755 root systemd-journal - -"
+  ];
 
   # Force hibernation after 15min of suspend (default is 2h or battery-based)
   # This MUST be in sleep.conf, NOT logind.conf
