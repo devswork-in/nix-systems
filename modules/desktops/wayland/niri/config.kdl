@@ -225,6 +225,7 @@ binds {
     Alt+Shift+F { spawn "livewall-control" "cycle-fit"; }
 
     // Utilities
+    Mod+W { spawn "wallpaper-selector"; }
     Mod+Shift+W { spawn "random-wallpaper"; }
     Mod+Shift+Y { spawn "kitty" "--class" "yt-search" "livewall"; }
     Mod+V { spawn "kitty" "--class" "sshuttle-vpn" "sh" "-c" "exec ~/.local/bin/sshuttle -t phoenix"; }

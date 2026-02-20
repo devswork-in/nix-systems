@@ -44,6 +44,8 @@
     playerctl
     blueman
     swayosd
+    rofi
+    imagemagick
     inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "random-wallpaper" ''
       ${pkgs.procps}/bin/pkill swaybg || true
@@ -51,6 +53,7 @@
       ln -sf "$WALLPAPER" ~/.current_wallpaper
       ${pkgs.swaybg}/bin/swaybg -m fill -i "$WALLPAPER" &
     '')
+    (pkgs.writeShellScriptBin "wallpaper-selector" (builtins.readFile ../../../core/configs/common/scripts/wallpaper-selector))
   ];
 
   # Home Manager configuration
