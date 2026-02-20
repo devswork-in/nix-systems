@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+# wallpaper-selector: Visual wallpaper picker with preview, apply, and delete
+# Uses rofi with image thumbnails from ~/Wallpapers
+
+WALLPAPER_DIR="$HOME/Wallpapers"
+THUMB_DIR="$HOME/.cache/wallpaper-thumbs"
+THUMB_SIZE="256"
+CURRENT_LINK="$HOME/.current_wallpaper"
+
+# Ensure directories exist
+mkdir -p "$THUMB_DIR"
+
+if [ ! -d "$WALLPAPER_DIR" ]; then
+    notify-send "Wallpaper Selector" "Directory $WALLPAPER_DIR does not exist"
+    exit 1
+fi
+
+# Generate/update thumbnails for all wallpapers
+generate_thumbnails() {
+    for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp,bmp}; do
+        [ -f "$img" ] || continue
+        local basename
+        basename=$(basename "$img")
+        local thumb="$THUMB_DIR/$basename"
+        # Only regenerate if source is newer than thumbnail
+        if [ ! -f "$thumb" ] || [ "$img" -nt "$thumb" ]; then
+            magick "$img" -thumbnail "${THUMB_SIZE}x${THUMB_SIZE}^" \
+                -gravity center -background transparent -extent "${THUMB_SIZE}x${THUMB_SIZE}" \
+                "$thumb" 2>/dev/null
+        fi
+    done
+}
+
+# Build rofi entries with image icons
+build_entries() {
+    for img in "$WALLPAPER_DIR"/*.{jpg,jpeg,png,webp,bmp}; do
+        [ -f "$img" ] || continue
+        local basename
+        basename=$(basename "$img")
+        local thumb="$THUMB_DIR/$basename"
+        if [ -f "$thumb" ]; then
+            echo -en "$basename\0icon\x1f$thumb\n"
+        else
+            echo "$basename"
+        fi
+    done
+}
+
+# Count available wallpapers
+count=$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -name '*.jpg' -o -name '*.jpeg' -o -name '*.png' -o -name '*.webp' -o -name '*.bmp' \) 2>/dev/null | wc -l)
+
+if [ "$count" -eq 0 ]; then
+    notify-send "Wallpaper Selector" "No wallpapers found in $WALLPAPER_DIR"
+    exit 1
+fi
+
+# Generate thumbnails (runs fast if cache is warm)
+generate_thumbnails
+
+# Calculate grid dimensions - aim for a nice grid layout
+# rofi shows icons in a grid with -columns
+cols=5
+if [ "$count" -lt 5 ]; then
+    cols="$count"
+fi
+
+# Show rofi wallpaper picker
+selected=$(build_entries | rofi -dmenu \
+    -i \
+    -show-icons \
+    -p "Wallpaper" \
+    -theme-str 'window { width: 950px; background-color: #11111b; border: 2px solid; border-color: #89b4fa; border-radius: 12px; }' \
+    -theme-str 'mainbox { background-color: transparent; padding: 12px; }' \
+    -theme-str 'inputbar { background-color: #1e1e2e; border-radius: 8px; padding: 12px; margin: 0px 0px 12px 0px; text-color: #cdd6f4; }' \
+    -theme-str 'prompt { text-color: #89b4fa; font: "sans-serif bold 12"; }' \
+    -theme-str 'entry { text-color: #cdd6f4; placeholder-color: #6c7086; }' \
+    -theme-str 'listview { background-color: transparent; columns: '"$cols"'; lines: 4; spacing: 12px; }' \
+    -theme-str 'element { orientation: vertical; border-radius: 8px; padding: 8px; }' \
+    -theme-str 'element normal.normal, element alternate.normal { background-color: transparent; text-color: #cdd6f4; }' \
+    -theme-str 'element selected { background-color: #313244; border: 2px solid; border-color: #89b4fa; }' \
+    -theme-str 'element-icon { size: 200px; background-color: transparent; border-radius: 6px; }' \
+    -theme-str 'element-text { background-color: transparent; text-color: inherit; horizontal-align: 0.5; padding: 8px 0px 0px 0px; }' \
+    -theme-str 'element selected element-text { text-color: #89b4fa; font: "sans-serif bold 10"; }' \
+    -kb-remove-char-forward "" \
+    -kb-custom-1 "Delete" \
+    -kb-custom-2 "Alt+d"
+)
+
+rofi_exit_code=$?
+
+# 0 = normal selection (Enter or Double-Click)
+# 1 = escape/cancel
+# 10 = custom keybinding 1 (Delete)
+# 11 = custom keybinding 2 (Alt+d)
+if [ "$rofi_exit_code" -eq 1 ] || [ -z "$selected" ]; then
+    exit 0
+fi
+
+wallpaper_path="$WALLPAPER_DIR/$selected"
+
+if [ ! -f "$wallpaper_path" ]; then
+    notify-send "Wallpaper Selector" "File not found: $selected"
+    exit 1
+fi
+
+# If Delete was pressed (exit code 10 or 11)
+if [ "$rofi_exit_code" -eq 10 ] || [ "$rofi_exit_code" -eq 11 ]; then
+    # Confirm deletion
+    confirm=$(echo -e "Yes, delete\nNo, cancel" | rofi -dmenu \
+        -p "Delete $selected?" \
+        -theme-str 'window { width: 350px; background-color: #11111b; border: 2px solid; border-color: #f38ba8; border-radius: 12px; }' \
+        -theme-str 'mainbox { background-color: transparent; padding: 12px; }' \
+        -theme-str 'inputbar { background-color: #1e1e2e; border-radius: 8px; padding: 12px; margin: 0px 0px 12px 0px; text-color: #cdd6f4; }' \
+        -theme-str 'prompt { text-color: #f38ba8; font: "sans-serif bold 12"; }' \
+        -theme-str 'entry { text-color: #cdd6f4; }' \
+        -theme-str 'listview { background-color: transparent; lines: 2; spacing: 8px; }' \
+        -theme-str 'element { border-radius: 8px; padding: 12px 16px; }' \
+        -theme-str 'element normal.normal, element alternate.normal { background-color: #1e1e2e; text-color: #cdd6f4; }' \
+        -theme-str 'element selected { background-color: #f38ba8; }' \
+        -theme-str 'element-text { background-color: transparent; text-color: inherit; }' \
+        -theme-str 'element selected element-text { text-color: #11111b; font: "sans-serif bold 11"; }' \
+    )
+    if [ "$confirm" = "Yes, delete" ]; then
+        rm -f "$wallpaper_path"
+        rm -f "$THUMB_DIR/$(basename "$wallpaper_path")"
+        notify-send "Wallpaper Deleted" "$selected"
+    fi
+    exit 0
+fi
+
+# Normal selection (Enter) - Apply the wallpaper
+pkill swaybg || true
+ln -sf "$wallpaper_path" "$CURRENT_LINK"
+swaybg -m fill -i "$wallpaper_path" &
+disown
+notify-send "Wallpaper Applied" "$selected" -i "$wallpaper_path"
+
+
