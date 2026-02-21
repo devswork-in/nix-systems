@@ -1,0 +1,141 @@
+#!/bin/sh
+
+# Smart file opener based on MIME type
+# Optimized for Wayland and Kitty
+
+show_help() {
+    echo "v - Smart file opener based on MIME type"
+    echo ""
+    echo "Usage: v [options] <file|url|command>"
+    echo ""
+    echo "  <image>               : preview in kitty icat (prompts for deletion)"
+    echo "  <video/audio>         : opens in mpv"
+    echo "  <pdf>                 : opens in zathura"
+    echo "  <iso>                 : path copied to clipboard (wl-copy)"
+    echo "  <markdown>            : preview using glow"
+    echo "  <vlang source>        : passes to the V lang compiler"
+    echo "  repl | run | install  : V lang commands"
+    echo "  dir/                  : list directory contents"
+    echo "  http(s)://...         : proceeds as get function"
+    echo "  <other>               : opens with \$PAGER / bat / less"
+    echo ""
+    echo "Options:"
+    echo "  -p <file>             : force PAGER preview"
+    echo "  -h, --help            : show this help"
+}
+
+if [ "$#" -eq 0 ]; then
+    show_help
+    exit 0
+fi
+
+ARG="$1"
+
+# Handle flags
+case "$ARG" in
+    -p)
+        shift
+        ${PAGER:-bat} "$@"
+        exit $?
+        ;;
+    -h|--help)
+        show_help
+        exit 0
+        ;;
+esac
+
+# 1. Handle URLs purely by string match
+case "$ARG" in
+    http://*|https://*)
+        get "$@"
+        exit 0
+        ;;
+    # Handle V Lang exact commands (repl/run/install)
+    repl|run|install)
+        command v "$@"
+        exit $?
+        ;;
+esac
+
+# Ensure target exists
+if [ ! -e "$ARG" ]; then
+    echo "Error: '$ARG' does not exist." >&2
+    exit 1
+fi
+
+# 2. Handle Directories 
+if [ -d "$ARG" ]; then
+    case "$ARG" in
+        *[Pp]hoto*|*[Ss]creenshot*|*[Gg]allery*|*[Dd][Cc][Ii][Mm]*|*[Pp]ics*|*[Pp]ictures*|*[Ww]all*)
+            # Show images inside the directory
+            find "$ARG" -maxdepth 1 -type f -exec kitty +kitten icat --align left {} + 2>/dev/null
+            ;;
+        *)
+            echo "Cannot 'cd' from a standalone script. Contents of $ARG:"
+            ls -la "$ARG"
+            ;;
+    esac
+    exit 0
+fi
+
+# 3. Determine MIME type for files
+MIME=$(file --mime-type -b "$ARG" 2>/dev/null)
+
+case "$MIME" in
+    # Images (Kitty kitten icat)
+    image/*)
+        kitty +kitten icat "$ARG"
+        # Interactive delete prompt
+        printf "Delete %s? [y/N]: " "$ARG"
+        read -r ans </dev/tty
+        case "$ans" in
+            [Yy]|[Yy][Ee][Ss]) 
+                rm -f "$ARG"
+                echo "Deleted."
+                ;;
+        esac
+        ;;
+
+    # Media: Videos & Audio
+    video/*|audio/*)
+        mpv "$@" >/dev/null 2>&1 &
+        ;;
+
+    # PDFs
+    application/pdf)
+        zathura "$@" >/dev/null 2>&1 &
+        ;;
+
+    # ISOs
+    application/x-iso9660-image)
+        echo "Copied PATH=$ARG to clipboard"
+        if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+            printf "%s" "$ARG" | wl-copy
+        else
+            printf "%s" "$ARG" | xclip -selection clipboard
+        fi
+        ;;
+
+    # Fallback/Text handling
+    *)
+        # Because MarkDown and VLang often identify as generic "text/plain", 
+        # we fallback to extension checking strictly for those specific text formats.
+        case "$ARG" in
+            *.md|*.MD)
+                glow "$@" -p "${PAGER:-bat}" 2>/dev/null
+                ;;
+            *.v)
+                command v "$@"
+                ;;
+            *)
+                if [ -n "$PAGER" ]; then
+                    $PAGER "$@"
+                elif command -v bat >/dev/null 2>&1; then
+                    bat "$@" 2>/dev/null
+                else
+                    less "$@"
+                fi
+                ;;
+        esac
+        ;;
+esac

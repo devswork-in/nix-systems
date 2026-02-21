@@ -2,7 +2,6 @@
 # This file contains general aliases that can be used across shells
 
 # File management
-alias v="bat"
 alias x="rm -rf"
 
 # Git aliases
