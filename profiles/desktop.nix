@@ -19,6 +19,7 @@
       systemd-boot = {
         enable = lib.mkDefault true;
         memtest86.enable = lib.mkDefault true;
+        configurationLimit = lib.mkDefault 2; # Keep only 2 boot entries
       };
       timeout = lib.mkDefault 0; # Press Esc while booting if needed
       efi.canTouchEfiVariables = lib.mkDefault true;
@@ -53,11 +54,11 @@
   security.allowSimultaneousMultithreading = true;
 
   # Nix garbage collection settings for desktops
-  # Disabled by default to keep more generations during development
+  # Only removes old generations (3d+), current imperative packages are safe
   nix.gc = {
-    automatic = lib.mkDefault false;
+    automatic = lib.mkDefault true;
     dates = lib.mkDefault "weekly";
-    options = lib.mkDefault "--delete-older-than 7d";
+    options = lib.mkDefault "--delete-older-than 3d";
   };
 
   # Hardware clock in local time (useful for dual-boot with Windows)

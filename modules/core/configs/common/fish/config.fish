@@ -1,11 +1,3 @@
-# Source fzf keybindings (Ctrl+R history, Ctrl+T files, Alt+C cd)
-for fzf_path in ~/.nix-profile/share/fzf /run/current-system/sw/share/fzf
-    if test -f $fzf_path/key-bindings.fish
-        source $fzf_path/key-bindings.fish
-        break
-    end
-end
-
 # Source general aliases
 source ~/.config/aliases 2>/dev/null
 
@@ -113,9 +105,6 @@ end
 alias x "rm -rf $argv"
 alias l 'v (ls | fzf )'
 alias d "cd ~/dev"
-
-# Enable direnv
-direnv hook fish | source
 
 
 # Entire CLI shell completion
