@@ -1,7 +1,7 @@
 { lib, ... }:
 
 {
-  services.snap.enable = true;
+  services.snap.enable = false;
 
   # Prevent boot start
   systemd.services.snapd.wantedBy = lib.mkForce [ ];
