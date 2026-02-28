@@ -29,7 +29,7 @@
     kitty
     # remmina
     # jmeter
-    yt-dlp
+    # yt-dlp # pulls in deno which requires local compilation
     ueberzug
     qbittorrent
     picom
