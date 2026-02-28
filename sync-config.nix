@@ -61,11 +61,7 @@ in {
       source = "${nixSystemsRoot}/modules/core/configs/common/gitconfig";
       dest = "~/.gitconfig";
     }
-    {
-      type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/bat";
-      dest = "~/.config/bat";
-    }
+
   ];
 
   # Server-specific sync items
