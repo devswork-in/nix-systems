@@ -8,24 +8,29 @@
     ./mcfly.nix
     ./git.nix
     ./nvim.nix
+    ./fzf.nix
+    ./direnv.nix
   ];
+
+  # Simple programs.X.enable (no extra config needed)
+  programs.htop.enable = true;
+  programs.jq.enable = true;
+  programs.starship = {
+    enable = true;
+    enableFishIntegration = true;
+    enableBashIntegration = true;
+  };
 
   home.packages = with pkgs; [
     wget
-    htop
     github-cli
     nnn
-    starship
     aria2
     libclang
     gcc
     gnumake
-    fzf
     ripgrep
     smartmontools
-    jq
-    direnv
-    eva
     unzip
     fd
     progress
@@ -47,5 +52,6 @@
     tree
     tmux
     lsof
+    eva
   ];
 }
