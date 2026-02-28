@@ -122,7 +122,7 @@ case "$MIME" in
         # we fallback to extension checking strictly for those specific text formats.
         case "$ARG" in
             *.md|*.MD)
-                glow "$@" -p "${PAGER:-bat}" 2>/dev/null
+                glow "$ARG"
                 ;;
             *.v)
                 command v "$@"
