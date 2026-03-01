@@ -5,4 +5,5 @@ result
 modules/core/configs/common/scripts/Hidamari
 modules/core/configs/common/scripts/WebTorrent
 modules/core/configs/common/scripts/cpu-x
+modules/core/configs/common/scripts/entire
 modules/core/configs/common/bat/config
