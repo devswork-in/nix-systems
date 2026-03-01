@@ -80,6 +80,12 @@ let
       host = "windmill.${user.domain}";
       port = 8001;
     };
+
+    leetcode = {
+      enable = true;
+      host = "pg.${user.domain}";
+      port = "8082";
+    };
   };
 
 in

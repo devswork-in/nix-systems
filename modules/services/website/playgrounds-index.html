@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playgrounds - DevsWork</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #e4e4e4;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #00d9ff, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: #8892b0;
+      font-size: 1.1rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 217, 255, 0.5);
+      box-shadow: 0 8px 25px rgba(0, 217, 255, 0.15);
+    }
+
+    .service-card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #64ffda;
+    }
+
+    .service-card p {
+      color: #8892b0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .service-card .path {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(0, 217, 255, 0.1);
+      border-radius: 4px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 0.85rem;
+      color: #00d9ff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #8892b0;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 Playgrounds</h1>
+      <p class="subtitle">Experimental services and sandbox environments</p>
+    </header>
+
+    <main class="services-grid">
+      <a href="/leetcode" class="service-card">
+        <h2>📝 LeetCode</h2>
+        <p>Practice coding problems and prepare for technical interviews.</p>
+        <span class="path">/leetcode</span>
+      </a>
+
+      <!-- Add more services here as they are added -->
+      <!--
+      <a href="/another-service" class="service-card">
+        <h2>🔧 Another Service</h2>
+        <p>Description of the service goes here.</p>
+        <span class="path">/another-service</span>
+      </a>
+      -->
+    </main>
+
+    <footer>
+      <p>Hosted on <a href="https://devswork.in" style="color: #64ffda;">devswork.in</a></p>
+    </footer>
+  </div>
+</body>
+</html>
