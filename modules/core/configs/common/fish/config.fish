@@ -117,4 +117,6 @@ alias d "cd ~/dev"
 
 
 # Entire CLI shell completion
-entire completion fish | source
+if command -q entire
+  entire completion fish | source
+end

@@ -4,7 +4,7 @@ let
   services = userConfig.services;
   domain = userConfig.user.domain;
   tsIp = "100.72.57.14"; # Phoenix Tailscale IP
-  
+
   hosts = [
     (if (services ? openclaw && services.openclaw.enable) then "${tsIp} ${services.openclaw.host}" else "")
     (if (services ? windmill && services.windmill.enable) then "${tsIp} ${services.windmill.host}" else "")

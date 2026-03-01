@@ -4,12 +4,13 @@
 {
   imports = [
     ./bat.nix
-    ./fonts.nix
-    ./mcfly.nix
-    ./git.nix
-    ./nvim.nix
-    ./fzf.nix
     ./direnv.nix
+    ./entire.nix
+    ./fonts.nix
+    ./fzf.nix
+    ./git.nix
+    ./mcfly.nix
+    ./nvim.nix
   ];
 
   # Simple programs.X.enable (no extra config needed)

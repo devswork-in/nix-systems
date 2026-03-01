@@ -32,5 +32,5 @@ let
     };
   };
 in {
-  environment.systemPackages = [ entire ];
+  home.packages = [ entire ];
 }
