@@ -12,7 +12,8 @@
 
     (if userConfig.services.openclaw.enable then ./openclaw.nix else { })
     (if userConfig.services.windmill.enable then ./windmill.nix else { })
-    (if userConfig.services.leetcode.enable then ./leetcode.nix else { })
+    (if userConfig.services.pg.leetcode.enable then ./leetcode.nix else { })
+    (if userConfig.services.pg.planner.enable then ./planner.nix else { })
 
     ./playgrounds-landing.nix
     ./tailscale-dns.nix

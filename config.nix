@@ -81,10 +81,16 @@ let
       port = 8001;
     };
 
-    leetcode = {
-      enable = true;
+    pg = {
       host = "pg.${user.domain}";
-      port = "8082";
+      leetcode = {
+        enable = true;
+        port = "8082";
+      };
+      planner = {
+        enable = true;
+        port = "8083";
+      };
     };
   };
 
