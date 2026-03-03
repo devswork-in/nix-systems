@@ -1,7 +1,8 @@
 { userConfig, ... }:
 
 let
-  leetcode = userConfig.services.leetcode;
+  pg = userConfig.services.pg;
+  leetcode = pg.leetcode;
   httpsSettings = import ./https-settings.nix { inherit userConfig; };
 in
 {
@@ -17,10 +18,10 @@ in
   };
 
   services.nginx.virtualHosts = {
-    "${leetcode.host}" = {
+    "${pg.host}" = {
       inherit (httpsSettings) enableACME forceSSL;
       locations."/leetcode" = {
-        proxyPass = "http://localhost:${leetcode.port}";
+        proxyPass = "http://127.0.0.1:${leetcode.port}/";
         extraConfig = ''
           proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;
