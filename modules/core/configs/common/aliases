@@ -3,6 +3,7 @@
 
 # File management
 alias x="rm -rf"
+alias e="$EDITOR"
 
 # Git aliases
 alias gi="git init; git branch -M main"
