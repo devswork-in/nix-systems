@@ -1,20 +1,19 @@
-{ lib, ... }:
+{ lib, config, ... }:
 
 {
-  services.snap.enable = false;
+  config = {
+    services.snap.enable = lib.mkDefault true;
 
-  # Prevent boot start
-  systemd.services.snapd.wantedBy = lib.mkForce [ ];
+    # Only configure snapd if enabled
+    systemd.services.snapd.wantedBy = lib.mkIf config.services.snap.enable (lib.mkForce [ ]);
+    systemd.sockets.snapd.wantedBy = lib.mkIf config.services.snap.enable (lib.mkForce [ ]);
 
-  # Delay socket activation too (optional but recommended for pure silence)
-  systemd.sockets.snapd.wantedBy = lib.mkForce [ ];
-
-  # Delayed start timer
-  systemd.timers.snapd-delayed = {
-    wantedBy = [ "graphical.target" ];
-    timerConfig = {
-      OnActiveSec = "2m";
-      Unit = "snapd.service";
+    systemd.timers.snapd-delayed = lib.mkIf config.services.snap.enable {
+      wantedBy = [ "graphical.target" ];
+      timerConfig = {
+        OnActiveSec = "2m";
+        Unit = "snapd.service";
+      };
     };
   };
 }
