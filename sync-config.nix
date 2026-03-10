@@ -159,6 +159,11 @@ in {
       source = "${nixSystemsRoot}/modules/desktops/wayland/niri/night-light.frag";
       dest = "~/.config/niri/night-light.frag";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/niri-sidebar/config.toml";
+      dest = "~/.config/niri-sidebar/config.toml";
+    }
     # Shared Wayland component configs
     {
       type = "local";
