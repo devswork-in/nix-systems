@@ -46,6 +46,7 @@
     swayosd
     rofi
     imagemagick
+    (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
     inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "random-wallpaper" ''
       ${pkgs.procps}/bin/pkill swaybg || true
