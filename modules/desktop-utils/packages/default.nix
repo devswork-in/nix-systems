@@ -45,6 +45,7 @@
     android-tools
     efibootmgr
     websocat
+    zathura
     xdotool # Required for fusuma touchpad gestures
     # (kodi.withPackages
     #   (p: with p; [ inputstream-adaptive pvr-iptvsimple inputstreamhelper ]))
