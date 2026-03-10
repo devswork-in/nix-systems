@@ -5,6 +5,6 @@
     ./mysql.nix
     ./flatpak.nix
     ./virtManager.nix
-    ./snaps.nix
+    #./snaps.nix
   ];
 }
