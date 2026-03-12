@@ -48,18 +48,18 @@ in {
       ExecStart = "${picoclaw}/bin/picoclaw gateway";
       # Auto-deploy template config if missing (+ prefix = runs as root)
       ExecStartPre = [
-        "+${pkgs.bash}/bin/bash -c 'if [ ! -f ${configFile} ]; then mkdir -p ${configDir} && cp ${pkgs.writeText "picoclaw-default-config.json" (builtins.toJSON {
+        "+${pkgs.bash}/bin/bash -c 'if [ ! -f ${configFile} ]; then mkdir -p ${configDir} && OPENAI_KEY=$(${pkgs.doppler}/bin/doppler secrets get OPENAI_API_KEY --plain 2>/dev/null || echo \"sk-placeholder\") && cp ${pkgs.writeText "picoclaw-default-config.json" (builtins.toJSON {
           agents.defaults.model = "gpt-4o";
           providers = {
             openai = {
-              api_key = "sk-placeholder-replace-with-real-key";
+              api_key = "$OPENAI_KEY";
             };
           };
           gateway = {
             host = "127.0.0.1";
             port = port;
           };
-        })} ${configFile} && chmod 640 ${configFile} && chown -R picoclaw:picoclaw /var/lib/picoclaw; fi'"
+        })} ${configFile}.tmp && sed \"s/\\$OPENAI_KEY/$OPENAI_KEY/g\" ${configFile}.tmp > ${configFile} && rm ${configFile}.tmp && chmod 640 ${configFile} && chown -R picoclaw:picoclaw /var/lib/picoclaw; fi'"
       ];
       WorkingDirectory = workspaceDir;
       User = "picoclaw";

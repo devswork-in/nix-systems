@@ -3,7 +3,6 @@
 
 export EDITOR="nvim"
 export VISUAL="nvim"
-export GEMINI_API_KEY=PLACEHOLDER_ADD_YOUR_KEY_HERE
 
 # Add user paths
 export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$HOME/.bun/bin:$PATH"

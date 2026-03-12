@@ -6,6 +6,7 @@
     ./networking
     ./command-scheduler/command-scheduler.nix
     ./services.nix
+    ./doppler.nix
   ];
 
   # Additional essential system configurations can go here
