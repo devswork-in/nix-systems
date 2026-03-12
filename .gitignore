@@ -5,6 +5,10 @@ result
 secrets/
 *.secret.nix
 .doppler.yaml
+.venv/
+__pycache__/
+*.pyc
+node_modules/
 modules/core/configs/common/scripts/Hidamari
 modules/core/configs/common/scripts/WebTorrent
 modules/core/configs/common/scripts/cpu-x
