@@ -29,15 +29,6 @@
   # Disable GDM - using TTY auto-login with session-manager
   services.displayManager.gdm.enable = lib.mkForce false;
 
-  # Add NUR overlay for Firefox extensions
-  nixpkgs.overlays = [ inputs.nur.overlays.default ];
-
-  # Ensure home-manager uses the same pkgs with overlays
-  home-manager.useGlobalPkgs = true;
-
-  # Backup existing files instead of failing
-  home-manager.backupFileExtension = "backup";
-
   # System-specific hostname (overrides profile default)
   networking.hostName = "omnix";
 
