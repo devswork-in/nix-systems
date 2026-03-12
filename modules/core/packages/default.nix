@@ -54,5 +54,6 @@
     tmux
     lsof
     eva
+    uv  # Python package manager
   ];
 }
