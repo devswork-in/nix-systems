@@ -6,11 +6,9 @@
   # User systemd service to sync secrets from Doppler
   systemd.user.services.doppler-secrets = {
     description = "Fetch secrets from Doppler";
-    wantedBy = [ "default.target" ];
     
     serviceConfig = {
       Type = "oneshot";
-      RemainAfterExit = true;
       WorkingDirectory = flakeRoot;
     };
     
@@ -21,6 +19,18 @@
       # Fetch secrets from Doppler
       ${pkgs.doppler}/bin/doppler secrets download --no-file --format env > /run/user/$UID/secrets/doppler.env
     '';
+  };
+
+  # Timer to refresh secrets every 5 minutes
+  systemd.user.timers.doppler-secrets = {
+    description = "Refresh Doppler secrets periodically";
+    wantedBy = [ "timers.target" ];
+    
+    timerConfig = {
+      OnBootSec = "1min";
+      OnUnitActiveSec = "5min";
+      Unit = "doppler-secrets.service";
+    };
   };
 
   # Make Doppler secrets available to user shells
