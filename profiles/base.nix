@@ -36,6 +36,9 @@
 
       # Trusted users for nix operations
       trusted-users = [ "root" userConfig.user.name ];
+
+      # Increase download buffer to avoid "buffer is full" warnings
+      download-buffer-size = 524288000;
     };
   };
 
