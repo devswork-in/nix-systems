@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 
 {
   # Ollama service with ROCm GPU acceleration for AMD 780M iGPU
@@ -19,6 +19,7 @@
   
   services.ollama = {
     enable = true;
+    package = pkgs-unstable.ollama;  # 0.17.7 (nixpkgs-unstable), latest stable in nixpkgs
     acceleration = "rocm";  # Enable ROCm GPU acceleration
     
     # GFX version override for AMD 780M (gfx1103 → gfx1100)
