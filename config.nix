@@ -70,7 +70,7 @@ let
 
 
     openclaw = {
-      enable = true;
+      enable = false;
       host = "bots.${user.domain}";
       port = 18789;
     };
