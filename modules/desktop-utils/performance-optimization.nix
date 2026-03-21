@@ -8,29 +8,29 @@ let
   # Profile configurations
   profiles = {
     balanced = {
-      swappiness = 10;
+      swappiness = 60;
       minCpuFreqAC = 400000;
       cpuEPP = "balance_performance";
       compositorPriority = -10;
-      zramPercent = 100;
+      zramPercent = 50;
       enableCpuBoostAC = true;
     };
 
     responsive = {
-      swappiness = 5;
+      swappiness = 100;
       minCpuFreqAC = 1400000;
       cpuEPP = "balance_performance";
       compositorPriority = -15;
-      zramPercent = 100;
+      zramPercent = 50;
       enableCpuBoostAC = true;
     };
 
     quiet = {
-      swappiness = 15;
+      swappiness = 60;
       minCpuFreqAC = 400000;
       cpuEPP = "balance_power";
       compositorPriority = -5;
-      zramPercent = 100;
+      zramPercent = 50;
       enableCpuBoostAC = false;
     };
   };
@@ -272,5 +272,7 @@ in {
     systemd.services.NetworkManager-wait-online.enable =
       mkIf cfg.services.disableNetworkManagerWaitOnline (mkForce false);
 
+    # Enable early out of memory killer for memory hogs like Ollama
+    systemd.oomd.enable = mkDefault true;
   };
 }
