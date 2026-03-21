@@ -37,6 +37,11 @@
       # With this enabled, the GPU can use nearly all available system RAM
       # This is especially beneficial for AMD iGPUs with limited VRAM allocation
       GGML_CUDA_ENABLE_UNIFIED_MEMORY = "ON";
+
+      # Keep models in memory for 15 minutes instead of defaulting to 5 minutes
+      # Prevents aggressive unloading of models between typical API calls
+      # but still frees up system RAM when idle
+      OLLAMA_KEEP_ALIVE = "15m";
     };
   };
   
