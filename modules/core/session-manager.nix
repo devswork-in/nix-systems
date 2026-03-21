@@ -28,6 +28,10 @@
     # services.getty.autologinUser = userConfig.user.name;
 
     # Use greetd for seamless auto-login
+    # Note: Auto-login (`initial_session`) prevents PAM from receiving a password. 
+    # Therefore, secret services like GNOME Keyring cannot be decrypted automatically.
+    # To avoid the "Authentication required" popup, you must manually create a 
+    # keyring with a blank password.
     services.greetd = {
       enable = true;
       settings = {
