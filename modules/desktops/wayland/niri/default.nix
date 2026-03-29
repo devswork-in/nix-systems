@@ -62,7 +62,7 @@
     # Import GTK configuration for theming
     imports = [ ../../../desktop-utils/gtk-config.nix ];
 
-    home.packages = with pkgs; [ niri fuzzel networkmanagerapplet pavucontrol ];
+    home.packages = with pkgs; [ niri networkmanagerapplet pavucontrol ];
 
     # SwayOSD styling
     xdg.configFile."swayosd/style.css".text = ''
