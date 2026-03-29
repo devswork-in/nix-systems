@@ -1,4 +1,4 @@
-{ config, lib, pkgs, userConfig, flakeRoot, ... }:
+{ config, lib, pkgs, userConfig, ... }:
 
 {
   environment.systemPackages = [ pkgs.doppler ];
@@ -9,15 +9,13 @@
     
     serviceConfig = {
       Type = "oneshot";
-      WorkingDirectory = flakeRoot;
     };
     
     script = ''
-      # Create secrets directory
-      mkdir -p /run/user/$UID/secrets
-      
-      # Fetch secrets from Doppler
-      ${pkgs.doppler}/bin/doppler secrets download --no-file --format env > /run/user/$UID/secrets/doppler.env
+      # Fetch secrets from Doppler and write as exportable shell vars
+      mkdir -p $HOME/.config/env
+      ${pkgs.doppler}/bin/doppler secrets download --project nix-systems --config prod --no-file --format env \
+        | ${pkgs.gnused}/bin/sed 's/^/export /' > $HOME/.config/env/doppler.sh
     '';
   };
 
@@ -32,13 +30,4 @@
       Unit = "doppler-secrets.service";
     };
   };
-
-  # Make Doppler secrets available to user shells
-  environment.extraInit = ''
-    if [ -f /run/user/$UID/secrets/doppler.env ]; then
-      set -a
-      source /run/user/$UID/secrets/doppler.env
-      set +a
-    fi
-  '';
 }
