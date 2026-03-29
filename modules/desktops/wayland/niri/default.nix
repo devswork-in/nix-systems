@@ -49,7 +49,10 @@
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
     inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "random-wallpaper" ''
+      # Kill any existing wallpaper processes (static and live)
       ${pkgs.procps}/bin/pkill swaybg || true
+      ${pkgs.procps}/bin/pkill mpvpaper || true
+      ${pkgs.procps}/bin/pkill mpv || true
       WALLPAPER=$(find ~/Wallpapers -type f \( -name '*.jpg' -o -name '*.png' \) | ${pkgs.coreutils}/bin/shuf -n 1)
       ln -sf "$WALLPAPER" ~/.current_wallpaper
       ${pkgs.swaybg}/bin/swaybg -m fill -i "$WALLPAPER" &
