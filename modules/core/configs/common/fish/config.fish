@@ -21,7 +21,7 @@ end
 # Hierarchy: Common -> Desktop/Server -> System (Hostname)
 # Use foreign-env (fenv) to source bash scripts directly
 if test -d ~/.config/env
-    for target in common desktop server (hostname)
+    for target in common desktop server (hostname) doppler
         set -l env_file ~/.config/env/$target.sh
         if test -f $env_file
             fenv source $env_file

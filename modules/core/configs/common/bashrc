@@ -13,7 +13,7 @@ fi
 # Hierarchy: Common -> Desktop/Server -> System (Hostname)
 if [ -d "$HOME/.config/env" ]; then
     HOSTNAME=$(hostname)
-    for target in "common" "desktop" "server" "$HOSTNAME"; do
+    for target in "common" "desktop" "server" "$HOSTNAME" "doppler"; do
         env_file="$HOME/.config/env/$target.sh"
         [ -f "$env_file" ] && source "$env_file"
     done
