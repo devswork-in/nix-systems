@@ -151,7 +151,7 @@ in {
       "vm.dirty_background_ratio" = mkDefault 5;
       "vm.dirty_writeback_centisecs" = mkDefault 1500;
       "vm.dirty_expire_centisecs" = mkDefault 3000;
-      "vm.vfs_cache_pressure" = mkDefault 125;
+      "vm.vfs_cache_pressure" = mkDefault 50;
       "vm.compaction_proactiveness" = mkDefault 20;
       "vm.watermark_scale_factor" = mkDefault 125;
 
@@ -223,7 +223,7 @@ in {
           Type = "oneshot";
           RemainAfterExit = true;
           ExecStart =
-            "${pkgs.bash}/bin/bash -c 'sleep 2; compositor_pid=$(${pkgs.procps}/bin/pgrep mutter || ${pkgs.procps}/bin/pgrep gnome-shell || ${pkgs.procps}/bin/pgrep kwin_wayland || ${pkgs.procps}/bin/pgrep sway || true); if [ -n \"$compositor_pid\" ]; then ${pkgs.util-linux}/bin/renice -n ${
+            "${pkgs.bash}/bin/bash -c 'sleep 2; compositor_pid=$(${pkgs.procps}/bin/pgrep niri || ${pkgs.procps}/bin/pgrep mutter || ${pkgs.procps}/bin/pgrep gnome-shell || ${pkgs.procps}/bin/pgrep kwin_wayland || ${pkgs.procps}/bin/pgrep sway || true); if [ -n \"$compositor_pid\" ]; then ${pkgs.util-linux}/bin/renice -n ${
               toString activeProfile.compositorPriority
             } -p $compositor_pid || true; echo \"Compositor priority boosted to ${
               toString activeProfile.compositorPriority
@@ -244,12 +244,12 @@ in {
 
     # TLP integration - override CPU frequency settings based on profile
     services.tlp.settings = {
-      CPU_SCALING_MIN_FREQ_ON_AC = if cfg.thermal.customMinFreqAC != null then
+      CPU_SCALING_MIN_FREQ_ON_AC = mkForce (if cfg.thermal.customMinFreqAC != null then
         cfg.thermal.customMinFreqAC
       else
-        activeProfile.minCpuFreqAC;
-      CPU_ENERGY_PERF_POLICY_ON_AC = activeProfile.cpuEPP;
-      CPU_BOOST_ON_AC = if activeProfile.enableCpuBoostAC then 1 else 0;
+        activeProfile.minCpuFreqAC);
+      CPU_ENERGY_PERF_POLICY_ON_AC = mkForce activeProfile.cpuEPP;
+      CPU_BOOST_ON_AC = mkForce (if activeProfile.enableCpuBoostAC then 1 else 0);
     };
 
     # Example systemd service resource limits
