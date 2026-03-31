@@ -72,6 +72,6 @@
   # Enable performance optimizations with balanced profile
   performance-optimization = {
     enable = true;
-    profile = "balanced"; # Options: "balanced", "responsive", "quiet"
+    profile = "responsive"; # Options: "balanced", "responsive", "quiet"
   };
 }

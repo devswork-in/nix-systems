@@ -18,7 +18,7 @@
     enable = true;
     autoLock = true; # Auto-lock on Niri startup
   };
-  wayland.hypridle.enable = true;
+  wayland.hypridle.enable = false; # Disabled: crash-loops under niri, user locks manually + lid-close hibernation
   wayland.waybar.enable = true;
   wayland.swaync.enable = true;
 
