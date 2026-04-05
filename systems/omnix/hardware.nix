@@ -47,22 +47,12 @@
     cpu.amd.updateMicrocode =
       lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-    # AMD GPU configuration - ROCm-enabled for AMD 780M iGPU
-    # Supports GPU-accelerated compute workloads (Ollama/LLM inference, AI/ML, Blender, etc.)
-    # Mesa RADV (Vulkan), OpenGL, and VA-API are included automatically
+    # AMD GPU configuration - ROCm handled by ollama.nix (ollama-rocm)
+    # Removed redundant rocmPackages to avoid duplicate ROCm stack in /nix/store
     graphics = {
       enable = true;
       enable32Bit = true;
-      # ROCm packages for GPU compute support
-      extraPackages = with pkgs; [
-        rocmPackages.clr.icd # OpenCL ICD loader
-        rocmPackages.clr # ROCm Compute Language Runtime (HIP/OpenCL)
-      ];
     };
-
-    # Enable OpenCL system-wide for ROCm compute workloads
-    # Required for Ollama GPU acceleration with AMD 780M (gfx1103)
-    amdgpu.opencl.enable = true;
 
     #pulseaudio = {
     #  enable = true;
@@ -79,8 +69,6 @@
     vulkan-tools # Check Vulkan: vulkaninfo
     clinfo # Check OpenCL: clinfo
     libva-utils # Check VA-API: vainfo
-    rocmPackages.rocminfo # ROCm system information
-    rocmPackages.rocm-smi # ROCm System Management Interface
 
     # Monitoring tools
     radeontop # Monitor AMD GPU usage
@@ -105,6 +93,7 @@
   };
 
   # Kernel optimizations for better responsiveness and app launch speed
+  # These intentionally override performance-optimization.nix defaults (override flow)
   boot.kernel.sysctl = {
     # Improve system responsiveness under load
     "vm.swappiness" = 10; # Reduce swap usage (prefer RAM)

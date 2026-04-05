@@ -180,11 +180,10 @@ in {
     # Boot parameter optimizations
     boot.kernelParams = mkIf cfg.kernel.enableBootOptimizations ([
       "transparent_hugepage=madvise"
-      "nowatchdog"
-      "nmi_watchdog=0"
+      "nowatchdog" # disables all watchdogs (includes nmi_watchdog)
       "libahci.ignore_sss=1" # Ignore staggered spin-up (faster SSD boot)
       "no_timer_check" # Don't check timers (faster boot)
-      "amdgpu.ppfeaturemask=0xffffffff" # Unlock AMD GPU power features for CoreCtrl/GameMode
+      # amdgpu.ppfeaturemask set in hardware.nix per-system
     ] ++ optional cfg.kernel.disableMitigations "mitigations=off");
 
     # Use zstd compression for initrd (faster decompression)
