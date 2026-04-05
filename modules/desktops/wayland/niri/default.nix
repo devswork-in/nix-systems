@@ -47,7 +47,7 @@
     rofi
     imagemagick
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
-    inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.default
+    (pkgs.callPackage ../../../core/packages/vicinae.nix {})
     (pkgs.writeShellScriptBin "random-wallpaper" ''
       # Kill any existing wallpaper processes (static and live)
       ${pkgs.procps}/bin/pkill swaybg || true

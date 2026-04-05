@@ -36,12 +36,10 @@
       url = "github:Creator54/nix-repo-sync";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    vicinae = { url = "github:vicinaehq/vicinae"; };
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nix-flatpak, nix-snapd, nur
-    , nix-repo-sync, vicinae, ... }@inputs:
+    , nix-repo-sync, ... }@inputs:
     let
       # Extract NixOS version from nixpkgs input URL
       nixosVersion = let

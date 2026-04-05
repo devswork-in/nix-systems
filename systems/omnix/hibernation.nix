@@ -35,7 +35,8 @@ in
   };
 
   # Enable persistent logs to debug freeze/hibernate failures
-  services.journald.extraConfig = "Storage=persistent";
+  # (journal size limit set in desktop-utils/services.nix)
+  services.journald.storage = "persistent";
   
   # Ensure the directory exists with correct permissions
   systemd.tmpfiles.rules = [

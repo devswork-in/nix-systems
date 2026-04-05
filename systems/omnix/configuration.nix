@@ -39,7 +39,7 @@
   services.tailscale.enable = true;
 
   # System-specific packages
-  environment.systemPackages = with pkgs; [ amdgpu_top gparted ntfs3g ];
+  environment.systemPackages = with pkgs; [ gparted ntfs3g ];
 
   # Performance optimizations for faster app launches
   systemd.services = {
@@ -51,6 +51,7 @@
   services.fstrim.enable = true;
 
   # Enable QEMU binfmt emulation for cross-architecture builds (e.g., aarch64)
+  # Required for building phoenix-arm (aarch64-linux) images on omnix (x86_64-linux)
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   # Fix for "sudo: PAM account management error" during boot
