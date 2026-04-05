@@ -52,6 +52,9 @@
     #ref https://discourse.nixos.org/t/google-chrome-not-working-after-recent-nixos-rebuild/43746/8
     google-chrome
 
+    # LLM token optimization proxy
+    (pkgs.callPackage ../../core/packages/rtk.nix {})
+
     # Polkit authentication agent
     pantheon.pantheon-agent-polkit
   ];

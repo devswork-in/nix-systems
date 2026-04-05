@@ -5,5 +5,8 @@
 
     # Force RADV over AMDVLK if both are present (RADV is better for modern cards)
     AMD_VULKAN_ICD = "RADV";
+
+    # Disable rtk telemetry
+    RTK_TELEMETRY_DISABLED = "1";
   };
 }

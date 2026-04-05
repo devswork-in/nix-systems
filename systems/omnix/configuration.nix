@@ -14,6 +14,7 @@
 
     # Core session management
     ../../modules/core/session-manager.nix
+    ../../modules/core/services/rtk-setup.nix
 
     # Addon modules
     ../../modules/services
