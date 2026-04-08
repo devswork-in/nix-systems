@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Increase nightlight warmth (lower temperature = warmer/dimmer)
+# Decrements temperature by 300K
+
+STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/nightlight-temp"
+BASE_NIGHT_TEMP=4000
+BASE_DAY_TEMP=5500
+STEP=300
+MIN_TEMP=2000
+
+# Read current offset (default 0)
+offset=$(cat "$STATE_FILE" 2>/dev/null || echo "0")
+new_offset=$((offset - STEP))
+
+# Clamp to minimum
+current_night=$((BASE_NIGHT_TEMP + new_offset))
+if [ "$current_night" -lt "$MIN_TEMP" ]; then
+    new_offset=$((MIN_TEMP - BASE_NIGHT_TEMP))
+fi
+
+echo "$new_offset" > "$STATE_FILE"
+nightlight-restart
+
+notify-send "Night Light" "Warmer: ${current_night}K" -i display-brightness-symbolic -h string:x-canonical-private-synchronous:nightlight
