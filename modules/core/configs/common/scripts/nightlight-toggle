@@ -3,30 +3,59 @@
 # Unified Nightlight Toggle Script
 # Works across Wayland (wlsunset) and X11 (gammastep)
 
+PID_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/nightlight-pid"
+
 if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
     SERVICE="wlsunset.service"
+    BINARY="wlsunset"
 else
-    # Fallback to gammastep for X11/Other
     SERVICE="gammastep.service"
+    BINARY="gammastep"
 fi
+
+stop_nightlight() {
+    # Kill via tracked PID first (cleanest)
+    old_pid=$(cat "$PID_FILE" 2>/dev/null)
+    if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
+        kill "$old_pid" 2>/dev/null
+    fi
+    # Fallback: kill any remaining instances
+    pkill -x "$BINARY" 2>/dev/null
+    systemctl --user stop "$SERVICE" 2>/dev/null
+    rm -f "$PID_FILE"
+}
+
+start_nightlight() {
+    nightlight-restart
+}
 
 case "$1" in
     status)
-        systemctl --user is-active "$SERVICE" >/dev/null && echo "true" || echo "false"
+        old_pid=$(cat "$PID_FILE" 2>/dev/null)
+        if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
+            echo "true"
+        elif pgrep -x "$BINARY" >/dev/null 2>&1; then
+            echo "true"
+        else
+            echo "false"
+        fi
         ;;
     on)
-        systemctl --user start "$SERVICE"
+        start_nightlight
+        notify-send "Night Light" "Enabled" -i display-brightness-symbolic -h string:x-canonical-private-synchronous:nightlight
         ;;
     off)
-        systemctl --user stop "$SERVICE"
+        stop_nightlight
+        notify-send "Night Light" "Disabled" -i display-brightness-symbolic -h string:x-canonical-private-synchronous:nightlight
         ;;
     *)
         # Toggle
-        if systemctl --user is-active "$SERVICE" >/dev/null; then
-            systemctl --user stop "$SERVICE"
+        old_pid=$(cat "$PID_FILE" 2>/dev/null)
+        if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null || pgrep -x "$BINARY" >/dev/null 2>&1; then
+            stop_nightlight
             notify-send "Night Light" "Disabled" -i display-brightness-symbolic -h string:x-canonical-private-synchronous:nightlight
         else
-            systemctl --user start "$SERVICE"
+            start_nightlight
             notify-send "Night Light" "Enabled" -i display-brightness-symbolic -h string:x-canonical-private-synchronous:nightlight
         fi
         ;;

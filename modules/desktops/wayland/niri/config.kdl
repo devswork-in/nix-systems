@@ -267,6 +267,8 @@ binds {
     XF86AudioPrev { spawn "playerctl" "previous"; }
 
     Mod+N { spawn "nightlight-toggle"; }
+    Mod+Shift+N { spawn "nightlight-warmer"; }
+    Mod+Ctrl+N { spawn "nightlight-cooler"; }
 }
 
 // Spawn programs at startup

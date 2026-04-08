@@ -27,7 +27,11 @@ in
   };
 
   config = lib.mkIf config.nightlight.enable {
-    home-manager.users."${userConfig.user.name}" = { ... }: {
+    home-manager.users."${userConfig.user.name}" = { pkgs, ... }: {
+      # Add wlsunset/gammastep to user PATH so toggle scripts can find them
+      home.packages = lib.optionals isWayland [ pkgs.wlsunset ]
+        ++ lib.optionals isX11 [ pkgs.gammastep ];
+
       # Backend for Wayland (Niri, Hyprland, Sway, etc.)
       services.wlsunset = lib.mkIf isWayland {
         enable = true;
@@ -42,17 +46,17 @@ in
       # Backend for X11 (DWM, GNOME, etc.)
       services.gammastep = lib.mkIf isX11 {
         enable = true;
-        tray = false; # Disable tray indicator - we use our own toggle
+        tray = false;
         provider = "manual";
         latitude = latitudeNum;
         longitude = longitudeNum;
         temperature = {
           day = dayTemp;
-          night = nightTemp + 300; # Slightly warmer for X11
+          night = nightTemp + 300;
         };
       };
 
-      # Prevent auto-start via systemd - controlled by toggle script
+      # Prevent auto-start via systemd - controlled by toggle scripts
       systemd.user.services = lib.mkMerge [
         (lib.mkIf isWayland {
           wlsunset.Install.WantedBy = lib.mkForce [ ];

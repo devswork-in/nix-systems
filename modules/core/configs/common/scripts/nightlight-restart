@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Internal: Restart wlsunset/gammastep with current temperature offset
+# Clean single-instance with PID tracking
+
+STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/nightlight-temp"
+PID_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/nightlight-pid"
+BASE_NIGHT_TEMP=4000
+BASE_DAY_TEMP=5500
+LAT="12.9"
+LON="77.5"
+
+offset=$(cat "$STATE_FILE" 2>/dev/null || echo "0")
+night_temp=$((BASE_NIGHT_TEMP + offset))
+day_temp=$((BASE_DAY_TEMP + offset))
+
+# Kill tracked PID (no sleep — immediate handover)
+old_pid=$(cat "$PID_FILE" 2>/dev/null)
+[ -n "$old_pid" ] && kill "$old_pid" 2>/dev/null
+
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    wlsunset -l "$LAT" -L "$LON" -t "$night_temp" -T "$day_temp" &
+else
+    gammastep -l "$LAT:$LON" -t "$night_temp:$day_temp" &
+fi
+echo $! > "$PID_FILE"
+disown
+
+# Clean up any orphaned instances (not our new PID)
+new_pid=$(cat "$PID_FILE")
+for pid in $(pgrep -x wlsunset 2>/dev/null; pgrep -x gammastep 2>/dev/null); do
+    [ "$pid" != "$new_pid" ] && kill "$pid" 2>/dev/null
+done
