@@ -71,6 +71,51 @@
   # Hardware clock in local time (useful for dual-boot with Windows)
   time.hardwareClockInLocalTime = true;
 
+  # Readahead service - pre-loads common app files into page cache at boot
+  services.readahead.enable = lib.mkDefault true;
+  services.readahead.fileList = lib.mkDefault [
+    # Shell and terminal tools
+    "/run/current-system/sw/bin/fish"
+    "/run/current-system/sw/bin/starship"
+    "/run/current-system/sw/bin/bat"
+    "/run/current-system/sw/bin/fzf"
+    "/run/current-system/sw/bin/rg"
+    # Editors and IDEs
+    "/run/current-system/sw/bin/nvim"
+    # System utilities
+    "/run/current-system/sw/bin/git"
+    "/run/current-system/sw/bin/htop"
+    "/run/current-system/sw/bin/tmux"
+    # Desktop apps (system-wide)
+    "/run/current-system/sw/bin/kitty"
+    "/run/current-system/sw/bin/niri"
+    "/run/current-system/sw/bin/vicinae"
+    "/run/current-system/sw/bin/zen-browser"
+    "/run/current-system/sw/bin/nautilus"
+    "/run/current-system/sw/bin/zathura"
+  ];
+
+  # Nix store pre-warm - warms store paths for frequently-used apps
+  services.nix-store-prewarm.enable = lib.mkDefault true;
+  services.nix-store-prewarm.packages = lib.mkDefault (with pkgs; [
+    fish
+    starship
+    neovim
+    git
+    kitty
+    niri
+    vicinae
+    google-chrome
+    bat
+    fzf
+    ripgrep
+    htop
+    tmux
+    nautilus
+    zathura
+  ]);
+  services.nix-store-prewarm.delay = lib.mkDefault 15; # Wait 15s after boot
+
   # Configuration sync service (common + desktop syncs)
   services.nix-repo-sync = let
     syncConfig = import ../sync-config.nix {

@@ -17,7 +17,7 @@ let
     };
 
     responsive = {
-      swappiness = 100;
+      swappiness = 60;
       minCpuFreqAC = 1400000;
       cpuEPP = "balance_performance";
       compositorPriority = -15;
@@ -154,6 +154,8 @@ in {
       "vm.vfs_cache_pressure" = mkDefault 50;
       "vm.compaction_proactiveness" = mkDefault 20;
       "vm.watermark_scale_factor" = mkDefault 125;
+      "vm.min_free_kbytes" = mkDefault 131072; # 128MB reserved for critical kernel allocs
+      "vm.page-cluster" = mkDefault 0; # Read single pages from zram (faster than default 3-page clusters)
 
       # Network Stack Optimization
       "net.ipv4.tcp_congestion_control" = mkDefault "bbr";
@@ -169,17 +171,15 @@ in {
       # Filesystem and I/O
       # Note: inotify settings are already set by NixOS graphical-desktop module
       "fs.file-max" = mkDefault 2097152;
+      "fs.nr_open" = mkDefault 2147483584; # Current kernel maximum (2^31 - 64)
 
       # Kernel Scheduler Tuning
-      "kernel.sched_migration_cost_ns" = mkDefault 500000;
       "kernel.sched_autogroup_enabled" = mkDefault 1;
-      "kernel.sched_wakeup_granularity_ns" = mkDefault 1000000;
-      "kernel.sched_min_granularity_ns" = mkDefault 1000000;
     };
 
     # Boot parameter optimizations
     boot.kernelParams = mkIf cfg.kernel.enableBootOptimizations ([
-      "transparent_hugepage=madvise"
+      "transparent_hugepage=always"
       "nowatchdog" # disables all watchdogs (includes nmi_watchdog)
       "libahci.ignore_sss=1" # Ignore staggered spin-up (faster SSD boot)
       "no_timer_check" # Don't check timers (faster boot)
@@ -211,6 +211,27 @@ in {
       algorithm = mkForce "zstd"; # Use zstd for better compression ratio
       memoryPercent = mkForce activeProfile.zramPercent;
       priority = mkForce 10; # Higher priority than default
+    };
+
+    # KSM (Kernel Samepage Merging) - deduplicate identical memory pages
+    # KSM is controlled via /sys/kernel/mm/ksm/ not sysctl
+    systemd.services.ksm-enable = mkIf cfg.kernel.enableSysctlOptimizations {
+      description = "Enable Kernel Samepage Merging (KSM) for memory deduplication";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "ksm-enable" ''
+          # Enable KSM if the kernel supports it (not all do, e.g. VMs without nested virtualization)
+          if [ -f /sys/kernel/mm/ksm/run ]; then
+            echo 1 > /sys/kernel/mm/ksm/run || true
+            echo 256 > /sys/kernel/mm/ksm/max_page_sharing || true
+            echo "KSM enabled"
+          else
+            echo "KSM not available on this kernel, skipping"
+          fi
+        '';
+      };
     };
 
     # Desktop environment optimizations - compositor priority boosting
@@ -271,7 +292,20 @@ in {
     systemd.services.NetworkManager-wait-online.enable =
       mkIf cfg.services.disableNetworkManagerWaitOnline (mkForce false);
 
-    # Enable early out of memory killer for memory hogs like Ollama
+    # Enable early OOM killer via systemd.oomd
     systemd.oomd.enable = mkDefault true;
+
+    # EarlyOOM - userspace OOM killer with aggressive thresholds
+    # Kills memory hogs before the kernel hard-lockup triggers
+    # Note: earlyoom 1.8.2 doesn't support --prefer/--avoid, so it uses default
+    # oom_score_adj logic (targets highest-scoring process, usually the memory hog)
+    services.earlyoom = {
+      enable = mkDefault true;
+      freeMemThreshold = mkDefault 2; # SIGTERM at 2% free (default 10%)
+      extraArgs = [
+        "-M 256000,128000" # SIGTERM at 256MB free, SIGKILL at 128MB free
+        "-n" # Desktop notifications via dbus
+      ];
+    };
   };
 }
