@@ -36,6 +36,16 @@
       # Automatically optimize store by hard-linking identical files
       auto-optimise-store = true;
 
+      # Don't keep derivations after builds — saves store space and speeds path resolution
+      keep-derivations = false;
+
+      # Don't keep build outputs — reduces store bloat over time
+      keep-outputs = false;
+
+      # Optimize store by checking for duplicates more aggressively
+      min-free = lib.mkDefault (1 * 1024 * 1024 * 1024); # 1GB — triggers GC when below
+      max-free = lib.mkDefault (50 * 1024 * 1024 * 1024); # 50GB — stops GC when above
+
       # Trusted users for nix operations
       trusted-users = [ "root" userConfig.user.name ];
 
@@ -70,6 +80,23 @@
 
   # Default locale (can be overridden per-system)
   i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
+
+  # Journald optimization - rate limiting to reduce I/O overhead
+  # Prevents log flooding from consuming disk I/O bandwidth
+  services.journald = {
+    rateLimitBurst = lib.mkDefault 500; # Messages per interval (default 200)
+    rateLimitInterval = lib.mkDefault "30s"; # Rate limit window (default 30s)
+    extraConfig = lib.mkDefault ''
+      # Compress large journal entries
+      Compress=yes
+      # Limit journal size to 100MB (desktop) / 50MB (server)
+      SystemMaxUse=100M
+      # Keep journals for max 1 week
+      MaxRetentionSec=1week
+      # Forward critical messages only to console
+      ForwardToConsole=no
+    '';
+  };
 
   # System state version (derived from flake nixpkgs input)
   system.stateVersion = nixosVersion;
