@@ -76,9 +76,16 @@ let
     };
 
     windmill = {
-      enable = true;
+      enable = false;
       host = "windmill.${user.domain}";
       port = 8001;
+    };
+
+    loomwork = {
+      enable = true;
+      host = "loomwork.${user.domain}";
+      apiHost = "api.loomwork.${user.domain}";
+      port = 8080;
     };
 
     pg = {
