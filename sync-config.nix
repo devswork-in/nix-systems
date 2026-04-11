@@ -222,6 +222,19 @@ in {
     dest = "~/.config/env/omnix.sh";
   }];
 
+  # Phoenix-specific sync items
+  phoenix = [
+    {
+      type = "git";
+      source = "git@github.com:devswork-in/loomwork.git";
+      dest = "~/loomwork";
+      postSync = if pkgs != null then
+        "export PATH=${pkgs.git}/bin:${pkgs.docker}/bin:${pkgs.docker-compose}/bin:${pkgs.just}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin:${pkgs.curl}/bin:/run/current-system/sw/bin:$PATH && cd ~/loomwork && git submodule update --init --remote --force --recursive && (just ps prod 2>/dev/null | grep -q Up && just --shell /bin/bash deploy prod || just --shell /bin/bash up prod)"
+      else
+        "cd ~/loomwork && git submodule update --init --remote --force --recursive && (just ps prod 2>/dev/null | grep -q Up && just deploy prod || just up prod)";
+    }
+  ];
+
   # DWM-specific sync items (Imported by DWM module)
   dwm = [
     {

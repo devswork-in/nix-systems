@@ -12,6 +12,7 @@
 
     (if userConfig.services.openclaw.enable then ./openclaw.nix else { })
     (if userConfig.services.windmill.enable then ./windmill.nix else { })
+    (if userConfig.services.loomwork.enable then ./loomwork.nix else { })
     (if userConfig.services.pg.leetcode.enable then ./leetcode.nix else { })
     (if userConfig.services.pg.planner.enable then ./planner.nix else { })
 

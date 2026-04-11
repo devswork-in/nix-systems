@@ -111,8 +111,8 @@
           [Desktop Entry]
           Type=Application
           Exec=${
-            pkgs.callPackage ../../core/packages/vicinae.nix {}
-          }/bin/vicinae server
+            pkgs.callPackage ../../core/packages/vicinae-launch.nix {}
+          }/bin/vicinae-launch server
           Hidden=false
           NoDisplay=false
           X-GNOME-Autostart-enabled=true
@@ -366,8 +366,8 @@
           {
             name = "Launch Vicinae";
             command = "${
-                pkgs.callPackage ../../core/packages/vicinae.nix {}
-              }/bin/vicinae toggle";
+                pkgs.callPackage ../../core/packages/vicinae-launch.nix {}
+              }/bin/vicinae-launch toggle";
             binding = "<Super>slash";
           };
 
@@ -579,6 +579,7 @@
       rofi
       pop-launcher
       (pkgs.callPackage ../../core/packages/vicinae.nix {})
+      (pkgs.callPackage ../../core/packages/vicinae-launch.nix {})
     ];
 
     # Apply overlay for panel-free extension v10

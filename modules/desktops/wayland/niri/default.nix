@@ -48,6 +48,7 @@
     imagemagick
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
     (pkgs.callPackage ../../../core/packages/vicinae.nix {})
+    (pkgs.callPackage ../../../core/packages/vicinae-launch.nix {})
     (pkgs.writeShellScriptBin "random-wallpaper" ''
       # Kill any existing wallpaper processes (static and live)
       ${pkgs.procps}/bin/pkill swaybg || true

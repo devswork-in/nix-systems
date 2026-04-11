@@ -136,8 +136,8 @@ binds {
     Alt+Shift+Tab { focus-column-left-or-last; }
 
     // Application launcher - Vicinae
-    Mod+Slash { spawn "sh" "-c" "vicinae toggle"; }
-    Mod+C { spawn "sh" "-c" "vicinae deeplink vicinae://extensions/vicinae/clipboard/history"; }
+    Mod+Slash { spawn "sh" "-c" "vicinae-launch toggle"; }
+    Mod+C { spawn "sh" "-c" "vicinae-launch deeplink vicinae://extensions/vicinae/clipboard/history"; }
 
     // Local scripts launcher
     Alt+Return { spawn "sh" "-c" "selected_script=$(ls ~/.local/bin | rofi -dmenu) && bash ~/.local/bin/$selected_script"; }
@@ -277,7 +277,7 @@ spawn-at-startup "waybar"
 spawn-at-startup "swaync"
 // spawn-at-startup "nm-applet" "--indicator"
 // spawn-at-startup "blueman-applet"
-spawn-at-startup "vicinae" "server"
+spawn-at-startup "vicinae-launch" "server"
 spawn-at-startup "swayosd-server"
 spawn-at-startup "random-wallpaper"
 spawn-at-startup "nightlight-toggle" "on"
