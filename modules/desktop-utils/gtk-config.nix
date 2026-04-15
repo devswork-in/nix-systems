@@ -38,7 +38,11 @@ in
   };
 
   # Set consistent GTK theme variable
-  home.sessionVariables = { GTK_THEME = themeName; };
+  home.sessionVariables = { 
+    GTK_THEME = themeName;
+    XCURSOR_THEME = "Bibata-Modern-Ice";
+    XCURSOR_SIZE = "24";
+  };
 
   # GNOME interface settings that complement GTK
   dconf.settings = {

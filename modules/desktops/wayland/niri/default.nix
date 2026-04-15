@@ -44,6 +44,7 @@
     swayosd
     rofi
     imagemagick
+    (pkgs.callPackage ../../../core/packages/swiv.nix {})
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
     inputs.walker.packages.${pkgs.system}.default
     (pkgs.writeShellScriptBin "random-wallpaper" ''
@@ -56,6 +57,7 @@
       ${pkgs.swaybg}/bin/swaybg -m fill -i "$WALLPAPER" &
     '')
     (pkgs.writeShellScriptBin "wallpaper-selector" (builtins.readFile ../../../core/configs/common/scripts/wallpaper-selector))
+    inputs.livewall.packages.${pkgs.system}.default
   ];
 
   # Home Manager configuration
