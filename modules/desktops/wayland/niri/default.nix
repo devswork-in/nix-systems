@@ -34,7 +34,7 @@
   environment.systemPackages = with pkgs; [
     imv
     wlr-randr
-    flameshot
+    # flameshot
     gromit-mpx
     screenkey
     swaybg
