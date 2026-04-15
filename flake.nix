@@ -36,10 +36,17 @@
       url = "github:Creator54/nix-repo-sync";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    elephant.url = "github:abenz1267/elephant";
+    walker = {
+      url = "github:abenz1267/walker";
+      inputs.elephant.follows = "elephant";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nix-flatpak, nix-snapd, nur
-    , nix-repo-sync, ... }@inputs:
+    , nix-repo-sync, walker, elephant, ... }@inputs:
     let
       # Extract NixOS version from nixpkgs input URL
       nixosVersion = let

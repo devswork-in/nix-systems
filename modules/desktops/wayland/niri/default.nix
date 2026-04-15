@@ -5,20 +5,18 @@
   # Import common Wayland components and Niri-specific modules
   imports = [
     ../common/environment.nix
-    ../common/hyprlock
-    ../common/hypridle
+    ../common/swaylock.nix
     ../common/waybar
     ../common/swaync
     ./environment.nix
     ./session-start.nix
+    ../../../core/packages/walker.nix
   ];
 
   # Enable shared Wayland components
-  wayland.hyprlock = {
+  wayland.swaylock = {
     enable = true;
-    autoLock = true; # Auto-lock on Niri startup
   };
-  wayland.hypridle.enable = false; # Disabled: crash-loops under niri, user locks manually + lid-close hibernation
   wayland.waybar.enable = true;
   wayland.swaync.enable = true;
 
@@ -47,8 +45,7 @@
     rofi
     imagemagick
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
-    (pkgs.callPackage ../../../core/packages/vicinae.nix {})
-    (pkgs.callPackage ../../../core/packages/vicinae-launch.nix {})
+    inputs.walker.packages.${pkgs.system}.default
     (pkgs.writeShellScriptBin "random-wallpaper" ''
       # Kill any existing wallpaper processes (static and live)
       ${pkgs.procps}/bin/pkill swaybg || true
