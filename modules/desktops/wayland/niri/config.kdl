@@ -16,6 +16,12 @@ input {
     }
 }
 
+// Cursor theme
+cursor {
+    theme = "Bibata-Modern-Ice";
+    size = 24;
+}
+
 // Disable the default hotkey help overlay at startup
 hotkey-overlay {
     skip-at-startup
