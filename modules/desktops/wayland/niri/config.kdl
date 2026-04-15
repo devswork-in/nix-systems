@@ -135,9 +135,9 @@ binds {
     Alt+Tab { focus-column-right-or-first; }
     Alt+Shift+Tab { focus-column-left-or-last; }
 
-    // Application launcher - Vicinae
-    Mod+Slash { spawn "sh" "-c" "vicinae-launch toggle"; }
-    Mod+C { spawn "sh" "-c" "vicinae-launch deeplink vicinae://extensions/vicinae/clipboard/history"; }
+    // Application launcher - Walker
+    Mod+Slash { spawn "sh" "-c" "walker"; }
+    Mod+C { spawn "sh" "-c" "walker -p :"; }
 
     // Local scripts launcher
     Alt+Return { spawn "sh" "-c" "selected_script=$(ls ~/.local/bin | rofi -dmenu) && bash ~/.local/bin/$selected_script"; }
@@ -217,7 +217,7 @@ binds {
     Mod+Shift+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | wl-copy && notify-send 'Screenshot' 'Copied to clipboard'"; }
 
     // Session management
-    Mod+Q { spawn "hyprlock"; }
+    Mod+Q { spawn "swaylock"; }
     Mod+Shift+Q { quit; }
 
     // System
@@ -272,12 +272,13 @@ binds {
 }
 
 // Spawn programs at startup
-spawn-at-startup "hyprlock" "--immediate" "--no-fade-in" "--immediate-render"
+spawn-at-startup "elephant"
+spawn-at-startup "swaylock"
 spawn-at-startup "waybar"
 spawn-at-startup "swaync"
 // spawn-at-startup "nm-applet" "--indicator"
 // spawn-at-startup "blueman-applet"
-spawn-at-startup "vicinae-launch" "server"
+    spawn-at-startup "walker" "--gapplication-service"
 spawn-at-startup "swayosd-server"
 spawn-at-startup "random-wallpaper"
 spawn-at-startup "nightlight-toggle" "on"

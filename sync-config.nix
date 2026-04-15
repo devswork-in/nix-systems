@@ -165,11 +165,12 @@ in {
       dest = "~/.config/niri-sidebar/config.toml";
     }
     # Shared Wayland component configs
+    # swaylock config
     {
       type = "local";
       source =
-        "${nixSystemsRoot}/modules/desktops/wayland/common/hyprlock/hyprlock.conf";
-      dest = "~/.config/hypr/hyprlock.conf";
+        "${nixSystemsRoot}/modules/desktops/wayland/common/swaylock.conf";
+      dest = "~/.config/swaylock/config";
     }
     {
       type = "local";
