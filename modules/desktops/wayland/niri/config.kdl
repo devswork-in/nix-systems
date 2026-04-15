@@ -18,8 +18,8 @@ input {
 
 // Cursor theme
 cursor {
-    theme = "Bibata-Modern-Ice";
-    size = 24;
+    xcursor-theme "Bibata-Modern-Ice"
+    xcursor-size 24
 }
 
 // Disable the default hotkey help overlay at startup
