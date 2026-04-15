@@ -43,10 +43,12 @@
       inputs.elephant.follows = "elephant";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    livewall.url = "github:Creator54/livewall/v3";
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nix-flatpak, nix-snapd, nur
-    , nix-repo-sync, walker, elephant, ... }@inputs:
+    , nix-repo-sync, walker, elephant, livewall, ... }@inputs:
     let
       # Extract NixOS version from nixpkgs input URL
       nixosVersion = let
