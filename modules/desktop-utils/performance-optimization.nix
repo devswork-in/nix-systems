@@ -293,7 +293,7 @@ in {
       mkIf cfg.services.disableNetworkManagerWaitOnline (mkForce false);
 
     # Enable early OOM killer via systemd.oomd
-    systemd.oomd.enable = mkDefault true;
+    systemd.oomd.enable = mkForce false;
 
     # EarlyOOM - userspace OOM killer with aggressive thresholds
     # Kills memory hogs before the kernel hard-lockup triggers
