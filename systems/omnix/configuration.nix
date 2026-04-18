@@ -24,7 +24,7 @@
     ../../modules/desktop-utils/tlp.nix
     ../../modules/desktop-utils/performance-optimization.nix
     # ../../modules/apps/kiro
-    # ../../modules/extras/kernels/latest.nix
+    ../../modules/extras/kernels/latest.nix
   ];
 
   # Disable GDM - using TTY auto-login with session-manager
