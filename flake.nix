@@ -45,10 +45,15 @@
     };
 
     livewall.url = "github:Creator54/livewall/v3";
+
+    awrit = {
+      url = "github:creator54/awrit";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nix-flatpak, nix-snapd, nur
-    , nix-repo-sync, walker, elephant, livewall, ... }@inputs:
+    , nix-repo-sync, walker, elephant, livewall, awrit, ... }@inputs:
     let
       # Extract NixOS version from nixpkgs input URL
       nixosVersion = let

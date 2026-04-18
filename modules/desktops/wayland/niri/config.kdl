@@ -166,6 +166,9 @@ binds {
     // Toggle waybar
     Mod+B { spawn "pkill" "-SIGUSR1" "waybar"; }
 
+    // Open awrite in kitty vsplit
+    Mod+Shift+B { spawn "kitty" "sh" "-c" "kitty @ set-spacing --match=recent:0 padding=0; awrit --remote-debugging-port=9222"; }
+
     Mod+Shift+H { move-column-left; }
     Mod+Shift+L { move-column-right; }
     Mod+Shift+J { move-window-down; }

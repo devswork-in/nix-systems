@@ -3,6 +3,7 @@
 
 {
   imports = [
+    ./awrit.nix
     ./bat.nix
     ./direnv.nix
     ./entire.nix
