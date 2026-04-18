@@ -143,7 +143,7 @@ binds {
 
     // Application launcher - Walker
     Mod+Slash { spawn "sh" "-c" "walker"; }
-    Mod+C { spawn "sh" "-c" "walker -p :"; }
+    Mod+C { spawn "sh" "-c" "walker -m clipboard"; }
 
     // Local scripts launcher
     Alt+Return { spawn "sh" "-c" "selected_script=$(ls ~/.local/bin | rofi -dmenu) && bash ~/.local/bin/$selected_script"; }
