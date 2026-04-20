@@ -23,17 +23,15 @@ row {
 }
 
 .control-center {
-    background: rgba(29, 32, 33, 1.0);
-    opacity: 1.0;
-    border: 2px solid @border;
+    background: rgba(29, 32, 33, 0.85);
+    border: 2px solid rgba(131, 165, 152, 0.3);
     border-radius: 16px;
-    box-shadow: 0 0 16px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
     padding: 8px;
 }
 
 window.control-center {
-    background: rgba(29, 32, 33, 1.0);
-    opacity: 1.0;
+    background: transparent;
 }
 
 /* Title Widget - Right Side */
@@ -137,12 +135,12 @@ window.control-center {
 }
 
 .notification {
-    background: @bg2;
+    background: rgba(40, 40, 40, 0.9);
     border-radius: 12px;
     padding: 10px;
     margin: 0px;
-    border: 2px solid @border;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(131, 165, 152, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .notification-content {
