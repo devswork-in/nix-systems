@@ -1,7 +1,7 @@
 { pkgs, inputs, ... }:
 
 let
-  system = pkgs.system;
+  system = pkgs.stdenv.hostPlatform.system;
 in
 {
   home.packages = [
