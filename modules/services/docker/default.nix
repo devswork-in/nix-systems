@@ -14,6 +14,6 @@
       setSocketVariable = true;
     };
   };
-  users.users."${userConfig.user.name}".extraGroups = [ "docker" ];
+  # users.users."${userConfig.user.name}".extraGroups = [ "docker" ]; # Removed to enforce rootless security
   environment.systemPackages = with pkgs; [ docker-compose ];
 }
