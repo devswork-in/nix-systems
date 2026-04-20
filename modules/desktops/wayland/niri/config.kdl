@@ -44,31 +44,30 @@ animations {
     slowdown 0.5
 
     // Individual animations.
-
     workspace-switch {
-        spring damping-ratio=1.0 stiffness=2000 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
     }
 
     window-open {
-        duration-ms 75
+        duration-ms 200
         curve "ease-out-expo"
     }
 
     window-close {
-        duration-ms 75
+        duration-ms 150
         curve "ease-out-quad"
     }
 
     horizontal-view-movement {
-        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
     }
 
     window-movement {
-        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
     }
 
     window-resize {
-        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
     }
 
     config-notification-open-close {
@@ -90,7 +89,7 @@ animations {
 }
 
 layout {
-    gaps 5
+    gaps 10
 
     // Add outer gaps (margins) around the screen
     struts {
@@ -112,8 +111,8 @@ layout {
 
     focus-ring {
         on
-        width 2
-        active-color "#83a598"
+        width 3
+        active-gradient from="#83a598" to="#8ec07c" angle=45
         inactive-color "#504945"
     }
 
@@ -124,11 +123,11 @@ layout {
     // Neon glow around windows (Gruvbox aqua — teal glow contrasts warm tones)
     shadow {
         on
-        softness 20
-        spread 5
+        softness 30
+        spread 8
         offset x=0 y=0
-        color "#83a598"
-        inactive-color "#504945"
+        color "rgba(131, 165, 152, 0.5)"
+        inactive-color "rgba(80, 73, 69, 0.2)"
     }
 }
 
@@ -217,7 +216,7 @@ binds {
 
     // Screenshots - Wayland with notifications and editing
     // Full screenshot - save to file
-    Print { spawn "sh" "-c" "filename=~/Screenshots/Screenshot_$(date +%Y%m%d_%I%M%S_%p).png && grim \"$filename\" && notify-send 'Screenshot' \"Saved: $(basename $filename)\""; }
+    Print { spawn "sh" "-c" "filename=~/Screenshots/Screenshot_$(date +%Y%m%d_%I%M%S_%p).jpg && grim -t jpeg -q 90 \"$filename\" && notify-send 'Screenshot' \"Saved: $(basename $filename)\""; }
     // Full screenshot to clipboard
     Alt+Print { spawn "sh" "-c" "grim - | wl-copy && notify-send 'Screenshot' 'Copied to clipboard'"; }
     // Area selection with swappy editor (copy or save options)
@@ -226,7 +225,7 @@ binds {
     Mod+Shift+Print { spawn "sh" "-c" "coords=$(slurp) && grim -g \"$coords\" - | wl-copy && notify-send 'Screenshot' 'Copied to clipboard'"; }
 
     // Session management
-    Mod+Q { spawn "swaylock"; }
+    Mod+Q { spawn "sh" "-c" "swaylock --screenshots --clock --indicator --effect-blur 7x5 --effect-vignette 0.5:0.5 --fade-in 0.2 --ring-color 83a598 --key-hl-color 8ec07c --line-color 00000000 --inside-color 00000088 --separator-color 00000000 --text-color ebdbb2"; }
     Mod+Shift+Q { quit; }
 
     // System
