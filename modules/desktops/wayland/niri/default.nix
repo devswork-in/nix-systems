@@ -46,7 +46,7 @@
     imagemagick
     (pkgs.callPackage ../../../core/packages/swiv.nix {})
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
-    inputs.walker.packages.${pkgs.system}.default
+    inputs.walker.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "random-wallpaper" ''
       # Kill any existing wallpaper processes (static and live)
       ${pkgs.procps}/bin/pkill swaybg || true
@@ -57,7 +57,7 @@
       ${pkgs.swaybg}/bin/swaybg -m fill -i "$WALLPAPER" &
     '')
     (pkgs.writeShellScriptBin "wallpaper-selector" (builtins.readFile ../../../core/configs/common/scripts/wallpaper-selector))
-    inputs.livewall.packages.${pkgs.system}.default
+    inputs.livewall.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Home Manager configuration
