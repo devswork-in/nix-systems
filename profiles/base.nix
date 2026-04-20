@@ -87,16 +87,25 @@
     rateLimitBurst = lib.mkDefault 500; # Messages per interval (default 200)
     rateLimitInterval = lib.mkDefault "30s"; # Rate limit window (default 30s)
     extraConfig = lib.mkDefault ''
-      # Compress large journal entries
+      Storage=persistent
       Compress=yes
-      # Limit journal size to 100MB (desktop) / 50MB (server)
-      SystemMaxUse=100M
-      # Keep journals for max 1 week
-      MaxRetentionSec=1week
-      # Forward critical messages only to console
+      SystemMaxUse=500M
+      MaxRetentionSec=1month
       ForwardToConsole=no
     '';
   };
+
+  # Built-in automatic cleanup for coredumps
+  systemd.coredump.extraConfig = ''
+    Storage=external
+    MaxUse=1G
+    KeepFree=10G
+  '';
+
+  # Ensure journal directory has correct permissions
+  systemd.tmpfiles.rules = [
+    "z /var/log/journal 2755 root systemd-journal - -"
+  ];
 
   # System state version (derived from flake nixpkgs input)
   system.stateVersion = nixosVersion;

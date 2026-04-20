@@ -20,3 +20,6 @@ modules/core/configs/common/bat/config
 modules/core/configs/common/scripts/kiro-cli
 modules/core/configs/common/scripts/kiro-cli-chat
 modules/core/configs/common/scripts/kiro-cli-term
+QWEN.md
+modules/core/configs/common/scripts/claude
+modules/core/configs/common/scripts/rtk
