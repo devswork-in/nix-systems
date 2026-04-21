@@ -9,13 +9,21 @@
     
     serviceConfig = {
       Type = "oneshot";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
     };
     
     script = ''
-      # Fetch secrets from Doppler and write as exportable shell vars
-      mkdir -p $HOME/.config/env
+      set -euo pipefail
+      mkdir -p "$HOME/.config/env"
       ${pkgs.doppler}/bin/doppler secrets download --project nix-systems --config prod --no-file --format env \
-        | ${pkgs.gnused}/bin/sed 's/^/export /' > $HOME/.config/env/doppler.sh
+        | ${pkgs.gnused}/bin/sed 's/^/export /' > "$HOME/.config/env/doppler.sh"
+
+      # Fail visibly if output is empty (auth failure or empty project)
+      if [ ! -s "$HOME/.config/env/doppler.sh" ]; then
+        echo "ERROR: doppler secrets download produced empty output" >&2
+        exit 1
+      fi
     '';
   };
 
