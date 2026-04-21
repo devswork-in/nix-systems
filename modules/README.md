@@ -58,9 +58,11 @@ The architecture supports clean, non-redundant configurations:
 
 The structure eliminates code duplication by organizing configurations into logical, reusable components:
 - Common packages are defined in `core/packages/`
-- Desktop utilities in `desktop-utils/`
+- Desktop utilities in `desktop-utils/` (see [Firefox](desktop-utils/firefox/README.md), [MPV](desktop-utils/mpv/README.md), [Waybar scripts](desktops/wayland/common/waybar/scripts/))
 - Services in `services/`
 - Clear separation between different domain configurations
+
+See [docs/modules.md](../docs/modules.md) for the full module reference.
 
 ## Adding New Modules
 
