@@ -35,7 +35,7 @@ Uses the Cascade theme by Andreas Grafen - a minimalistic Firefox theme that:
 
 ## Usage
 
-This module is automatically imported for desktop systems through `modules/essential/configs/desktop/default.nix`.
+This module is part of the desktop utilities bundle. Import via `modules/desktop-utils/` — see the [desktop-utils README](../README.md) and [Desktop Environment Management](../../desktops/README.md) for how desktop modules are layered.
 
 ## Dependencies
 

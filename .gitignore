@@ -23,3 +23,4 @@ modules/core/configs/common/scripts/kiro-cli-term
 QWEN.md
 modules/core/configs/common/scripts/claude
 modules/core/configs/common/scripts/rtk
+graphify-out/

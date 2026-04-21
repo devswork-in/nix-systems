@@ -20,10 +20,14 @@ Desktop configurations. See [`modules/desktop-utils/`](../modules/desktop-utils/
 
 - `bluetooth.nix`, `gtk-config.nix`, `performance-optimization.nix`, `plymouth.nix`, `nightlight.nix`, `tlp.nix`
 - Configs: `kitty.conf`, `gromit-mpx.ini`, `flameshot/flameshot.ini`
+- [Firefox](../modules/desktop-utils/firefox/README.md) - Custom browser with privacy extensions
+- [MPV / youtube-quality](../modules/desktop-utils/mpv/README.md) - YouTube quality selector for MPV
+- [xplr](../modules/desktop-utils/xplr/README.md) - Terminal file explorer config
 
 ### Environments
 
 - `modules/desktops/gnome/`, `modules/desktops/pantheon/`, `modules/desktops/wayland/`
+- See [Desktop Environment Management](../modules/desktops/README.md) for switching DEs and adding new ones
 
 ## Apps
 
@@ -44,6 +48,7 @@ System services. See [`modules/services/`](../modules/services/).
 
 - Configure in [`config.nix`](../config.nix)
 - See [`modules/services/website/`](../modules/services/website/)
+- Playgrounds landing page: [`modules/services/website/playgrounds-index.html`](../modules/services/website/playgrounds-index.html)
 - Examples: [next-cloud.nix](../modules/services/website/next-cloud.nix), [jellyfin.nix](../modules/services/website/jellyfin.nix), [plex-server.nix](../modules/services/website/plex-server.nix), [whoogle.nix](../modules/services/website/whoogle.nix), [code-server.nix](../modules/services/website/code-server.nix), [adguard.nix](../modules/services/website/adguard.nix)
 
 ### Other

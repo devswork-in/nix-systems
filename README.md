@@ -44,6 +44,8 @@ sudo sh -c 'curl -sSL https://raw.githubusercontent.com/devswork-in/nix-systems/
 
 ## Commands
 
+See [Usage](docs/usage.md) for full details and [Setup](docs/setup.md) for installation.
+
 ```bash
 sudo nixos-rebuild switch --flake .#<hostname> --impure  # Build & switch
 nix run nixpkgs#deploy-rs -- .#<hostname>               # Remote deploy
