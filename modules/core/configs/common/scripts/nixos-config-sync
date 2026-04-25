@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# Dynamically discover and sync nix-systems repo to /etc/nixos
+# No hardcoded paths — finds repo by content (flake.nix + hostname config)
+
+set -euo pipefail
+
+CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/nix-systems-repo"
+HOSTNAME="$(hostname)"
+TARGET_CONFIG="systems/${HOSTNAME}/configuration.nix"
+
+# Validate cached repo path
+validate_repo() {
+    local repo="$1"
+    [[ -n "$repo" ]] && [[ -f "$repo/flake.nix" ]] && [[ -f "$repo/$TARGET_CONFIG" ]]
+}
+
+# Discover repo by searching for flake.nix that contains hostname config
+discover_repo() {
+    local found=""
+    local newest_time=0
+
+    # Search home for directories containing both flake.nix and hostname config
+    # Use find with maxdepth to avoid scanning everything
+    while IFS= read -r flake; do
+        local dir
+        dir="$(dirname "$flake")"
+        if [[ -f "$dir/$TARGET_CONFIG" ]]; then
+            # Pick the most recently modified one if multiple found
+            local mtime
+            mtime=$(stat -c %Y "$dir/flake.nix" 2>/dev/null || echo 0)
+            if [[ "$mtime" -gt "$newest_time" ]]; then
+                newest_time="$mtime"
+                found="$dir"
+            fi
+        fi
+    done < <(find "$HOME" -maxdepth 4 -name "flake.nix" -not -path "*/\.*" 2>/dev/null | head -20)
+
+    echo "$found"
+}
+
+# Main sync logic
+main() {
+    local repo=""
+
+    # Try cache first
+    if [[ -f "$CACHE_FILE" ]]; then
+        repo="$(cat "$CACHE_FILE")"
+        if ! validate_repo "$repo"; then
+            repo=""
+        fi
+    fi
+
+    # Re-discover if cache invalid
+    if [[ -z "$repo" ]]; then
+        repo="$(discover_repo)"
+        if [[ -z "$repo" ]]; then
+            echo "ERROR: Could not find nix-systems repo containing $TARGET_CONFIG" >&2
+            echo "Searched under $HOME for flake.nix + $TARGET_CONFIG" >&2
+            exit 1
+        fi
+        # Update cache
+        mkdir -p "$(dirname "$CACHE_FILE")"
+        echo "$repo" > "$CACHE_FILE"
+        echo "INFO: Discovered nix-systems repo at $repo" >&2
+    fi
+
+    # Sync /etc/nixos symlink
+    local current_target
+    current_target="$(readlink -f /etc/nixos 2>/dev/null || true)"
+
+    if [[ "$current_target" != "$(readlink -f "$repo")" ]]; then
+        echo "INFO: Syncing /etc/nixos → $repo" >&2
+        # Use sudo if not root
+        if [[ $EUID -ne 0 ]]; then
+            sudo rm -rf /etc/nixos
+            sudo ln -s "$repo" /etc/nixos
+        else
+            rm -rf /etc/nixos
+            ln -s "$repo" /etc/nixos
+        fi
+    fi
+
+    echo "$repo"
+}
+
+main "$@"

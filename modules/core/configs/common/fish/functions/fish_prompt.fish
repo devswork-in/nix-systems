@@ -19,8 +19,7 @@ function fish_prompt
 
   set_color -o $fish_color_autosuggestion[2]
   if test (ls -a |wc -l) -lt 40 && [ "$dols" = "true" ] && [ "$status" = "0" ]
-    #tree -h -L 1 && echo
-    ls -lh & echo
+    ls -lh
   end
   set_color -o yellow
   printf '%s' (__fish_git_prompt)

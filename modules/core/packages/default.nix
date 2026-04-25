@@ -6,7 +6,6 @@
     ./awrit.nix
     ./bat.nix
     ./direnv.nix
-    ./entire.nix
     ./fonts.nix
     ./fzf.nix
     ./git.nix
