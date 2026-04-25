@@ -41,33 +41,33 @@ animations {
     // off
 
     // Slow down all animations by this factor. Values below 1 speed them up instead.
-    slowdown 0.5
+    slowdown 0.3
 
     // Individual animations.
     workspace-switch {
-        spring damping-ratio=1.0 stiffness=1500 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=2000 epsilon=0.0001
     }
 
     window-open {
-        duration-ms 200
-        curve "ease-out-expo"
+        duration-ms 80
+        curve "ease-out-quad"
     }
 
     window-close {
-        duration-ms 150
+        duration-ms 100
         curve "ease-out-quad"
     }
 
     horizontal-view-movement {
-        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=2000 epsilon=0.0001
     }
 
     window-movement {
-        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=2000 epsilon=0.0001
     }
 
     window-resize {
-        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=2000 epsilon=0.0001
     }
 
     config-notification-open-close {
@@ -123,8 +123,8 @@ layout {
     // Neon glow around windows (Gruvbox aqua — teal glow contrasts warm tones)
     shadow {
         on
-        softness 30
-        spread 8
+        softness 15
+        spread 4
         offset x=0 y=0
         color "rgba(131, 165, 152, 0.5)"
         inactive-color "rgba(80, 73, 69, 0.2)"

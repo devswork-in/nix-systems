@@ -24,3 +24,5 @@ QWEN.md
 modules/core/configs/common/scripts/claude
 modules/core/configs/common/scripts/rtk
 graphify-out/
+awrit-debug.log
+awrit_startup.log

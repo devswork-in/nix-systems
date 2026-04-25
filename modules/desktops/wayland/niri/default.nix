@@ -63,7 +63,10 @@
   # Home Manager configuration
   home-manager.users."${userConfig.user.name}" = {
     # Import GTK configuration for theming
-    imports = [ ../../../desktop-utils/gtk-config.nix ];
+    imports = [
+      ../../../desktop-utils/gtk-config.nix
+      ../../../desktop-utils/kitty-daemon.nix
+    ];
 
     home.packages = with pkgs; [ niri networkmanagerapplet pavucontrol ];
 

@@ -17,14 +17,42 @@ if not set -q NIX_SYSTEM
 end
 
 
-# Source imperative environment variables
+# Source imperative environment variables (pure fish, no bash spawn)
 # Hierarchy: Common -> Desktop/Server -> System (Hostname)
-# Use foreign-env (fenv) to source bash scripts directly
 if test -d ~/.config/env
     for target in common desktop server (hostname) doppler
         set -l env_file ~/.config/env/$target.sh
         if test -f $env_file
-            fenv source $env_file
+            while read -l line
+                # Skip comments and empty lines
+                string match -qr '^\s*#' $line; and continue
+                string match -qr '^\s*$' $line; and continue
+                # Parse export KEY=VALUE
+                if string match -qr '^\s*export\s+' $line
+                    set -l kv (string replace -r '^\s*export\s+' '' $line)
+                    set -l key (string split -m 1 '=' $kv)[1]
+                    set -l val (string split -m 1 '=' $kv)[2]
+                    # Strip surrounding quotes
+                    set val (string trim -c '"' -- $val)
+                    set val (string trim -c "'" -- $val)
+                    # Expand $HOME
+                    set val (string replace -a '$HOME' $HOME -- $val)
+                    set val (string replace -a '~' $HOME -- $val)
+                    # Expand $(command) via fish command substitution
+                    if string match -qr '\$\([^)]+\)' $val
+                        set -l cmd (string match -r '\$\(([^)]+)\)' $val)[2]
+                        set -l cmd_out ($cmd)
+                        set val (string replace -r '\$\([^)]+\)' $cmd_out $val)
+                    end
+                    # Handle PATH append: $HOME/...:$PATH
+                    if string match -q '*$PATH*' $val
+                        set val (string replace -a '$PATH' '' -- $val)
+                        set -gx $key $val $$key
+                    else
+                        set -gx $key $val
+                    end
+                end
+            end < $env_file
         end
     end
 end
@@ -70,45 +98,16 @@ end
 set -gx NNN_PLUG 'f:finder;o:fzopen;p:preview-tui;d:diffs;t:nmount;v:imgview;g:!git log;'
 set -gx NNN_FIFO '/tmp/nnn.fifo'
 
-# Start with custom prompts by default (use Ctrl+P to toggle to starship)
-set -g PROMPT_MODE custom
-
-# Git helper functions
-function gpull
-    git pull origin (git branch | sed 's/^* //') --force
+# Start with starship prompt by default (use Ctrl+P to toggle to custom)
+if command -v starship >/dev/null 2>&1
+    eval (starship init fish)
+    set -g PROMPT_MODE starship
+else
+    set -g PROMPT_MODE custom
 end
 
-function gpush
-    if [ -z "$argv" ]
-        git push origin (gb | grep -e '*' | cut -d ' ' -f2) --force
-    else
-        git push origin $argv
-    end
-end
-
-function ga
-    if [ -z "$argv" ]
-        git add .
-    else
-        git add $argv
-    end
-end
-
-# Python virtual environment management
-function activate_venv -d "Activate default Python virtual environment at ~/.venv"
-    if test -d $HOME/.venv
-        if test -f $HOME/.venv/bin/activate.fish
-            source $HOME/.venv/bin/activate.fish
-        else
-            set -gx VIRTUAL_ENV $HOME/.venv
-            set -gx PATH $HOME/.venv/bin $PATH
-        end
-        echo "Default virtual environment activated: $HOME/.venv"
-    else
-        echo "Default virtual environment does not exist at $HOME/.venv"
-        echo "Creating it with: python -m venv $HOME/.venv"
-    end
-end
+# Git helper functions (lazy-loaded from ~/.config/fish/functions/)
+# gpull, gpush, ga, activate_venv
 
 # Convenient aliases
 alias x "rm -rf $argv"
@@ -116,7 +115,4 @@ alias l 'v (ls | fzf )'
 alias d "cd ~/dev"
 
 
-# Entire CLI shell completion
-if command -q entire
-  entire completion fish | source
-end
+
