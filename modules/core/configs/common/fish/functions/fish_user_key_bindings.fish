@@ -11,8 +11,21 @@ function __pi_resume
     # Check if session directory exists with any .jsonl files
     if test -d ~/.pi/agent/sessions/$session_dir
         and count ~/.pi/agent/sessions/$session_dir/*.jsonl >/dev/null 2>&1
-        pi -r
+        
+        # Session exists. Offer options via FZF.
+        set -l options "󰁯 Resume Current" "󰝒 New Session" "󰒲 List All"
+        set -l choice (printf "%s\n" $options | fzf --height 10 --reverse --header "Pi Session for $cwd" --border rounded --prompt "󰌔 Action: ")
+        
+        switch $choice
+            case "*Resume Current"
+                pi -r
+            case "*New Session"
+                pi
+            case "*List All"
+                pi -r
+        end
     else
+        # No session exists for this directory, start fresh
         pi
     end
 end
