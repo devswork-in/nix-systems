@@ -61,6 +61,11 @@ in {
       source = "${nixSystemsRoot}/modules/core/configs/common/gitconfig";
       dest = "~/.gitconfig";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/starship.toml";
+      dest = "~/.config/starship.toml";
+    }
 
   ];
 

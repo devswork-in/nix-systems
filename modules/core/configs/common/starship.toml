@@ -47,7 +47,8 @@ disabled = true
 python_binary = ["./venv/bin/python", "python3", "python", "python2"]
 
 [aws]
-disabled = true
+format = 'on [$symbol($region)]($style) '
+style = 'bold yellow'
 
 [docker_context]
 disabled = true
