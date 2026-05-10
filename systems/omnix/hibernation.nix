@@ -49,6 +49,18 @@ in
     HibernateDelaySec=15min
   '';
 
+  # Fix ELAN touchpad (i2c-ELAN06FA) failing to restore after suspend/hibernate
+  # Error: "i2c_hid_acpi i2c-ELAN06FA:00: failed to change power setting" (error -121)
+  systemd.services.fix-touchpad-resume = {
+    description = "Reload i2c_hid_acpi after resume to fix ELAN touchpad";
+    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 1 && modprobe -r i2c_hid_acpi && sleep 0.5 && modprobe i2c_hid_acpi'";
+    };
+  };
+
   systemd.services.update-resume-offset = {
     description = "Automatically update resume-offset if swapfile offset changes";
     wantedBy = [ "multi-user.target" ];
