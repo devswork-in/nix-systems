@@ -114,5 +114,3 @@ alias x "rm -rf $argv"
 alias l 'v (ls | fzf )'
 alias d "cd ~/dev"
 
-
-
