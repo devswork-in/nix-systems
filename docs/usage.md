@@ -81,3 +81,24 @@ nix-repo-sync-force                # Force sync
 nix-repo-sync-logs                 # View logs
 systemctl status nix-repo-sync.service # Status
 ```
+
+## Monocle (AI Review)
+
+Review AI agent code in real-time.
+
+### Registration
+
+Register Monocle with your agent (e.g., Gemini CLI):
+
+```bash
+monocle register gemini --global
+```
+
+### Neovim Integration
+
+Launch Monocle from within Neovim:
+
+- `<leader>rm`: Toggle Monocle TUI in a floating terminal.
+
+Monocle uses Neovim as its external editor (`Ctrl+g`).
+

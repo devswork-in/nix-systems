@@ -10,6 +10,7 @@
     ./fzf.nix
     ./git.nix
     ./mcfly.nix
+    ./monocle.nix
     ./nvim.nix
   ];
 
