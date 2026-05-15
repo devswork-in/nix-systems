@@ -1,0 +1,8 @@
+[
+  {
+    "icon": "󰑓",
+    "category": "System",
+    "title": "Reload Config",
+    "action": { "tmux": "source-file ~/.tmux.conf \\; display-message 'Config reloaded'" }
+  }
+]
