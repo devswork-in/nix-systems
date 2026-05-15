@@ -13,6 +13,11 @@ in {
     }
     {
       type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/monocle.lua";
+      dest = "~/.config/nvim/lua/plugins/monocle.lua";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/modules/core/configs/common/aliases";
       dest = "~/.config/aliases";
     }
