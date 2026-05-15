@@ -46,5 +46,5 @@ function fish_user_key_bindings
     bind \cp toggle_prompt
     bind \ck __pi_resume
     bind \cn __pi_new
-    bind \ce 'vim .'
+    bind \ce 'nvim .; commandline -f repaint'
 end
