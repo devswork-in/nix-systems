@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# Dynamic lookup with fallbacks
+TMUX_BIN=$(command -v tmux || echo "/run/current-system/sw/bin/tmux")
+BUN_BIN=$(command -v bun || echo "/home/creator54/.npm-global/bin/bun")
+DIR="$HOME/.config/tmux/tmux-palette"
+
+CMD_FILE=$(mktemp)
+trap 'rm -f "$CMD_FILE"' EXIT
+
+CH=$($TMUX_BIN display-message -p "#{client_height}" 2>/dev/null || echo 24)
+CW=$($TMUX_BIN display-message -p "#{client_width}" 2>/dev/null || echo 80)
+
+# Ask the palette for its dimensions and style
+MEASURE=$($BUN_BIN "$DIR/src/cli.ts" commands --measure "--cw=$CW" "--ch=$CH" 2>/dev/null)
+[ -z "$MEASURE" ] && MEASURE="20	90	3	none	default	default"
+
+IFS=$'\t' read -r H W PADX BORDER BODY_STYLE BORDER_STYLE <<< "$MEASURE"
+
+# Prepare border and style arguments
+BORDER_ARGS=("-s" "$BODY_STYLE")
+if [ "$BORDER" != "none" ] && [ -n "$BORDER" ]; then
+  BORDER_ARGS=("-b" "$BORDER" "-s" "$BODY_STYLE" "-S" "$BORDER_STYLE")
+fi
+
+# Build and execute the popup command
+$TMUX_BIN display-popup "${BORDER_ARGS[@]}" -w "$W" -h "$H" -E "TMUX_PALETTE_CMD=$CMD_FILE $BUN_BIN $DIR/src/cli.ts commands"
+
+if [ -s "$CMD_FILE" ]; then
+  CMD=$(cat "$CMD_FILE")
+  case "$CMD" in
+    tmux:*) eval "$TMUX_BIN ${CMD#tmux:}" ;;
+    shell:*) eval "${CMD#shell:}" ;;
+  esac
+fi
