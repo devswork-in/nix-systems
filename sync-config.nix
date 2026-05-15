@@ -66,6 +66,17 @@ in {
       source = "${nixSystemsRoot}/modules/core/configs/common/starship.toml";
       dest = "~/.config/starship.toml";
     }
+    {
+      type = "git";
+      source = "https://github.com/eduwass/tmux-palette";
+      dest = "~/.config/tmux/tmux-palette";
+      postSync = "cd ~/.config/tmux/tmux-palette && bun install --silent";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/tmux-palette";
+      dest = "~/.config/tmux-palette";
+    }
 
   ];
 
