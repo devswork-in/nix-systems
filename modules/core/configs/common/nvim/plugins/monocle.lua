@@ -12,11 +12,8 @@ return {
             monocle_term = Terminal:new({
               cmd = "monocle",
               dir = "git_dir",
-              direction = "float",
-              float_opts = {
-                border = "curved",
-              },
-              -- close_on_exit = true,
+              direction = "vertical",
+              size = 65,
               on_open = function(term)
                 vim.cmd("startinsert!")
                 -- Allow closing with the same keybinding

@@ -98,7 +98,14 @@ monocle register gemini --global
 
 Launch Monocle from within Neovim:
 
-- `<leader>rm`: Toggle Monocle TUI in a floating terminal.
+- `<leader>rm`: Toggle Monocle **Sidebar** (Vertical split). This allows you to keep the terminal and code visible simultaneously.
+
+### Tmux Integration
+
+Launch Monocle in a **Popup** from anywhere:
+
+- **`Alt+r`**: Open Monocle in a tmux floating popup.
+- **`Ctrl+Space`**: Select "Monocle (Review)" from the command palette.
 
 Monocle uses Neovim as its external editor (`Ctrl+g`).
 
