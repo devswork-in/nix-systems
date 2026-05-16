@@ -115,7 +115,7 @@
           hostname = "server";
           modules = [
             ./modules/server/default.nix
-            ./systems/server/configuration.nix
+            ./hosts/server/configuration.nix
             # Note: No home-manager - servers use nix-repo-sync for user configs
             inputs.nix-repo-sync.nixosModules.default
           ];
@@ -128,7 +128,7 @@
               inherit system;
               hostname = "phoenix";
               modules = [
-                ./systems/phoenix
+                ./hosts/phoenix
                 ./modules/server/default.nix
                 # Note: No home-manager - servers use nix-repo-sync for user configs
                 inputs.nix-repo-sync.nixosModules.default
@@ -141,7 +141,7 @@
           # No buildSystem = builds natively on ARM host, using binary cache
           hostname = "phoenix";
           modules = [
-            ./systems/phoenix
+            ./hosts/phoenix
             ./modules/server/default.nix
             # Note: No home-manager - servers use nix-repo-sync for user configs
             inputs.nix-repo-sync.nixosModules.default
@@ -152,7 +152,7 @@
           system = "x86_64-linux";
           hostname = "omnix";
           modules = [
-            ./systems/omnix
+            ./hosts/omnix
             ./modules/desktop-utils/default.nix
             inputs.home-manager.nixosModules.default
             inputs.nix-snapd.nixosModules.default
@@ -164,7 +164,7 @@
           system = "x86_64-linux";
           hostname = "blade";
           modules = [
-            ./systems/blade
+            ./hosts/blade
             ./modules/server/default.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
@@ -176,7 +176,7 @@
           system = "x86_64-linux";
           hostname = "cospi";
           modules = [
-            ./systems/cospi
+            ./hosts/cospi
             ./modules/desktop-utils/default.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default

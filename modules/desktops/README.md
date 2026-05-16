@@ -40,7 +40,7 @@ sudo nixos-rebuild switch
 
 ### Per-System Override
 
-In your system configuration (e.g., `systems/omnix/configuration.nix`):
+In your system configuration (e.g., `hosts/omnix/configuration.nix`):
 
 ```nix
 {

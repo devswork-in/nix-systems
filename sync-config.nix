@@ -23,6 +23,16 @@ in {
     }
     {
       type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/auto-save.lua";
+      dest = "~/.config/nvim/lua/plugins/auto-save.lua";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/options.lua";
+      dest = "~/.config/nvim/lua/config/options.lua";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/modules/core/configs/common/aliases";
       dest = "~/.config/aliases";
     }

@@ -23,7 +23,7 @@ Repository architecture.
 │   ├── services/          # Service modules
 │   └── extras/            # Additional modules
 ├── scheduled-scripts/   # Scheduled scripts
-├── systems/             # Machine configs
+├── hosts/               # Machine configs
 ├── flake.nix            # Main flake
 ├── config.nix           # User config
 └── sync-config.nix      # Sync config
@@ -53,7 +53,7 @@ Repository architecture.
 
 **Extras**: `extras/`
 
-### systems/
+### hosts/
 
 - `configuration.nix` - system settings
 - `hardware.nix` - hardware config
