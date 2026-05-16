@@ -5,7 +5,7 @@ return {
     "akinsho/toggleterm.nvim",
     keys = {
       {
-        "<leader>rm",
+        "<A-m>",
         function()
           if not monocle_term then
             local Terminal = require("toggleterm.terminal").Terminal
@@ -17,7 +17,7 @@ return {
               on_open = function(term)
                 vim.cmd("startinsert!")
                 -- Allow closing with the same keybinding
-                vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<leader>rm", "<cmd>close<CR>", { noremap = true, silent = true })
+                vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<A-m>", "<cmd>close<CR>", { noremap = true, silent = true })
               end,
             })
           end
