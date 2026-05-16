@@ -1,12 +1,14 @@
 -- This file is managed by Nix-Systems
 -- High-priority overrides for auto-save and session persistence
 
+vim.notify("Nix-Systems: Loading Overrides...", vim.log.levels.INFO)
+
 return {
-  -- 1. PERSISTENCE (Ensure it's active)
+  -- 1. PERSISTENCE
   {
     "folke/persistence.nvim",
-    event = "VeryLazy", -- Load late to ensure it doesn't slow down startup
-    opts = {},
+    event = "BufReadPre",
+    opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" } },
   },
 
   -- 2. AUTO-SAVE
@@ -19,54 +21,44 @@ return {
     },
   },
 
-  -- 3. THE "BRUTE FORCE" OVERRIDE
+  -- 3. BRUTE FORCE OVERRIDES
   {
     "LazyVim/LazyVim",
     init = function()
-      -- Automatically restore session ONLY if starting fresh (no args)
-      vim.api.nvim_create_autocmd("VimEnter", {
-        callback = function()
-          if vim.fn.argc() == 0 and not vim.g.started_with_stdin then
-            pcall(function() require("persistence").load() end)
-          end
-        end,
-      })
-
       -- Force options
       vim.opt.autowrite = true
       vim.opt.autowriteall = true
       vim.opt.sessionoptions = "curdir,buffers,tabpages,winsize,help,globals,folds,terminal"
 
-      -- THE CATCH-ALL: Save on every possible exit event
-      local group = vim.api.nvim_create_augroup("NixSystemsPersistence", { clear = true })
-      
-      vim.api.nvim_create_autocmd({ "VimLeavePre", "ExitPre" }, {
-        group = group,
+      -- AUTO-RESTORE
+      vim.api.nvim_create_autocmd("VimEnter", {
+        group = vim.api.nvim_create_augroup("NixAutoRestore", { clear = true }),
         callback = function()
-          -- Save session
-          local ok, persistence = pcall(require, "persistence")
-          if ok then persistence.save() end
-          -- Save files
-          vim.cmd("silent! wa")
+          if vim.fn.argc() == 0 and not vim.g.started_with_stdin then
+            require("persistence").load()
+          end
         end,
+        nested = true,
       })
 
-      -- REDEFINE <leader>Q to be bulletproof
-      -- Using a nested autocmd to ensure we run AFTER LazyVim sets up its keymaps
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "LazyVimStarted",
-        callback = function()
-          vim.keymap.set("n", "<leader>Q", function()
-            -- Explicit save
-            local ok, persistence = pcall(require, "persistence")
-            if ok then persistence.save() end
-            vim.cmd("silent! wa")
-            -- Notify user so they know this version is running
-            vim.notify("Saving session and quitting...", vim.log.levels.INFO)
-            vim.cmd("qa!") -- Force quit after saving
-          end, { desc = "Save everything and Quit", noremap = true, silent = true })
-        end,
-      })
+      -- BULLETPROOF <leader>Q
+      -- Register it multiple times to ensure we win
+      local function apply_quit_fix()
+        vim.keymap.set("n", "<leader>Q", function()
+          -- Save everything
+          pcall(function() require("persistence").save() end)
+          vim.cmd("silent! wa")
+          -- Final check: if we are still modified, something is wrong
+          vim.cmd("qa!")
+        end, { desc = "Save and Quit (Nix-Systems)", noremap = true, silent = true })
+      end
+
+      -- Run now
+      apply_quit_fix()
+      -- Run after a delay
+      vim.defer_fn(apply_quit_fix, 500)
+      -- Run when LazyVim is ready
+      vim.api.nvim_create_autocmd("User", { pattern = "LazyVimStarted", callback = apply_quit_fix })
     end,
   },
 }
