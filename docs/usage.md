@@ -54,11 +54,11 @@ nix run nixpkgs#nixos-rebuild -- build-vm --flake .#phoenix --fast
 ### New System
 
 ```bash
-mkdir -p systems/newsystem
-nixos-generate-config --show-hardware-config > systems/newsystem/hardware.nix
+mkdir -p hosts/newhost
+nixos-generate-config --show-hardware-config > hosts/newhost/hardware.nix
 ```
 
-- See [systems/omnix/configuration.nix](../systems/omnix/configuration.nix) for structure
+- See [hosts/omnix/configuration.nix](../hosts/omnix/configuration.nix) for structure
 - Add to [`flake.nix`](../flake.nix), see [flake.nix](../flake.nix) for patterns
 
 ```bash
@@ -98,7 +98,7 @@ monocle register gemini --global
 
 Launch Monocle from within Neovim:
 
-- `<leader>rm`: Toggle Monocle **Sidebar** (Vertical split). This allows you to keep the terminal and code visible simultaneously.
+- **`Alt+m`**: Toggle Monocle **Sidebar** (Vertical split). This matches your `Alt+t` terminal pattern.
 
 ### Tmux Integration
 
