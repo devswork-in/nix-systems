@@ -1,8 +1,6 @@
 -- This file is managed by Nix-Systems
 -- High-priority overrides for auto-save and session persistence
 
-vim.notify("Nix-Systems: Loading Overrides...", vim.log.levels.INFO)
-
 return {
   -- 1. PERSISTENCE
   {
@@ -21,7 +19,40 @@ return {
     },
   },
 
-  -- 3. BRUTE FORCE OVERRIDES
+  -- 3. NEO-TREE (Cleaner UI)
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      window = {
+        mappings = {
+          ["<leader>Q"] = "none",
+        }
+      },
+      source_selector = {
+        winbar = false,
+        statusline = false,
+      },
+      hide_root_node = true,
+      retain_hidden_root_indent = true,
+    },
+  },
+
+  -- 4. BUFFERLINE (Remove "Neo-tree" sidebar title)
+  {
+    "akinsho/bufferline.nvim",
+    opts = function(_, opts)
+      opts.options = opts.options or {}
+      opts.options.offsets = opts.options.offsets or {}
+      for _, offset in ipairs(opts.options.offsets) do
+        if offset.filetype == "neo-tree" then
+          offset.text = "" -- Kill the text
+        end
+      end
+      return opts
+    end,
+  },
+
+  -- 5. BRUTE FORCE OVERRIDES
   {
     "LazyVim/LazyVim",
     init = function()
@@ -29,6 +60,19 @@ return {
       vim.opt.autowrite = true
       vim.opt.autowriteall = true
       vim.opt.sessionoptions = "curdir,buffers,tabpages,winsize,help,globals,folds,terminal"
+      vim.opt.winbar = "" -- Globally disable winbar just in case
+
+      -- FORCE DISABLE WINBAR (This kills the "Neo-tree" text)
+      vim.api.nvim_create_autocmd({ "FileType", "BufWinEnter", "WinEnter" }, {
+        pattern = "neo-tree",
+        callback = function()
+          vim.schedule(function()
+            vim.opt_local.winbar = ""
+            -- Force redraw
+            vim.cmd("redrawstatus")
+          end)
+        end,
+      })
 
       -- AUTO-RESTORE
       vim.api.nvim_create_autocmd("VimEnter", {
