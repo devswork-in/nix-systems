@@ -18,6 +18,11 @@ in {
     }
     {
       type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/persistence.lua";
+      dest = "~/.config/nvim/lua/plugins/persistence.lua";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/modules/core/configs/common/aliases";
       dest = "~/.config/aliases";
     }
