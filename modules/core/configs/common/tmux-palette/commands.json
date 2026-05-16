@@ -4,5 +4,11 @@
     "category": "System",
     "title": "Reload Config",
     "action": { "tmux": "source-file ~/.tmux.conf \\; display-message 'Config reloaded'" }
+  },
+  {
+    "icon": "󰑖",
+    "category": "Tools",
+    "title": "Monocle (Review)",
+    "action": { "tmux": "display-popup -E -w 90% -h 90% 'monocle'" }
   }
 ]

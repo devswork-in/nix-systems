@@ -51,6 +51,7 @@
     acpi
     axel
     python3
+    bun
     tree
     tmux
     lsof
