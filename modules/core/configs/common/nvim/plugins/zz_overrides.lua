@@ -35,10 +35,11 @@ return {
     },
   },
 
-  -- 3. GLOBAL OVERRIDES (Runs when this plugin is loaded)
+  -- 3. GLOBAL OVERRIDES (Runs on startup)
   {
     "LazyVim/LazyVim",
-    config = function(_, opts)
+    -- Using init ensures this runs early and consistently
+    init = function()
       -- Force these options even if lua/config/options.lua says otherwise
       vim.opt.autowrite = true
       vim.opt.autowriteall = true
@@ -47,22 +48,27 @@ return {
       vim.opt.shada = "!,'100,<50,s10,h"
 
       -- OVERRIDE <leader>Q
-      -- We use a timer to ensure this runs AFTER lua/config/keymaps.lua
+      -- We use a timer to ensure this runs AFTER core keymaps are loaded
       vim.defer_fn(function()
         vim.keymap.set("n", "<leader>Q", function()
-          -- Save session
-          pcall(function() require("persistence").save() end)
+          -- Save session safely
+          local p_ok, persistence = pcall(require, "persistence")
+          if p_ok then
+            pcall(persistence.save)
+          end
+          
           -- Save all files
           vim.cmd("silent! wa")
-          -- Quit
+          
+          -- Quit all
           vim.cmd("qa")
         end, { desc = "Quit and Save All", noremap = true, silent = true })
-      end, 100)
+      end, 200)
 
       -- Add FocusLost fallback
       vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave", "VimLeavePre" }, {
         callback = function()
-          if vim.bo.modifiable and vim.bo.modified then
+          if vim.bo.modifiable and vim.bo.modified and vim.fn.expand("%") ~= "" then
             vim.cmd("silent! update")
           end
         end,
