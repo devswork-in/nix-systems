@@ -91,11 +91,16 @@ return {
                 width = math.floor(vim.o.columns * 0.85),
                 height = math.floor(vim.o.lines * 0.85),
               },
-              on_open = function(term)
+              on_open = function(t)
                 vim.cmd("startinsert!")
+                -- If we resumed/started a main session, track it for <leader>ap
+                if choice ~= "󰒲 List All" then
+                  pi_term = t
+                  vim.api.nvim_buf_set_keymap(t.bufnr, "t", "<leader>ap", "<cmd>close<CR>", { noremap = true, silent = true })
+                end
               end,
             })
-            term:spawn()
+            term:toggle()
           end)
         end,
         desc = "Pi Agent Sessions Menu",
