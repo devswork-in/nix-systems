@@ -26,12 +26,6 @@ return {
             pi_term = Terminal:new({
               cmd = "pi -r",
               dir = "git_dir",
-              direction = "float",
-              float_opts = {
-                border = "rounded",
-                width = math.floor(vim.o.columns * 0.85),
-                height = math.floor(vim.o.lines * 0.85),
-              },
               on_open = function(term)
                 vim.cmd("startinsert!")
                 vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<leader>ap", "<cmd>close<CR>", { noremap = true, silent = true })
@@ -51,13 +45,7 @@ return {
           local new_pi = Terminal:new({
             cmd = "pi",
             dir = "git_dir",
-            direction = "float",
             close_on_exit = true,
-            float_opts = {
-              border = "rounded",
-              width = math.floor(vim.o.columns * 0.85),
-              height = math.floor(vim.o.lines * 0.85),
-            },
             on_open = function(term)
               vim.cmd("startinsert!")
             end,
@@ -84,13 +72,7 @@ return {
             local term = Terminal:new({
               cmd = cmd,
               dir = "git_dir",
-              direction = "float",
               close_on_exit = (choice == "󰒲 List All"),
-              float_opts = {
-                border = "double",
-                width = math.floor(vim.o.columns * 0.85),
-                height = math.floor(vim.o.lines * 0.85),
-              },
               on_open = function(t)
                 vim.cmd("startinsert!")
                 -- If we resumed/started a main session, track it for <leader>ap
@@ -155,13 +137,7 @@ return {
             local context_pi = Terminal:new({
               cmd = string.format('pi --append-system-prompt "%s" "%s"', escaped_sys, escaped_msg),
               dir = "git_dir",
-              direction = "float",
               close_on_exit = false,
-              float_opts = {
-                border = "rounded",
-                width = math.floor(vim.o.columns * 0.85),
-                height = math.floor(vim.o.lines * 0.85),
-              },
               on_open = function(term)
                 vim.cmd("startinsert!")
                 vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<leader>ac", "<cmd>close<CR>", { noremap = true, silent = true })
@@ -198,13 +174,7 @@ return {
             local context_pi = Terminal:new({
               cmd = string.format('pi --append-system-prompt "%s" "%s"', escaped_sys, escaped_msg),
               dir = "git_dir",
-              direction = "float",
               close_on_exit = false,
-              float_opts = {
-                border = "rounded",
-                width = math.floor(vim.o.columns * 0.85),
-                height = math.floor(vim.o.lines * 0.85),
-              },
               on_open = function(term)
                 vim.cmd("startinsert!")
                 vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<leader>ac", "<cmd>close<CR>", { noremap = true, silent = true })
