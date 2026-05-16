@@ -33,6 +33,11 @@ in {
     }
     {
       type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/keymaps.lua";
+      dest = "~/.config/nvim/lua/config/keymaps.lua";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/modules/core/configs/common/aliases";
       dest = "~/.config/aliases";
     }

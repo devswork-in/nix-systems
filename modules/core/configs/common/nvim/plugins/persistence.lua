@@ -1,7 +1,7 @@
 return {
   {
     "folke/persistence.nvim",
-    event = "BufReadPre", -- this will only start session saving when an actual file is opened
+    event = { "BufReadPre", "VimEnter" }, -- Start session saving on enter or file read
     opts = {
       -- options
     },
