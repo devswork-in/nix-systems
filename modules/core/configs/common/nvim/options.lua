@@ -1,5 +1,4 @@
 -- Aggressive session and file saving options
-vim.opt.autosave = true
 vim.opt.autowrite = true
 vim.opt.autowriteall = true
 
