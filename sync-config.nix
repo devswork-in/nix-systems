@@ -33,8 +33,8 @@ in {
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/keymaps.lua";
-      dest = "~/.config/nvim/lua/config/keymaps.lua";
+      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/save-on-quit.lua";
+      dest = "~/.config/nvim/lua/plugins/save-on-quit.lua";
     }
     {
       type = "local";
