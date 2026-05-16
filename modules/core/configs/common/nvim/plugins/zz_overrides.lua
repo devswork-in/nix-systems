@@ -34,7 +34,13 @@ return {
       vim.api.nvim_create_autocmd("VimEnter", {
         group = vim.api.nvim_create_augroup("NixAutoRestore", { clear = true }),
         callback = function()
-          if vim.fn.argc() == 0 and not vim.g.started_with_stdin then
+          -- Allow restore if:
+          -- 1. No arguments are passed (nvim)
+          -- 2. Exactly one directory argument is passed (nvim .)
+          local argc = vim.fn.argc()
+          local should_restore = (argc == 0) or (argc == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1)
+
+          if should_restore and not vim.g.started_with_stdin then
             require("persistence").load()
           end
         end,
