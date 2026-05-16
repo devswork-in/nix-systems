@@ -90,7 +90,10 @@ in {
       type = "git";
       source = "https://github.com/eduwass/tmux-palette";
       dest = "~/.config/tmux/tmux-palette";
-      postSync = "cd ~/.config/tmux/tmux-palette && bun install --silent";
+      postSync = if pkgs != null then
+        "cd ~/.config/tmux/tmux-palette && ${pkgs.bun}/bin/bun install --silent"
+      else
+        "cd ~/.config/tmux/tmux-palette && bun install --silent";
     }
     {
       type = "local";
