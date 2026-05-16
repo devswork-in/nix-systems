@@ -18,23 +18,8 @@ in {
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/persistence.lua";
-      dest = "~/.config/nvim/lua/plugins/persistence.lua";
-    }
-    {
-      type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/auto-save.lua";
-      dest = "~/.config/nvim/lua/plugins/auto-save.lua";
-    }
-    {
-      type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/options.lua";
-      dest = "~/.config/nvim/lua/config/options.lua";
-    }
-    {
-      type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/save-on-quit.lua";
-      dest = "~/.config/nvim/lua/plugins/save-on-quit.lua";
+      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/zz_overrides.lua";
+      dest = "~/.config/nvim/lua/plugins/zz_overrides.lua";
     }
     {
       type = "local";
