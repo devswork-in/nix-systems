@@ -21,7 +21,7 @@ Opinionated NixOS configs for my devices.
 │   ├── services/           # Service modules
 │   └── extras/             # Additional modules
 ├── scheduled-scripts/      # Scheduled scripts
-├── systems/                # Machine-specific configs
+├── hosts/                  # Machine-specific configs
 ├── flake.nix               # Main configuration
 ├── config.nix              # User settings
 └── sync-config.nix         # Sync configuration
@@ -40,7 +40,7 @@ sudo sh -c 'curl -sSL https://raw.githubusercontent.com/devswork-in/nix-systems/
 
 ## Systems
 
-[omnix](systems/omnix/), [blade](systems/blade/), [cospi](systems/cospi/), [phoenix](systems/phoenix/)
+[omnix](hosts/omnix/), [blade](hosts/blade/), [cospi](hosts/cospi/), [phoenix](hosts/phoenix/)
 
 ## Commands
 

@@ -67,7 +67,7 @@ Additional modules. See [`modules/extras/`](../modules/extras/).
 
 - Configure services in [`config.nix`](../config.nix)
 - Import modules in `configuration.nix`
-- Examples: [omnix/configuration.nix](../systems/omnix/configuration.nix), [server/configuration.nix](../systems/server/configuration.nix)
+- Examples: [omnix/configuration.nix](../hosts/omnix/configuration.nix), [server/configuration.nix](../hosts/server/configuration.nix)
 
 ```bash
 sudo nixos-rebuild switch --flake .#<hostname> --impure

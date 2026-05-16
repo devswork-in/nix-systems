@@ -1,8 +1,8 @@
-# System Configurations
+# Host Configurations
 
 NixOS configurations for machines.
 
-## Systems
+## Hosts
 
 [omnix/](omnix/), [cospi/](cospi/), [server/](server/), [blade/](blade/), [phoenix/](phoenix/)
 
@@ -16,8 +16,8 @@ NixOS configurations for machines.
 ## Add System
 
 ```bash
-mkdir -p systems/newsystem/
-nixos-generate-config --show-hardware-config > systems/newsystem/hardware.nix
+mkdir -p hosts/newhost/
+nixos-generate-config --show-hardware-config > hosts/newhost/hardware.nix
 ```
 
 Register in [flake.nix](../flake.nix)
