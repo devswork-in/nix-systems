@@ -30,6 +30,16 @@
   };
   services.blueman.enable = true;
 
+  systemd.services.bluetooth-rfkill-unblock = {
+    description = "Unblock Bluetooth before BlueZ starts";
+    before = [ "bluetooth.service" ];
+    wantedBy = [ "bluetooth.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.util-linux}/bin/rfkill unblock bluetooth";
+    };
+  };
+
   # System packages (Niri-specific and general Wayland tools)
   environment.systemPackages = with pkgs; [
     imv
