@@ -19,7 +19,15 @@ return {
     },
   },
 
-  -- 3. NEO-TREE (Cleaner UI)
+  -- 3. TOGGLETERM (Kill glitchy Alt+t)
+  {
+    "akinsho/toggleterm.nvim",
+    keys = {
+      { "<A-t>", false },
+    },
+  },
+
+  -- 4. NEO-TREE (Cleaner UI)
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
