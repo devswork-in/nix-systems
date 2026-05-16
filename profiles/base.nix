@@ -1,7 +1,7 @@
 # Base profile - Common configuration for all systems
 # This profile contains settings shared across all NixOS systems
 
-{ config, pkgs, lib, userConfig, nixosVersion, ... }:
+{ config, pkgs, lib, userConfig, nixosVersion, inputs, ... }:
 
 {
   # Nix settings common to all systems
@@ -21,6 +21,7 @@
         "https://cache.iog.io"
         "https://cache.garnix.io?priority=41"
         "https://numtide.cachix.org"
+        "https://attic.xuyh0120.win/lantian"
       ];
 
       # Trusted public keys for binary caches
@@ -31,6 +32,7 @@
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
         "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
         "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
+        "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
       ];
 
       # Automatically optimize store by hard-linking identical files
@@ -53,6 +55,8 @@
       download-buffer-size = 524288000;
     };
   };
+
+  nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ];
 
   # nixpkgs.config (allowUnfree, allowInsecure) is set in lib/mkSystemConfig.nix
 

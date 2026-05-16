@@ -25,7 +25,6 @@
     ../../modules/desktop-utils/tlp.nix
     ../../modules/desktop-utils/performance-optimization.nix
     # ../../modules/apps/kiro
-    ../../modules/extras/kernels/latest.nix
   ];
 
   # Disable GDM - using TTY auto-login with session-manager
@@ -65,6 +64,9 @@
 
   # Enable fstrim for SSD performance
   services.fstrim.enable = true;
+
+  # CachyOS kernel from the upstream cached flake input.
+  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
   # Enable QEMU binfmt emulation for cross-architecture builds (e.g., aarch64)
   # Required for building phoenix-arm (aarch64-linux) images on omnix (x86_64-linux)
