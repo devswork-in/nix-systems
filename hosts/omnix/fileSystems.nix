@@ -3,6 +3,8 @@
     ../../modules/core/common/swap.nix
   ];
 
+  swap.size = 16384;
+
   fileSystems = {
     "/boot" = {
       device = "/dev/nvme0n1p1";
