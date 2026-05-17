@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 let
   offsetFile = /var/lib/nixos/resume-offset;
@@ -11,8 +11,19 @@ let
 in
 {
   boot = {
-    resumeDevice = "/dev/nvme0n1p2";
+    resumeDevice = "/dev/nvme0n1p3";
     kernelParams = [ "resume_offset=${toString resumeOffset}" ];
+  };
+
+  # systemd-hibernate and related sleep services run inside a restricted sandbox (ProtectHome=yes) by default.
+  # Since our swapfile is located in /home, we MUST relax this sandbox so systemd can read the physical offset 
+  # of the swapfile. Otherwise, `systemctl hibernate` fails instantly with "No such file or directory" 
+  # because /home appears completely empty to the hibernation service.
+  systemd.services = {
+    systemd-hibernate.serviceConfig.ProtectHome = "read-only";
+    systemd-suspend-then-hibernate.serviceConfig.ProtectHome = "read-only";
+    systemd-hybrid-sleep.serviceConfig.ProtectHome = "read-only";
+    systemd-logind.serviceConfig.ProtectHome = "read-only";
   };
 
   # Suspend-then-hibernate everywhere
@@ -70,8 +81,9 @@ in
       Path = with pkgs; [ gawk gnused coreutils ];
       ExecStart = pkgs.writeShellScript "update-resume-offset" ''
         OFFSET_FILE="/var/lib/nixos/resume-offset"
+        SWAP_FILE="${config.swap.path}"
         
-        if [ ! -f /swapfile ]; then
+        if [ ! -f "$SWAP_FILE" ]; then
           exit 0
         fi
         
@@ -79,7 +91,7 @@ in
         ${pkgs.coreutils}/bin/mkdir -p "$(${pkgs.coreutils}/bin/dirname "$OFFSET_FILE")"
         
         # Calculate offset using absolute paths
-        ACTUAL_OFFSET=$(${pkgs.e2fsprogs}/bin/filefrag -v /swapfile | ${pkgs.gawk}/bin/awk '{if($1=="0:"){print $4}}' | ${pkgs.gnused}/bin/sed 's/\.\.//')
+        ACTUAL_OFFSET=$(${pkgs.e2fsprogs}/bin/filefrag -v "$SWAP_FILE" | ${pkgs.gawk}/bin/awk '{if($1=="0:"){print $4}}' | ${pkgs.gnused}/bin/sed 's/\.\.//')
         
         if [ -z "$ACTUAL_OFFSET" ]; then
             echo "Error: Failed to calculate swapfile offset"
@@ -101,7 +113,7 @@ in
         if [ "$ACTUAL_OFFSET" != "$CURRENT_STORED" ]; then
           echo "Updating resume offset from $CURRENT_STORED to $ACTUAL_OFFSET"
           echo "$ACTUAL_OFFSET" > "$OFFSET_FILE"
-          echo "WARNING: /swapfile offset has changed and resume-offset was updated."
+          echo "WARNING: $SWAP_FILE offset has changed and resume-offset was updated."
           echo "Please run 'nixos-rebuild switch --flake .#omnix --impure' to apply the new kernel parameter."
         fi
         

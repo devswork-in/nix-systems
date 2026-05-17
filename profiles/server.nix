@@ -91,12 +91,6 @@
     };
   };
 
-  # Default swap configuration for servers
-  swapDevices = lib.mkDefault [{
-    device = "/swapfile";
-    size = 4096; # 4GB swap file
-  }];
-
   # Tmux configuration for servers
   programs.tmux = {
     enable = true;
