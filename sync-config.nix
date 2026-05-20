@@ -13,16 +13,6 @@ in {
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/monocle.lua";
-      dest = "~/.config/nvim/lua/plugins/monocle.lua";
-    }
-    {
-      type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/nvim/plugins/zz_overrides.lua";
-      dest = "~/.config/nvim/lua/plugins/zz_overrides.lua";
-    }
-    {
-      type = "local";
       source = "${nixSystemsRoot}/modules/core/configs/common/aliases";
       dest = "~/.config/aliases";
     }
