@@ -110,6 +110,12 @@ return {
       vim.api.nvim_create_autocmd("VimEnter", {
         group = vim.api.nvim_create_augroup("NixAutoRestore", { clear = true }),
         callback = function()
+          local cwd = vim.fn.getcwd()
+          -- Don't restore if cwd is empty, root directory, or temp directory
+          if cwd == "" or cwd == "/" or cwd == "/tmp" then
+            return
+          end
+
           -- Allow restore if:
           -- 1. No arguments are passed (nvim)
           -- 2. Exactly one directory argument is passed (nvim .)
