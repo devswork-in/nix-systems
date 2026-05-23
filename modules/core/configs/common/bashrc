@@ -26,3 +26,6 @@ fi
 
 eval "$(direnv hook bash)"
 eval "$(starship init bash)"
+
+# Added by Antigravity CLI installer
+export PATH="/home/creator54/.local/bin:$PATH"

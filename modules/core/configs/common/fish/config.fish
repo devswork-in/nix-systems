@@ -114,3 +114,7 @@ alias x "rm -rf $argv"
 alias l 'v (ls | fzf )'
 alias d "cd ~/dev"
 
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/creator54/.local/bin" $PATH
