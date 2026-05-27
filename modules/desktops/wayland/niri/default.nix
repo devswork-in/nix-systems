@@ -52,7 +52,6 @@
     playerctl
     blueman
     swayosd
-    rofi
     imagemagick
     (pkgs.callPackage ../../../core/packages/swiv.nix {})
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})

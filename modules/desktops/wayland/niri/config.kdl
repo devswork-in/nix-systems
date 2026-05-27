@@ -181,7 +181,9 @@ binds {
     Mod+C { spawn "sh" "-c" "walker -m clipboard"; }
 
     // Local scripts launcher
-    Alt+Return { spawn "sh" "-c" "selected_script=$(ls ~/.local/bin | rofi -dmenu) && bash ~/.local/bin/$selected_script"; }
+    Alt+Shift+Return { spawn "kitty" "--directory" "~/roadmaps"; }
+    // Floating tmux terminal (scratchpad style)
+    Alt+Return { spawn "kitty" "--class" "floating-tmux" "tmux" "new-session" "-A" "-s" "scratchpad"; }
 
     // Configuration and Help
     Mod+E { spawn "sh" "-c" "kitty niri-edit-config"; }
@@ -347,12 +349,18 @@ window-rule {
 }
 
 window-rule {
+    match app-id="^floating-tmux$"
+    open-floating true
+    default-column-width { fixed 1200; }
+    default-window-height { fixed 800; }
+}
+
+window-rule {
     match app-id="^fzf-float$"
     open-floating true
     default-column-width { fixed 1650; }
     default-window-height { fixed 950; }
 }
-
 // Livewall window rule - make it smaller than full screen
 window-rule {
     match app-id="^yt-search$"
