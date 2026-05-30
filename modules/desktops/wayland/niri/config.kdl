@@ -180,8 +180,12 @@ binds {
     Mod+Slash { spawn "sh" "-c" "walker"; }
     Mod+C { spawn "sh" "-c" "walker -m clipboard"; }
 
-    // Local scripts launcher
-    Alt+Shift+Return { spawn "kitty" "--directory" "~/roadmaps"; }
+    // Launch/resume active growth track (awrit + AI split)
+    Alt+Shift+Return { spawn "kitty" "--directory" "~/roadmaps" "bin/goal"; }
+
+    // Roadmap manager (floating panel)
+    Alt+G { spawn "kitty" "--class" "fzf-float" "--directory" "~/roadmaps" "bin/manage"; }
+
     // Floating tmux terminal (scratchpad style)
     Alt+Return { spawn "kitty" "--class" "floating-tmux" "tmux" "new-session" "-A" "-s" "scratchpad"; }
 
