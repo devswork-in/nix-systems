@@ -186,8 +186,8 @@ binds {
     // Roadmap manager (floating panel)
     Alt+G { spawn "kitty" "--class" "fzf-float" "--directory" "~/roadmaps" "bin/manage"; }
 
-    // Floating tmux terminal (scratchpad style)
-    Alt+Return { spawn "kitty" "--class" "floating-tmux" "tmux" "new-session" "-A" "-s" "scratchpad"; }
+    // Floating tmux terminal (scratchpad style drop-down)
+    Alt+Return { spawn "toggle-scratchpad"; }
 
     // Configuration and Help
     Mod+E { spawn "sh" "-c" "kitty niri-edit-config"; }
@@ -333,6 +333,7 @@ spawn-at-startup "swayosd-server"
 spawn-at-startup "random-wallpaper"
 spawn-at-startup "nightlight-toggle" "on"
 spawn-at-startup "niri-sidebar" "listen"
+spawn-at-startup "scratchpad-daemon"
 
 // Window rules
 window-rule {
@@ -355,8 +356,8 @@ window-rule {
 window-rule {
     match app-id="^floating-tmux$"
     open-floating true
-    default-column-width { fixed 1200; }
-    default-window-height { fixed 800; }
+    default-column-width { fixed 1650; }
+    default-window-height { fixed 950; }
 }
 
 window-rule {

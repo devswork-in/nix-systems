@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+import json
+import subprocess
+import sys
+import os
+
+# LOG_FILE = "/tmp/scratchpad-daemon.log"
+
+def log(msg):
+    # print(msg, file=sys.stderr)
+    pass
+
+def get_scratchpad_id():
+    try:
+        res = subprocess.run(["niri", "msg", "--json", "windows"], capture_output=True, text=True, check=True)
+        windows = json.loads(res.stdout)
+        scratchpad = next((w for w in windows if w.get("app_id") == "floating-tmux"), None)
+        return scratchpad["id"] if scratchpad else None
+    except Exception as e:
+        log(f"Error getting windows: {e}")
+        return None
+
+def main():
+    log("Daemon starting...")
+    
+    # Start the event stream
+    proc = subprocess.Popen(["niri", "msg", "--json", "event-stream"], 
+                            stdout=subprocess.PIPE, 
+                            text=True, 
+                            bufsize=1)
+    
+    scratchpad_id = get_scratchpad_id()
+    log(f"Initial scratchpad_id: {scratchpad_id}")
+
+    for line in proc.stdout:
+        try:
+            event = json.loads(line)
+            
+            # Update scratchpad_id whenever windows change
+            if "WindowsChanged" in event:
+                windows = event["WindowsChanged"]["windows"]
+                scratchpad = next((w for w in windows if w.get("app_id") == "floating-tmux"), None)
+                new_id = scratchpad["id"] if scratchpad else None
+                if new_id != scratchpad_id:
+                    scratchpad_id = new_id
+                    log(f"Scratchpad ID changed to: {scratchpad_id}")
+
+            # Handle focus change
+            if "WindowFocusChanged" in event:
+                focused_id = event["WindowFocusChanged"]["id"]
+                # log(f"Focus changed to: {focused_id}")
+                
+                if scratchpad_id is not None and focused_id != scratchpad_id:
+                    # Scratchpad lost focus!
+                    log(f"Scratchpad {scratchpad_id} lost focus to {focused_id}. Hiding...")
+                    script_dir = os.path.dirname(os.path.realpath(__file__))
+                    subprocess.run([os.path.join(script_dir, "toggle-scratchpad"), "hide"])
+                    
+        except Exception as e:
+            log(f"Loop error: {e}")
+            continue
+
+if __name__ == "__main__":
+    main()

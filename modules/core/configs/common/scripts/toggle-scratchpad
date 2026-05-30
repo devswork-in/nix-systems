@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+import json
+import subprocess
+import sys
+
+def niri_msg(args):
+    try:
+        cmd = ["niri", "msg", "--json"] + args
+        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        return json.loads(res.stdout)
+    except Exception:
+        return None
+
+def niri_action(args):
+    subprocess.run(["niri", "msg", "action"] + args)
+
+def main():
+    command = sys.argv[1] if len(sys.argv) > 1 else "toggle"
+    
+    windows = niri_msg(["windows"])
+    if windows is None: sys.exit(1)
+
+    scratchpad = next((w for w in windows if w.get("app_id") == "floating-tmux"), None)
+
+    if not scratchpad:
+        if command in ["toggle", "show"]:
+            subprocess.Popen(["kitty", "--class", "floating-tmux", "tmux", "new-session", "-A", "-s", "scratchpad"])
+        return
+
+    if command == "toggle":
+        if scratchpad.get("is_focused"):
+            # If focused, hide it
+            niri_action(["move-window-to-workspace", "--window-id", str(scratchpad["id"]), "--focus", "false", "9"])
+            # Niri's focus-workspace-previous is still good to return focus
+            niri_action(["focus-workspace-previous"])
+        else:
+            # If not focused, show it
+            command = "show"
+
+    if command == "show":
+        workspaces = niri_msg(["workspaces"])
+        current_ws = next((ws for ws in workspaces if ws.get("is_focused")), None)
+        if current_ws:
+            # Bring it to current workspace and focus it
+            niri_action(["move-window-to-workspace", "--window-id", str(scratchpad["id"]), str(current_ws["idx"])])
+            niri_action(["focus-window", "--id", str(scratchpad["id"])])
+
+    if command == "hide":
+        # Just move to background without changing focus
+        niri_action(["move-window-to-workspace", "--window-id", str(scratchpad["id"]), "--focus", "false", "9"])
+
+if __name__ == "__main__":
+    main()
