@@ -27,3 +27,6 @@ graphify-out/
 awrit-debug.log
 awrit_startup.log
 modules/core/configs/common/scripts/agy
+.antigravitycli/
+.commandcode/
+modules/core/configs/common/scripts/kimchi
