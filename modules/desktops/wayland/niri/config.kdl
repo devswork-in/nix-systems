@@ -319,6 +319,9 @@ binds {
     Mod+N { spawn "nightlight-toggle"; }
     Mod+Shift+N { spawn "nightlight-warmer"; }
     Mod+Ctrl+N { spawn "nightlight-cooler"; }
+
+    // Voquill Dictation (Global Wayland trigger)
+    Ctrl+Space { spawn "bash" "-c" "~/.config/com.voquill.desktop.local/trigger-hotkey.sh dictate"; }
 }
 
 // Spawn programs at startup
@@ -400,4 +403,10 @@ window-rule {
     open-floating true
     default-column-width { fixed 600; }
     default-window-height { fixed 400; }
+}
+
+// Voquill floating window
+window-rule {
+    match app-id="(?i)^voquill$"
+    open-floating true
 }

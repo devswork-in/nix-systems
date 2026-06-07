@@ -25,6 +25,7 @@
     ../../modules/desktop-utils/tlp.nix
     ../../modules/desktop-utils/performance-optimization.nix
     # ../../modules/apps/kiro
+    ../../modules/apps/voquill
   ];
 
   # Disable GDM - using TTY auto-login with session-manager
@@ -104,6 +105,8 @@
       { command = "/home/${userConfig.user.name}/.local/bin/nixos-config-sync"; options = [ "NOPASSWD" ]; }
     ];
   }];
+
+  programs.voquill.enable = true;
 
   # System-specific user groups (extends profile groups)
   users.users.${userConfig.user.name}.extraGroups = [ "input" ];
