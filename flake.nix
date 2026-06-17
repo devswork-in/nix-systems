@@ -76,14 +76,17 @@
       userConfig = import ./config.nix { inherit (nixpkgs) lib; };
 
       # Get flake root dynamically
-      # Priority: NIX_CONFIG_DIR > PWD > self.outPath
+      # Priority: NIX_CONFIG_DIR > PWD > /etc/nixos > self.outPath
       flakeRoot = let
         nixConfigDir = builtins.getEnv "NIX_CONFIG_DIR";
         pwd = builtins.getEnv "PWD";
+        etcNixos = "/etc/nixos";
       in if nixConfigDir != "" then
         nixConfigDir
       else if pwd != "" then
         pwd
+      else if builtins.pathExists etcNixos then
+        etcNixos
       else
         builtins.toString self.outPath;
 
