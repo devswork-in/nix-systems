@@ -15,4 +15,4 @@ FLAKE_DIR="$REPO_PATH"
 SYSTEM_NAME="${NIX_SYSTEM:-$(hostname)}"
 
 echo "Rebuilding system '$SYSTEM_NAME' from '$FLAKE_DIR'..."
-exec sudo nixos-rebuild switch --flake "$FLAKE_DIR#$SYSTEM_NAME" --impure "$@"
+exec sudo NIX_CONFIG_DIR="$FLAKE_DIR" nixos-rebuild switch --flake "$FLAKE_DIR#$SYSTEM_NAME" --impure "$@"
