@@ -69,28 +69,19 @@ if status is-interactive
     end
 end
 
-# Auto-create and activate default Python virtual environment
-if test -d $HOME/.venv && test -f $HOME/.venv/bin/activate.fish
-    # Virtual environment exists and is valid, activate it
-    source $HOME/.venv/bin/activate.fish
-else
-    # Virtual environment doesn't exist or is invalid, create and activate it
-    if test -d $HOME/.venv
-        # If directory exists but no activate.fish, remove it and recreate
-        echo "Recreating invalid virtual environment..."
-        rm -rf $HOME/.venv
-    else
-        echo "Creating default Python virtual environment..."
-    end
-
-    # Create the virtual environment
-    python -m venv $HOME/.venv
-
-    # Activate it if creation was successful
-    if test -f $HOME/.venv/bin/activate.fish
+# Auto-activate default Python virtual environment at ~/.venv
+# Only activate if no project-specific VIRTUAL_ENV is already set
+if not set -q VIRTUAL_ENV
+    if test -d $HOME/.venv && test -f $HOME/.venv/bin/activate.fish
         source $HOME/.venv/bin/activate.fish
-    else
-        echo "Warning: Could not create virtual environment properly"
+        # ponytail: activate.fish uses set -gx which exports VIRTUAL_ENV to child
+        # processes (nix shells, subshells). Strip the export flag by erasing and
+        # re-setting without -x. The variable stays visible to fish/starship for
+        # prompt display but does NOT bleed into uv or nix environments.
+        set -l _venv $VIRTUAL_ENV
+        set -e VIRTUAL_ENV
+        set -e VIRTUAL_ENV_PROMPT
+        set -g VIRTUAL_ENV $_venv
     end
 end
 

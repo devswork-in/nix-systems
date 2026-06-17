@@ -3,8 +3,8 @@ function activate_venv -d "Activate default Python virtual environment at ~/.ven
         if test -f $HOME/.venv/bin/activate.fish
             source $HOME/.venv/bin/activate.fish
         else
-            set -gx VIRTUAL_ENV $HOME/.venv
-            set -gx PATH $HOME/.venv/bin $PATH
+            set -x VIRTUAL_ENV $HOME/.venv
+            set -x PATH $HOME/.venv/bin $PATH
         end
         echo "Default virtual environment activated: $HOME/.venv"
     else
