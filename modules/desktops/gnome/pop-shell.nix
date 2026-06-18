@@ -145,10 +145,7 @@
           "system-monitor@gnome-shell-extensions.gcampax.github.com" # Replaced with Vitals
         ];
 
-        "org/gnome/desktop/background" = {
-          picture-uri = "file://${./wallpaper.jpg}";
-          picture-uri-dark = "file://${./wallpaper.jpg}";
-        };
+        # Removed missing wallpaper.jpg reference
 
         # If not disabled <Super>num keys will open pinned favourite applications
         "org/gnome/shell".favorite-apps = "@as []";

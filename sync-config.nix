@@ -93,13 +93,13 @@ in {
     }
     {
       type = "git";
-      source = "https://github.com/creator54/blog.creator54.me";
+      source = "https://github.com/creator54/blogger";
       dest = "${paths.base}/blog.${user.domain}";
       # Build the site after sync
       postSync = if pkgs != null then
-        "${pkgs.nix}/bin/nix-shell -I nixpkgs=${pkgs.path} -p pkg-config bundler ruby libffi zlib gcc gnumake --run 'bundle install && bundle exec jekyll build'"
+        "${pkgs.nix}/bin/nix-shell -I nixpkgs=${pkgs.path} -p pnpm nodejs_22 --run 'pnpm install && pnpm run build'"
       else
-        "nix-shell -p pkg-config bundler ruby libffi zlib gcc gnumake --run 'bundle install && bundle exec jekyll build'";
+        "nix-shell -p pnpm nodejs_22 --run 'pnpm install && pnpm run build'";
     }
     {
       type = "local";
