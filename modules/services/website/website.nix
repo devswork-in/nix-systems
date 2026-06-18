@@ -42,7 +42,7 @@ in
         };
         "blog.${userConfig.user.domain}" = {
           inherit (httpsSettings) enableACME forceSSL;
-          root = "${userConfig.paths.base}/blog.${userConfig.user.domain}/_site";
+          root = "${userConfig.paths.base}/blog.${userConfig.user.domain}/dist";
         };
         "labs.${userConfig.user.domain}" = {
           inherit (httpsSettings) enableACME forceSSL;
