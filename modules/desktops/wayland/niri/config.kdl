@@ -171,6 +171,7 @@ layout {
 binds {
     // Mod key (Super/Windows key)
     Mod+Shift+Return { spawn "kitty"; }
+    Mod+Return { spawn "kitty" "sh" "-c" "kitty @ set-spacing --match=recent:0 padding=0; awrit --remote-debugging-port=9222"; }
 
     // Window switching (Alt+Tab) - cycles through columns with wrap-around
     Alt+Tab { focus-column-right-or-first; }
@@ -185,6 +186,7 @@ binds {
 
     // Roadmap manager (floating panel)
     Alt+G { spawn "kitty" "--class" "fzf-float" "--directory" "~/roadmaps" "bin/manage"; }
+    Alt+Shift+G { spawn "kitty" "--class" "fzf-float" "bash" "-c" "echo -e 'agy --dangerously-skip-permissions\ncmd --trust --yolo\ngemini --skip-trust --approval-mode yolo\nclaude --permission-mode bypassPermissions\ncodex --dangerously-bypass-approvals-and-sandbox\nkiro-cli chat -a --classic\naider\nkimchi --yolo' | fzf --header 'Select LLM Tool' > ~/.config/llm-split/default-tool"; }
 
     // Floating tmux terminal (scratchpad style drop-down)
     Alt+Return { spawn "toggle-scratchpad"; }
