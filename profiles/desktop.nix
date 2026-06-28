@@ -68,8 +68,15 @@
     options = lib.mkDefault "--delete-older-than 3d";
   };
 
-  # Hardware clock in local time (useful for dual-boot with Windows)
-  time.hardwareClockInLocalTime = true;
+  # Re-sync clock after resume - timesyncd does not re-query NTP on wake
+  systemd.services.ntp-resync-resume = {
+    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
+    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl restart systemd-timesyncd";
+    };
+  };
 
   # Readahead service - DISABLED: negligible benefit on NVMe SSDs
   # services.readahead.enable = lib.mkDefault true;
