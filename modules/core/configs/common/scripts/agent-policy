@@ -1,0 +1,493 @@
+#!/usr/bin/env python3
+"""Install and verify shared policy for local CLI agents."""
+
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Callable, Sequence
+
+
+MARKER = "<!-- agent-policy:v1 -->"
+PONYTAIL_REPO = "DietrichGebert/ponytail"
+PONYTAIL_URL = f"https://github.com/{PONYTAIL_REPO}"
+SCRIPT_PATH = Path(__file__).resolve()
+DEFAULT_POLICY_DIR = SCRIPT_PATH.parent.parent / "agent-policy"
+DEFAULT_CONFIG_PATH = DEFAULT_POLICY_DIR / "tools.json"
+SUPPORTED_INTEGRATIONS = {
+    "agy",
+    "claude",
+    "codex",
+    "embedded",
+    "gemini",
+    "grok",
+    "hermes",
+    "kiro",
+    "pi",
+}
+
+
+class PolicyError(RuntimeError):
+    pass
+
+
+@dataclass(frozen=True)
+class ToolConfig:
+    id: str
+    commands: tuple[str, ...]
+    destination: Path
+    appendix: str | None
+    ponytail: tuple[str, ...]
+
+
+def require_string(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise PolicyError(f"{field} must be a non-empty string")
+    return value
+
+
+def require_strings(value: Any, field: str) -> tuple[str, ...]:
+    if not isinstance(value, list) or not value:
+        raise PolicyError(f"{field} must be a non-empty string array")
+    return tuple(require_string(item, field) for item in value)
+
+
+def load_tools(config_path: Path) -> tuple[ToolConfig, ...]:
+    try:
+        data = json.loads(config_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PolicyError(f"cannot read {config_path}: {exc}") from exc
+
+    if not isinstance(data, dict) or data.get("version") != 1:
+        raise PolicyError(f"{config_path} must use schema version 1")
+    raw_tools = data.get("tools")
+    if not isinstance(raw_tools, list):
+        raise PolicyError(f"{config_path}: tools must be an array")
+
+    seen_ids: set[str] = set()
+    tools: list[ToolConfig] = []
+    for index, raw in enumerate(raw_tools):
+        field = f"tools[{index}]"
+        if not isinstance(raw, dict):
+            raise PolicyError(f"{field} must be an object")
+
+        tool_id = require_string(raw.get("id"), f"{field}.id")
+        if tool_id in seen_ids:
+            raise PolicyError(f"duplicate tool id: {tool_id}")
+        seen_ids.add(tool_id)
+
+        destination = Path(
+            require_string(raw.get("destination"), f"{field}.destination")
+        )
+        if destination.is_absolute() or ".." in destination.parts:
+            raise PolicyError(f"{field}.destination must stay inside the target home")
+
+        appendix_value = raw.get("appendix")
+        if appendix_value is not None:
+            appendix = require_string(appendix_value, f"{field}.appendix")
+            if Path(appendix).name != appendix or not appendix.endswith(".md"):
+                raise PolicyError(f"{field}.appendix must be a Markdown filename")
+        else:
+            appendix = None
+
+        integrations = require_strings(raw.get("ponytail"), f"{field}.ponytail")
+        unknown = set(integrations) - SUPPORTED_INTEGRATIONS
+        if unknown:
+            raise PolicyError(
+                f"{field}.ponytail has unsupported values: {sorted(unknown)}"
+            )
+
+        tools.append(
+            ToolConfig(
+                id=tool_id,
+                commands=require_strings(raw.get("commands"), f"{field}.commands"),
+                destination=destination,
+                appendix=appendix,
+                ponytail=integrations,
+            )
+        )
+    return tuple(tools)
+
+
+def render_policy(tool: ToolConfig, policy_dir: Path) -> str:
+    parts: list[str] = []
+    if tool.appendix is not None:
+        appendix_path = policy_dir / tool.appendix
+        try:
+            parts.append(appendix_path.read_text(encoding="utf-8").rstrip())
+        except OSError as exc:
+            raise PolicyError(f"cannot read {appendix_path}: {exc}") from exc
+
+    base_path = policy_dir / "base.md"
+    try:
+        parts.append(base_path.read_text(encoding="utf-8").rstrip())
+    except OSError as exc:
+        raise PolicyError(f"cannot read {base_path}: {exc}") from exc
+    return "\n\n".join(parts) + "\n"
+
+
+def command_exists(command: str) -> bool:
+    return shutil.which(command) is not None
+
+
+def tool_is_installed(tool: ToolConfig) -> bool:
+    return any(command_exists(command) for command in tool.commands)
+
+
+def lexists(path: Path) -> bool:
+    return os.path.lexists(path)
+
+
+def next_backup_path(destination: Path) -> Path:
+    timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    candidate = destination.with_name(
+        f"{destination.name}.agent-policy-backup-{timestamp}"
+    )
+    counter = 1
+    while lexists(candidate):
+        candidate = destination.with_name(
+            f"{destination.name}.agent-policy-backup-{timestamp}.{counter}"
+        )
+        counter += 1
+    return candidate
+
+
+def backup_unmanaged(destination: Path) -> Path:
+    backup = next_backup_path(destination)
+    if destination.is_symlink():
+        backup.symlink_to(os.readlink(destination))
+    elif destination.is_file():
+        shutil.copy2(destination, backup)
+    else:
+        raise PolicyError(f"refusing to replace non-file destination: {destination}")
+    return backup
+
+
+def atomic_write(destination: Path, content: str) -> None:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.name}.", dir=destination.parent
+    )
+    temporary_path = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        temporary_path.chmod(0o644)
+        os.replace(temporary_path, destination)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+
+
+def apply_tool(tool: ToolConfig, home: Path, policy_dir: Path) -> bool:
+    destination = home / tool.destination
+    expected = render_policy(tool, policy_dir)
+    current: str | None = None
+    if lexists(destination):
+        try:
+            current = destination.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise PolicyError(f"cannot read {destination}: {exc}") from exc
+        if current == expected:
+            print(f"{tool.id}: unchanged")
+            return False
+        if MARKER not in current:
+            backup = backup_unmanaged(destination)
+            print(f"{tool.id}: backed up {backup}")
+
+    atomic_write(destination, expected)
+    print(f"{tool.id}: applied {destination}")
+    return True
+
+
+def capture(argv: Sequence[str]) -> str:
+    result = subprocess.run(
+        argv,
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    return result.stdout
+
+
+def contains(argv: Sequence[str], pattern: str) -> bool:
+    return re.search(pattern, capture(argv), re.IGNORECASE | re.MULTILINE) is not None
+
+
+def run_external(argv: Sequence[str]) -> bool:
+    print(f"run: {' '.join(argv)}")
+    return subprocess.run(argv, check=False).returncode == 0
+
+
+def status_codex(_: Path) -> bool:
+    return command_exists("codex") and contains(
+        ("codex", "plugin", "list", "--json"),
+        r'"pluginId"\s*:\s*"ponytail@ponytail"',
+    )
+
+
+def install_codex() -> bool:
+    if not contains(("codex", "plugin", "marketplace", "list"), r"\bponytail\b"):
+        if not run_external(("codex", "plugin", "marketplace", "add", PONYTAIL_REPO)):
+            return False
+    return run_external(("codex", "plugin", "add", "ponytail@ponytail"))
+
+
+def status_claude(_: Path) -> bool:
+    return command_exists("claude") and contains(
+        ("claude", "plugin", "list", "--json"), r"\bponytail\b"
+    )
+
+
+def install_claude() -> bool:
+    if not contains(
+        ("claude", "plugin", "marketplace", "list", "--json"),
+        r'"name"\s*:\s*"ponytail"',
+    ):
+        if not run_external(
+            ("claude", "plugin", "marketplace", "add", "--scope", "user", PONYTAIL_REPO)
+        ):
+            return False
+    return run_external(
+        ("claude", "plugin", "install", "--scope", "user", "ponytail@ponytail")
+    )
+
+
+def status_gemini(_: Path) -> bool:
+    return command_exists("gemini") and contains(
+        ("gemini", "extensions", "list"), r"\bponytail\b"
+    )
+
+
+def install_gemini() -> bool:
+    return run_external(
+        (
+            "gemini",
+            "extensions",
+            "install",
+            PONYTAIL_URL,
+            "--auto-update",
+            "--consent",
+        )
+    )
+
+
+def status_agy(_: Path) -> bool:
+    return command_exists("agy") and contains(
+        ("agy", "plugin", "list"), r'"name"\s*:\s*"ponytail"'
+    )
+
+
+def install_agy() -> bool:
+    return run_external(("agy", "plugin", "install", PONYTAIL_URL))
+
+
+def status_pi(_: Path) -> bool:
+    return command_exists("pi") and contains(("pi", "list"), r"DietrichGebert/ponytail")
+
+
+def install_pi() -> bool:
+    return run_external(("pi", "install", f"git:github.com/{PONYTAIL_REPO}"))
+
+
+def status_hermes(_: Path) -> bool:
+    return command_exists("hermes") and contains(
+        ("hermes", "plugins", "list"), r"ponytail\s+.*enabled"
+    )
+
+
+def install_hermes() -> bool:
+    if contains(("hermes", "plugins", "list"), r"\bponytail\b"):
+        return run_external(("hermes", "plugins", "enable", "ponytail"))
+    return run_external(("hermes", "plugins", "install", PONYTAIL_REPO, "--enable"))
+
+
+def status_grok(home: Path) -> bool:
+    return (home / ".agents/skills/ponytail/SKILL.md").is_file()
+
+
+def status_kiro(home: Path) -> bool:
+    return (home / ".kiro/steering/ponytail.md").is_file()
+
+
+STATUS_HANDLERS: dict[str, Callable[[Path], bool]] = {
+    "agy": status_agy,
+    "claude": status_claude,
+    "codex": status_codex,
+    "gemini": status_gemini,
+    "grok": status_grok,
+    "hermes": status_hermes,
+    "kiro": status_kiro,
+    "pi": status_pi,
+}
+
+INSTALL_HANDLERS: dict[str, Callable[[], bool]] = {
+    "agy": install_agy,
+    "claude": install_claude,
+    "codex": install_codex,
+    "gemini": install_gemini,
+    "hermes": install_hermes,
+    "pi": install_pi,
+}
+
+INTEGRATION_COMMANDS: dict[str, tuple[str, ...]] = {
+    "agy": ("agy",),
+    "claude": ("claude",),
+    "codex": ("codex",),
+    "embedded": (),
+    "gemini": ("gemini",),
+    "grok": ("grok", "agent"),
+    "hermes": ("hermes",),
+    "kiro": ("kiro-cli",),
+    "pi": ("pi",),
+}
+
+
+def integration_is_relevant(name: str) -> bool:
+    commands = INTEGRATION_COMMANDS[name]
+    return not commands or any(command_exists(command) for command in commands)
+
+
+def check_ponytail(tools: Sequence[ToolConfig], home: Path) -> None:
+    seen: set[str] = set()
+    for tool in tools:
+        for integration in tool.ponytail:
+            if integration in seen or not integration_is_relevant(integration):
+                continue
+            seen.add(integration)
+            handler = STATUS_HANDLERS.get(integration)
+            if handler is not None and handler(home):
+                print(f"{integration}: ponytail native")
+            else:
+                print(f"{integration}: ponytail embedded fallback")
+
+
+def setup_ponytail(tools: Sequence[ToolConfig], home: Path) -> int:
+    failures = 0
+    seen: set[str] = set()
+    for tool in tools:
+        for integration in tool.ponytail:
+            if integration in seen or not integration_is_relevant(integration):
+                continue
+            seen.add(integration)
+            status = STATUS_HANDLERS.get(integration)
+            if status is not None and status(home):
+                print(f"{integration}: ponytail native")
+                continue
+            installer = INSTALL_HANDLERS.get(integration)
+            if installer is None:
+                print(f"{integration}: ponytail embedded fallback")
+                continue
+            if installer() and status is not None and status(home):
+                print(f"{integration}: ponytail installed")
+            else:
+                print(
+                    f"{integration}: ponytail install failed; embedded fallback active",
+                    file=sys.stderr,
+                )
+                failures += 1
+    return failures
+
+
+def selected_tools(
+    tools: Sequence[ToolConfig], include_all: bool
+) -> tuple[ToolConfig, ...]:
+    if include_all:
+        return tuple(tools)
+    return tuple(tool for tool in tools if tool_is_installed(tool))
+
+
+def command_apply(
+    tools: Sequence[ToolConfig], home: Path, policy_dir: Path, include_all: bool
+) -> int:
+    failures = 0
+    for tool in selected_tools(tools, include_all):
+        try:
+            apply_tool(tool, home, policy_dir)
+        except PolicyError as exc:
+            print(f"{tool.id}: {exc}", file=sys.stderr)
+            failures += 1
+    return failures
+
+
+def command_check(
+    tools: Sequence[ToolConfig], home: Path, policy_dir: Path, include_all: bool
+) -> int:
+    failures = 0
+    active = selected_tools(tools, include_all)
+    for tool in active:
+        destination = home / tool.destination
+        expected = render_policy(tool, policy_dir)
+        try:
+            current = destination.read_text(encoding="utf-8")
+        except OSError:
+            print(f"{tool.id}: policy missing at {destination}", file=sys.stderr)
+            failures += 1
+            continue
+        if current == expected:
+            print(f"{tool.id}: policy current")
+        else:
+            print(f"{tool.id}: policy stale at {destination}", file=sys.stderr)
+            failures += 1
+    check_ponytail(active, home)
+    return failures
+
+
+def command_list(tools: Sequence[ToolConfig], home: Path) -> int:
+    for tool in tools:
+        state = "installed" if tool_is_installed(tool) else "absent"
+        print(f"{tool.id}\t{state}\t{home / tool.destination}")
+    return 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG_PATH)
+    parser.add_argument("--home", type=Path, default=Path.home())
+    subparsers = parser.add_subparsers(dest="command", required=True)
+    for name in ("apply", "check", "setup"):
+        subparser = subparsers.add_parser(name)
+        subparser.add_argument(
+            "--all", action="store_true", help="include tools not present on PATH"
+        )
+    subparsers.add_parser("list")
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    config_path = args.config.expanduser().resolve()
+    policy_dir = config_path.parent
+    home = args.home.expanduser().resolve()
+    try:
+        tools = load_tools(config_path)
+        if args.command == "apply":
+            return min(command_apply(tools, home, policy_dir, args.all), 1)
+        if args.command == "check":
+            return min(command_check(tools, home, policy_dir, args.all), 1)
+        if args.command == "setup":
+            active = selected_tools(tools, args.all)
+            failures = command_apply(active, home, policy_dir, include_all=True)
+            failures += setup_ponytail(active, home)
+            failures += command_check(active, home, policy_dir, include_all=True)
+            return min(failures, 1)
+        return command_list(tools, home)
+    except PolicyError as exc:
+        print(f"agent-policy: {exc}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

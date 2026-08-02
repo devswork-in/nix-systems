@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "tools": [
+    {
+      "id": "codex",
+      "commands": ["codex"],
+      "destination": ".codex/AGENTS.md",
+      "appendix": "codex.md",
+      "ponytail": ["codex"]
+    },
+    {
+      "id": "claude-grok-agent",
+      "commands": ["claude", "grok", "agent"],
+      "destination": ".claude/CLAUDE.md",
+      "appendix": "claude.md",
+      "ponytail": ["claude", "grok"]
+    },
+    {
+      "id": "gemini-agy",
+      "commands": ["gemini", "agy"],
+      "destination": ".gemini/GEMINI.md",
+      "appendix": "gemini.md",
+      "ponytail": ["gemini", "agy"]
+    },
+    {
+      "id": "pi",
+      "commands": ["pi"],
+      "destination": ".pi/agent/AGENTS.md",
+      "appendix": "pi.md",
+      "ponytail": ["pi"]
+    },
+    {
+      "id": "kimchi",
+      "commands": ["kimchi"],
+      "destination": ".config/kimchi/harness/agent/AGENTS.md",
+      "appendix": null,
+      "ponytail": ["embedded"]
+    },
+    {
+      "id": "hermes",
+      "commands": ["hermes"],
+      "destination": ".hermes/SOUL.md",
+      "appendix": "hermes.md",
+      "ponytail": ["hermes"]
+    },
+    {
+      "id": "kiro",
+      "commands": ["kiro-cli"],
+      "destination": ".kiro/steering/style.md",
+      "appendix": "kiro.md",
+      "ponytail": ["kiro"]
+    }
+  ]
+}
