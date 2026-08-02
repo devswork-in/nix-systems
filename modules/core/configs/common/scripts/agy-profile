@@ -1,0 +1,651 @@
+#!/usr/bin/env python3
+"""Manage and launch isolated Antigravity CLI profiles."""
+
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import fcntl
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+from contextlib import contextmanager
+from pathlib import Path
+
+
+HOME_DIR = Path.home()
+CONFIG_DIR = HOME_DIR / ".config" / "agy-profiles"
+MANIFEST_PATH = CONFIG_DIR / "profiles.json"
+MANIFEST_LOCK_PATH = CONFIG_DIR / ".profiles.lock"
+DEFAULT_STATE_ROOT = HOME_DIR / ".local" / "share" / "agy-profiles" / "active"
+DEFAULT_REMOVED_ROOT = HOME_DIR / ".local" / "share" / "agy-profiles" / "removed"
+DEFAULT_SHARED_DIR = CONFIG_DIR / "shared"
+ORIGINAL_STATE_DIR = HOME_DIR / ".gemini" / "antigravity-cli"
+LINK_DIR = HOME_DIR / ".local" / "bin"
+SCRIPT_PATH = Path(__file__).resolve()
+PROFILE_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
+RESERVED_NAMES = {"agy", "agy-profile"}
+SHARED_LINK_ITEMS = ("plugins", "import_manifest.json")
+DEFAULT_PROFILES = ("agy1", "agy2", "agy3", "agy4")
+
+
+class ManagerError(RuntimeError):
+    pass
+
+
+def utc_now() -> str:
+    return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def timestamp_slug() -> str:
+    return dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+
+def lexists(path: Path) -> bool:
+    return os.path.lexists(path)
+
+
+def ensure_private_dir(path: Path) -> None:
+    path.mkdir(parents=True, exist_ok=True)
+    path.chmod(0o700)
+
+
+def validate_profile_name(name: str) -> str:
+    if not PROFILE_RE.fullmatch(name):
+        raise ManagerError(
+            f"Invalid profile name {name!r}; use a leading letter followed by letters, numbers, '_' or '-'."
+        )
+    if name in RESERVED_NAMES:
+        raise ManagerError(f"Profile name {name!r} is reserved.")
+    return name
+
+
+@contextmanager
+def manifest_lock():
+    ensure_private_dir(CONFIG_DIR)
+    with MANIFEST_LOCK_PATH.open("a+", encoding="utf-8") as lock_file:
+        os.chmod(MANIFEST_LOCK_PATH, 0o600)
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+
+def atomic_write_json(path: Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temporary_path = Path(temporary_name)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(value, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.chmod(temporary_path, 0o600)
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+
+
+def default_manifest(binary: str, profiles: list[str]) -> dict:
+    created_at = utc_now()
+    return {
+        "version": 1,
+        "agy_binary": binary,
+        "state_root": str(DEFAULT_STATE_ROOT),
+        "removed_root": str(DEFAULT_REMOVED_ROOT),
+        "shared_config": str(DEFAULT_SHARED_DIR),
+        "profiles": {
+            name: {"created_at": created_at, "enabled": True}
+            for name in profiles
+        },
+        "removed": {},
+    }
+
+
+def load_manifest() -> dict:
+    if not MANIFEST_PATH.is_file():
+        raise ManagerError("Profile setup is missing. Run: agy-profile setup")
+    try:
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ManagerError(f"Cannot read {MANIFEST_PATH}: {exc}") from exc
+    if manifest.get("version") != 1 or not isinstance(manifest.get("profiles"), dict):
+        raise ManagerError(f"Unsupported or malformed manifest: {MANIFEST_PATH}")
+    manifest.setdefault("removed", {})
+    return manifest
+
+
+def save_manifest(manifest: dict) -> None:
+    atomic_write_json(MANIFEST_PATH, manifest)
+
+
+def state_root(manifest: dict) -> Path:
+    return Path(manifest["state_root"]).expanduser()
+
+
+def removed_root(manifest: dict) -> Path:
+    return Path(manifest["removed_root"]).expanduser()
+
+
+def shared_dir(manifest: dict) -> Path:
+    return Path(manifest["shared_config"]).expanduser()
+
+
+def profile_state(manifest: dict, name: str) -> Path:
+    return state_root(manifest) / name / "antigravity-cli"
+
+
+def setup_shared_config(manifest: dict) -> None:
+    shared = shared_dir(manifest)
+    ensure_private_dir(shared)
+    ORIGINAL_STATE_DIR.mkdir(parents=True, exist_ok=True)
+
+    shared_settings = shared / "settings.json"
+    if not shared_settings.exists():
+        original_settings = ORIGINAL_STATE_DIR / "settings.json"
+        if original_settings.is_file():
+            shutil.copy2(original_settings, shared_settings)
+        else:
+            atomic_write_json(shared_settings, {})
+    shared_settings.chmod(0o600)
+
+    shared_plugins = shared / "plugins"
+    if not shared_plugins.exists():
+        original_plugins = ORIGINAL_STATE_DIR / "plugins"
+        if original_plugins.is_dir():
+            shutil.copytree(original_plugins, shared_plugins, symlinks=True)
+        else:
+            shared_plugins.mkdir()
+    shared_plugins.chmod(0o700)
+
+    shared_imports = shared / "import_manifest.json"
+    if not shared_imports.exists():
+        original_imports = ORIGINAL_STATE_DIR / "import_manifest.json"
+        if original_imports.is_file():
+            shutil.copy2(original_imports, shared_imports)
+        else:
+            atomic_write_json(shared_imports, {"imports": []})
+    shared_imports.chmod(0o600)
+
+
+def symlink_points_to(path: Path, target: Path) -> bool:
+    if not path.is_symlink():
+        return False
+    try:
+        return path.resolve(strict=False) == target.resolve(strict=False)
+    except OSError:
+        return False
+
+
+def move_aside(path: Path, backup_dir: Path) -> None:
+    ensure_private_dir(backup_dir)
+    destination = backup_dir / f"{path.name}.{timestamp_slug()}"
+    counter = 1
+    while lexists(destination):
+        destination = backup_dir / f"{path.name}.{timestamp_slug()}.{counter}"
+        counter += 1
+    shutil.move(str(path), str(destination))
+
+
+def ensure_profile_layout(manifest: dict, name: str) -> Path:
+    name = validate_profile_name(name)
+    state = profile_state(manifest, name)
+    ensure_private_dir(state)
+    shared = shared_dir(manifest)
+    backup_dir = state / ".profile-manager-backups"
+
+    shared_settings = shared / "settings.json"
+    profile_settings = state / "settings.json"
+    if symlink_points_to(profile_settings, shared_settings):
+        profile_settings.unlink()
+        shutil.copy2(shared_settings, profile_settings)
+    elif not lexists(profile_settings):
+        shutil.copy2(shared_settings, profile_settings)
+    profile_settings.chmod(0o600)
+
+    for item in SHARED_LINK_ITEMS:
+        source = shared / item
+        destination = state / item
+        if symlink_points_to(destination, source):
+            continue
+        if lexists(destination):
+            move_aside(destination, backup_dir)
+        destination.symlink_to(source, target_is_directory=source.is_dir())
+
+    lock_path = state / ".running.lock"
+    lock_path.touch(mode=0o600, exist_ok=True)
+    lock_path.chmod(0o600)
+    return state
+
+
+def managed_link(name: str) -> Path:
+    return LINK_DIR / name
+
+
+def is_managed_link(path: Path) -> bool:
+    if not path.is_symlink():
+        return False
+    try:
+        raw_target = os.readlink(path)
+        if raw_target == "agy-profile":
+            return True
+        return path.resolve(strict=False) == SCRIPT_PATH
+    except OSError:
+        return False
+
+
+def install_profile_link(name: str) -> None:
+    LINK_DIR.mkdir(parents=True, exist_ok=True)
+    link = managed_link(name)
+    if lexists(link):
+        if is_managed_link(link):
+            return
+        raise ManagerError(f"Refusing to replace unrelated command: {link}")
+    link.symlink_to("agy-profile")
+
+
+def remove_profile_link(name: str) -> None:
+    link = managed_link(name)
+    if not lexists(link):
+        return
+    if not is_managed_link(link):
+        raise ManagerError(f"Refusing to remove unrelated command: {link}")
+    link.unlink()
+
+
+def profile_is_running(state: Path) -> bool:
+    lock_path = state / ".running.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+", encoding="utf-8") as lock_file:
+        try:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return True
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+    return False
+
+
+def sync_manifest(manifest: dict) -> None:
+    setup_shared_config(manifest)
+    ensure_private_dir(state_root(manifest))
+    ensure_private_dir(removed_root(manifest))
+    for name, metadata in manifest["profiles"].items():
+        validate_profile_name(name)
+        if metadata.get("enabled", True):
+            ensure_profile_layout(manifest, name)
+            install_profile_link(name)
+
+    if LINK_DIR.is_dir():
+        active = set(manifest["profiles"])
+        for candidate in LINK_DIR.iterdir():
+            if candidate.name not in active and is_managed_link(candidate):
+                candidate.unlink()
+
+
+def resolve_agy_binary() -> str:
+    binary = shutil.which("agy")
+    if not binary:
+        raise ManagerError("The agy CLI is not installed or is missing from PATH.")
+    return os.path.abspath(binary)
+
+
+def cmd_setup(args: argparse.Namespace) -> None:
+    requested = args.profiles or list(DEFAULT_PROFILES)
+    requested = [validate_profile_name(name) for name in requested]
+    binary = resolve_agy_binary()
+    with manifest_lock():
+        if MANIFEST_PATH.exists():
+            manifest = load_manifest()
+            manifest["agy_binary"] = binary
+            for name in requested:
+                manifest["profiles"].setdefault(name, {"created_at": utc_now(), "enabled": True})
+        else:
+            manifest = default_manifest(binary, requested)
+        sync_manifest(manifest)
+        save_manifest(manifest)
+    print(f"Configured {len(manifest['profiles'])} AGY profiles.")
+    print("Launch each profile once and complete its Google sign-in.")
+
+
+def cmd_add(args: argparse.Namespace) -> None:
+    name = validate_profile_name(args.name)
+    with manifest_lock():
+        manifest = load_manifest()
+        if name in manifest["profiles"]:
+            raise ManagerError(f"Profile {name!r} already exists.")
+        if manifest.get("removed", {}).get(name):
+            raise ManagerError(f"Archived profile {name!r} exists; restore or purge it first.")
+        manifest["profiles"][name] = {"created_at": utc_now(), "enabled": True}
+        setup_shared_config(manifest)
+        ensure_profile_layout(manifest, name)
+        install_profile_link(name)
+        save_manifest(manifest)
+    print(f"Added {name}. Run it once to sign in.")
+
+
+def signed_in(state: Path) -> bool:
+    token = state / "antigravity-oauth-token"
+    try:
+        return token.is_file() and token.stat().st_size > 0
+    except OSError:
+        return False
+
+
+def cmd_list(_args: argparse.Namespace) -> None:
+    manifest = load_manifest()
+    rows: list[tuple[str, str, str, str]] = []
+    for name in sorted(manifest["profiles"]):
+        state = profile_state(manifest, name)
+        rows.append(
+            (
+                name,
+                "yes" if signed_in(state) else "no",
+                "yes" if state.exists() and profile_is_running(state) else "no",
+                str(state),
+            )
+        )
+
+    if rows:
+        widths = [
+            max(len(header), *(len(row[index]) for row in rows))
+            for index, header in enumerate(("PROFILE", "SIGNED-IN", "RUNNING", "STATE"))
+        ]
+        print(
+            f"{'PROFILE':<{widths[0]}}  {'SIGNED-IN':<{widths[1]}}  "
+            f"{'RUNNING':<{widths[2]}}  STATE"
+        )
+        for row in rows:
+            print(
+                f"{row[0]:<{widths[0]}}  {row[1]:<{widths[1]}}  "
+                f"{row[2]:<{widths[2]}}  {row[3]}"
+            )
+    else:
+        print("No active profiles.")
+
+    archived = manifest.get("removed", {})
+    if archived:
+        print("\nArchived:")
+        for name in sorted(archived):
+            print(f"  {name}: {len(archived[name])} snapshot(s)")
+
+
+def cmd_remove(args: argparse.Namespace) -> None:
+    name = validate_profile_name(args.name)
+    with manifest_lock():
+        manifest = load_manifest()
+        if name not in manifest["profiles"]:
+            raise ManagerError(f"Unknown active profile: {name}")
+        state = profile_state(manifest, name)
+        if state.exists() and profile_is_running(state):
+            raise ManagerError(f"Profile {name!r} is currently running.")
+
+        archive_parent = removed_root(manifest)
+        ensure_private_dir(archive_parent)
+        archive = archive_parent / f"{name}-{timestamp_slug()}"
+        if lexists(archive):
+            archive = archive_parent / f"{name}-{timestamp_slug()}-{os.getpid()}"
+        if state.exists():
+            shutil.move(str(state), str(archive))
+        remove_profile_link(name)
+        metadata = manifest["profiles"].pop(name)
+        manifest.setdefault("removed", {}).setdefault(name, []).append(
+            {
+                "archived_at": utc_now(),
+                "path": str(archive),
+                "profile": metadata,
+            }
+        )
+        save_manifest(manifest)
+    print(f"Removed {name}; its state is archived and can be restored.")
+
+
+def cmd_restore(args: argparse.Namespace) -> None:
+    name = validate_profile_name(args.name)
+    with manifest_lock():
+        manifest = load_manifest()
+        if name in manifest["profiles"]:
+            raise ManagerError(f"Profile {name!r} is already active.")
+        snapshots = manifest.get("removed", {}).get(name, [])
+        if not snapshots:
+            raise ManagerError(f"No archived profile named {name!r}.")
+        snapshot = snapshots.pop()
+        archive = Path(snapshot["path"])
+        if not archive.exists():
+            raise ManagerError(f"Archived state is missing: {archive}")
+        target = profile_state(manifest, name)
+        if target.exists():
+            raise ManagerError(f"Restore target already exists: {target}")
+        ensure_private_dir(target.parent)
+        shutil.move(str(archive), str(target))
+        manifest["profiles"][name] = snapshot.get("profile") or {
+            "created_at": utc_now(),
+            "enabled": True,
+        }
+        if snapshots:
+            manifest["removed"][name] = snapshots
+        else:
+            manifest["removed"].pop(name, None)
+        setup_shared_config(manifest)
+        ensure_profile_layout(manifest, name)
+        install_profile_link(name)
+        save_manifest(manifest)
+    print(f"Restored {name}.")
+
+
+def cmd_purge(args: argparse.Namespace) -> None:
+    name = validate_profile_name(args.name)
+    with manifest_lock():
+        manifest = load_manifest()
+        if name in manifest["profiles"]:
+            raise ManagerError(f"Remove active profile {name!r} before purging it.")
+        snapshots = manifest.get("removed", {}).get(name, [])
+        if not snapshots:
+            raise ManagerError(f"No archived profile named {name!r}.")
+
+        if not args.yes:
+            if not sys.stdin.isatty():
+                raise ManagerError("Permanent purge requires an interactive confirmation or --yes.")
+            typed = input(f"Type {name} to permanently delete its credentials and sessions: ")
+            if typed != name:
+                raise ManagerError("Confirmation did not match; nothing was deleted.")
+
+        for snapshot in snapshots:
+            archive = Path(snapshot["path"])
+            if archive.is_dir():
+                shutil.rmtree(archive)
+            elif lexists(archive):
+                archive.unlink()
+        manifest["removed"].pop(name, None)
+        save_manifest(manifest)
+    print(f"Permanently purged {name}.")
+
+
+def cmd_sync(_args: argparse.Namespace) -> None:
+    with manifest_lock():
+        manifest = load_manifest()
+        manifest["agy_binary"] = resolve_agy_binary()
+        sync_manifest(manifest)
+        save_manifest(manifest)
+    print("Profile state and launchers are synchronized.")
+
+
+def cmd_doctor(_args: argparse.Namespace) -> None:
+    errors: list[str] = []
+    try:
+        manifest = load_manifest()
+    except ManagerError as exc:
+        print(f"ERROR: {exc}")
+        raise SystemExit(1)
+
+    binary = Path(manifest.get("agy_binary", ""))
+    if not binary.is_file() or not os.access(binary, os.X_OK):
+        errors.append(f"AGY binary is not executable: {binary}")
+
+    for command in ("unshare", "mount"):
+        if not shutil.which(command):
+            errors.append(f"Required command is missing: {command}")
+
+    if shutil.which("unshare"):
+        probe = subprocess.run(
+            ["unshare", "--user", "--map-root-user", "true"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        if probe.returncode != 0:
+            errors.append("Unprivileged user namespaces are unavailable.")
+
+    for name in sorted(manifest["profiles"]):
+        state = profile_state(manifest, name)
+        if not state.is_dir():
+            errors.append(f"{name}: state directory is missing")
+        if not is_managed_link(managed_link(name)):
+            errors.append(f"{name}: launcher link is missing or unmanaged")
+        settings = state / "settings.json"
+        if not settings.is_file() or settings.is_symlink():
+            errors.append(f"{name}: private settings.json is missing or invalid")
+        for item in SHARED_LINK_ITEMS:
+            if not symlink_points_to(state / item, shared_dir(manifest) / item):
+                errors.append(f"{name}: shared {item} link is missing or incorrect")
+
+    if errors:
+        for error in errors:
+            print(f"ERROR: {error}")
+        raise SystemExit(1)
+    print(f"Healthy: {len(manifest['profiles'])} profiles use {binary}")
+
+
+def cmd_run(args: argparse.Namespace) -> None:
+    name = validate_profile_name(args.name)
+    forwarded = list(args.args)
+    if forwarded and forwarded[0] == "--":
+        forwarded.pop(0)
+    environment = os.environ.copy()
+    environment["AGY_PROFILE_NAME"] = name
+    os.execve(SCRIPT_PATH, [str(SCRIPT_PATH), *forwarded], environment)
+
+
+def resolve_profile(name: str) -> tuple[dict, Path, Path]:
+    name = validate_profile_name(name)
+    manifest = load_manifest()
+    metadata = manifest["profiles"].get(name)
+    if not metadata or not metadata.get("enabled", True):
+        raise ManagerError(f"Unknown or disabled AGY profile: {name}")
+    state = profile_state(manifest, name)
+    if not state.is_dir():
+        raise ManagerError(f"Profile state is missing for {name}; run: agy-profile sync")
+    return manifest, state, ORIGINAL_STATE_DIR
+
+
+def launch_profile(name: str, arguments: list[str]) -> None:
+    manifest, state, target = resolve_profile(name)
+    lock_path = state / ".running.lock"
+    lock_file = lock_path.open("a+", encoding="utf-8")
+    os.chmod(lock_path, 0o600)
+    fcntl.flock(lock_file.fileno(), fcntl.LOCK_SH)
+    os.set_inheritable(lock_file.fileno(), True)
+
+    environment = os.environ.copy()
+    environment["AGY_PROFILE_LOCK_FD"] = str(lock_file.fileno())
+    command = [
+        "unshare",
+        "--user",
+        "--map-root-user",
+        "--mount",
+        "--propagation",
+        "private",
+        sys.executable,
+        str(SCRIPT_PATH),
+        "_inside",
+        name,
+        *arguments,
+    ]
+    os.execvpe(command[0], command, environment)
+
+
+def launch_inside(name: str, arguments: list[str]) -> None:
+    manifest, state, target = resolve_profile(name)
+    target.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["mount", "--bind", str(state), str(target)], check=True)
+
+    environment = os.environ.copy()
+    environment.pop("DBUS_SESSION_BUS_ADDRESS", None)
+    environment.pop("GNOME_KEYRING_CONTROL", None)
+    binary = manifest["agy_binary"]
+    os.execve(binary, [binary, *arguments], environment)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="agy-profile",
+        description="Manage isolated accounts for one shared Antigravity CLI installation.",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    setup_parser = subparsers.add_parser("setup", help="Create or repair a repeatable profile setup")
+    setup_parser.add_argument("profiles", nargs="*", help="Profiles to ensure (default: agy1 agy2 agy3 agy4)")
+    setup_parser.set_defaults(func=cmd_setup)
+
+    add_parser = subparsers.add_parser("add", help="Add a profile and launcher")
+    add_parser.add_argument("name")
+    add_parser.set_defaults(func=cmd_add)
+
+    list_parser = subparsers.add_parser("list", help="List active and archived profiles")
+    list_parser.set_defaults(func=cmd_list)
+
+    run_parser = subparsers.add_parser("run", help="Run a named profile")
+    run_parser.add_argument("name")
+    run_parser.add_argument("args", nargs=argparse.REMAINDER)
+    run_parser.set_defaults(func=cmd_run)
+
+    remove_parser = subparsers.add_parser("remove", help="Archive a profile and remove its launcher")
+    remove_parser.add_argument("name")
+    remove_parser.set_defaults(func=cmd_remove)
+
+    restore_parser = subparsers.add_parser("restore", help="Restore the newest archived profile snapshot")
+    restore_parser.add_argument("name")
+    restore_parser.set_defaults(func=cmd_restore)
+
+    purge_parser = subparsers.add_parser("purge", help="Permanently delete an archived profile")
+    purge_parser.add_argument("name")
+    purge_parser.add_argument("--yes", action="store_true", help="Skip the typed confirmation")
+    purge_parser.set_defaults(func=cmd_purge)
+
+    sync_parser = subparsers.add_parser("sync", help="Reconcile state and launcher links")
+    sync_parser.set_defaults(func=cmd_sync)
+
+    doctor_parser = subparsers.add_parser("doctor", help="Validate the installation")
+    doctor_parser.set_defaults(func=cmd_doctor)
+
+    return parser
+
+
+def main() -> None:
+    invoked_name = os.environ.pop("AGY_PROFILE_NAME", None) or Path(sys.argv[0]).name
+    try:
+        if invoked_name != "agy-profile":
+            launch_profile(invoked_name, sys.argv[1:])
+            return
+        if len(sys.argv) >= 3 and sys.argv[1] == "_inside":
+            launch_inside(sys.argv[2], sys.argv[3:])
+            return
+        parser = build_parser()
+        args = parser.parse_args()
+        args.func(args)
+    except ManagerError as exc:
+        print(f"agy-profile: {exc}", file=sys.stderr)
+        raise SystemExit(1) from exc
+    except subprocess.CalledProcessError as exc:
+        print(f"agy-profile: command failed with exit status {exc.returncode}", file=sys.stderr)
+        raise SystemExit(exc.returncode) from exc
+
+
+if __name__ == "__main__":
+    main()
