@@ -92,9 +92,12 @@ end
 set -gx NNN_PLUG 'f:finder;o:fzopen;p:preview-tui;d:diffs;t:nmount;v:imgview;g:!git log;'
 set -gx NNN_FIFO '/tmp/nnn.fifo'
 
-# Start with starship prompt by default (use Ctrl+P to toggle to custom)
-if command -v starship >/dev/null 2>&1
-    eval (starship init fish)
+set -l starship_bin (type -p starship)
+if test -n "$starship_bin"
+    if not test -f ~/.cache/starship_init.fish; or test $starship_bin -nt ~/.cache/starship_init.fish
+        starship init fish > ~/.cache/starship_init.fish 2>/dev/null
+    end
+    source ~/.cache/starship_init.fish
     set -g PROMPT_MODE starship
 else
     set -g PROMPT_MODE custom
