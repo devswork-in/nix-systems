@@ -1,3 +1,9 @@
+# --- vsh configuration start ---
+if isatty 1; and begin; not set -q VSH_ACTIVE_TTY; or test "$VSH_ACTIVE_TTY" != (tty); end
+    exec vsh
+end
+# --- vsh configuration end ---
+
 # Source general aliases
 source ~/.config/aliases 2>/dev/null
 
@@ -23,36 +29,33 @@ if test -d ~/.config/env
     for target in common desktop server (hostname) doppler
         set -l env_file ~/.config/env/$target.sh
         if test -f $env_file
-            while read -l line
+            for line in (cat $env_file)
                 # Skip comments and empty lines
-                string match -qr '^\s*#' $line; and continue
-                string match -qr '^\s*$' $line; and continue
+                string match -qr '^\s*(#|$)' $line; and continue
                 # Parse export KEY=VALUE
                 if string match -qr '^\s*export\s+' $line
                     set -l kv (string replace -r '^\s*export\s+' '' $line)
-                    set -l key (string split -m 1 '=' $kv)[1]
-                    set -l val (string split -m 1 '=' $kv)[2]
-                    # Strip surrounding quotes
-                    set val (string trim -c '"' -- $val)
-                    set val (string trim -c "'" -- $val)
-                    # Expand $HOME
-                    set val (string replace -a '$HOME' $HOME -- $val)
-                    set val (string replace -a '~' $HOME -- $val)
-                    # Expand $(command) via fish command substitution
-                    if string match -qr '\$\([^)]+\)' $val
-                        set -l cmd (string match -r '\$\(([^)]+)\)' $val)[2]
-                        set -l cmd_out ($cmd)
-                        set val (string replace -r '\$\([^)]+\)' $cmd_out $val)
-                    end
-                    # Handle PATH append: $HOME/...:$PATH
-                    if string match -q '*$PATH*' $val
-                        set val (string replace -a '$PATH' '' -- $val)
-                        set -gx $key $val $$key
-                    else
-                        set -gx $key $val
+                    set -l parts (string split -m 1 '=' $kv)
+                    if test (count $parts) -eq 2
+                        set -l key $parts[1]
+                        set -l val (string trim -c '"' -- $parts[2])
+                        set val (string trim -c "'" -- $val)
+                        set val (string replace -a '$HOME' $HOME -- $val)
+                        set val (string replace -a '~' $HOME -- $val)
+                        if string match -qr '\$\([^)]+\)' $val
+                            set -l cmd (string match -r '\$\(([^)]+)\)' $val)[2]
+                            set -l cmd_out ($cmd)
+                            set val (string replace -r '\$\([^)]+\)' $cmd_out $val)
+                        end
+                        if string match -q '*$PATH*' $val
+                            set val (string replace -a '$PATH' '' -- $val)
+                            set -gx $key $val $$key
+                        else
+                            set -gx $key $val
+                        end
                     end
                 end
-            end < $env_file
+            end
         end
     end
 end
@@ -109,3 +112,11 @@ alias d "cd ~/dev"
 
 # Added by Antigravity CLI installer
 set -gx PATH "/home/creator54/.local/bin" $PATH
+
+
+# >>> grok installer >>>
+fish_add_path $HOME/.grok/bin
+# <<< grok installer <<<
+
+# kimi-code
+fish_add_path -g "/home/creator54/.kimi-code/bin"
