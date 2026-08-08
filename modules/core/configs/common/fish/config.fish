@@ -8,25 +8,27 @@ end
 source ~/.config/aliases 2>/dev/null
 
 # Source fzf keybindings (Ctrl+R history, Ctrl+T files, Alt+C cd)
-for fzf_path in ~/.nix-profile/share/fzf /run/current-system/sw/share/fzf
-    if test -f $fzf_path/key-bindings.fish
-        source $fzf_path/key-bindings.fish
-        fzf_key_bindings
-        break
+if status is-interactive
+    for fzf_path in ~/.nix-profile/share/fzf /run/current-system/sw/share/fzf
+        if test -f $fzf_path/key-bindings.fish
+            source $fzf_path/key-bindings.fish
+            fzf_key_bindings
+            break
+        end
     end
 end
 
 # System Identity (Native Fish - ADDED BY REFUSE TO FAIL)
 set -gx NIX_CONFIG_DIR "/etc/nixos"
 if not set -q NIX_SYSTEM
-    set -gx NIX_SYSTEM (hostname)
+    set -gx NIX_SYSTEM $HOSTNAME
 end
 
 
 # Source imperative environment variables (pure fish, no bash spawn)
 # Hierarchy: Common -> Desktop/Server -> System (Hostname)
 if test -d ~/.config/env
-    for target in common desktop server (hostname) doppler
+    for target in common desktop server $NIX_SYSTEM doppler
         set -l env_file ~/.config/env/$target.sh
         if test -f $env_file
             for line in (cat $env_file)
