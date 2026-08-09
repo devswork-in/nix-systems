@@ -74,11 +74,8 @@
     openssh
   ];
 
-  # Configure vim and set as default editor
-  programs.vim = {
-    enable = true;
-    defaultEditor = true; # This sets EDITOR and VISUAL to vim
-  };
+  # Keep vim available as a fallback; shared variables select Neovim.
+  programs.vim.enable = true;
 
   # Default timezone (can be overridden per-system)
   time.timeZone = lib.mkDefault "Asia/Kolkata";
