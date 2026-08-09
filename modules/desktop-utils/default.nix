@@ -6,8 +6,6 @@
     ../core
     ../apps/appimages
     ./nightlight.nix
-    # ./readahead.nix
-    # ./nix-store-prewarm.nix
   ];
 
   # Default enable nightlight
@@ -22,7 +20,6 @@
 
       ./fusuma.nix
       ./udiskie.nix
-      ./polkit-agent.nix
     ];
   };
 }

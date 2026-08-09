@@ -32,7 +32,6 @@
     # yt-dlp # pulls in deno which requires local compilation
     ueberzug
     qbittorrent
-    picom
     cmus
     oci-cli
     conky

@@ -13,6 +13,8 @@
     autoStart = true;
     sessionType = "wayland";
     sessionCommand = "${pkgs.writeShellScript "start-niri" ''
+      export PATH="$HOME/.local/bin:$PATH"
+
       # Define variables to import into systemd user session
       VARS="PATH XDG_RUNTIME_DIR XDG_SESSION_TYPE XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP DESKTOP_SESSION DISPLAY WAYLAND_DISPLAY NIRI_SOCKET"
 

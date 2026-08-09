@@ -6,8 +6,6 @@
     enable32Bit = true;
   };
 
-  services.xserver.videoDrivers = [ "amdgpu" ];
-
   programs = {
     steam = {
       enable = true;
@@ -135,7 +133,7 @@
     # Steam directories (auto-created in /home)
     "d /home/${userConfig.user.name}/.local/share/Steam 0755 ${userConfig.user.name} users -"
     "d /home/${userConfig.user.name}/.steam 0755 ${userConfig.user.name} users -"
-    "d /home/${userConfig.user.name}/.steam/root/compatibilitytools.d 0755 ${userConfig.user.name} users -"
+    "d /home/${userConfig.user.name}/.local/share/Steam/compatibilitytools.d 0755 ${userConfig.user.name} users -"
 
     # MangoHud config directory with default config (auto-created in /home)
     "d /home/${userConfig.user.name}/.config/MangoHud 0755 ${userConfig.user.name} users -"

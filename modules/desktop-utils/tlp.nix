@@ -123,9 +123,5 @@
     powertop.enable = false;
   };
 
-  # Additional optimizations
-  boot.kernel.sysctl = {
-    "vm.dirty_writeback_centisecs" = 1500;
-    "vm.laptop_mode" = 5;
-  };
+  boot.kernel.sysctl."vm.dirty_writeback_centisecs" = 1500;
 }

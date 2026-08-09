@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, userConfig, ... }:
 
 let
   offsetFile = /var/lib/nixos/resume-offset;
@@ -66,6 +66,7 @@ in
     description = "Reload i2c_hid_acpi after resume to fix ELAN touchpad";
     after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
     wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
+    path = [ pkgs.kmod ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 1 && modprobe -r i2c_hid_acpi && sleep 0.5 && modprobe i2c_hid_acpi'";
@@ -77,8 +78,6 @@ in
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
-      # Add necessary tools to PATH
-      Path = with pkgs; [ gawk gnused coreutils ];
       ExecStart = pkgs.writeShellScript "update-resume-offset" ''
         OFFSET_FILE="/var/lib/nixos/resume-offset"
         SWAP_FILE="${config.swap.path}"
@@ -103,7 +102,7 @@ in
            echo "$ACTUAL_OFFSET" > "$OFFSET_FILE"
            echo "Created new resume-offset file at $OFFSET_FILE."
            echo "Please run 'nixos-rebuild switch --flake .#omnix --impure' to apply the new kernel parameter."
-           ${pkgs.coreutils}/bin/chown 1000:100 "$OFFSET_FILE"
+           ${pkgs.coreutils}/bin/chown ${userConfig.user.name}:users "$OFFSET_FILE"
            ${pkgs.coreutils}/bin/chmod 644 "$OFFSET_FILE"
            exit 0
         fi
@@ -118,7 +117,7 @@ in
         fi
         
         # Ensure user can read the file
-        ${pkgs.coreutils}/bin/chown 1000:100 "$OFFSET_FILE"
+        ${pkgs.coreutils}/bin/chown ${userConfig.user.name}:users "$OFFSET_FILE"
         ${pkgs.coreutils}/bin/chmod 644 "$OFFSET_FILE"
       '';
     };

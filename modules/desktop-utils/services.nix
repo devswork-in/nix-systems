@@ -53,12 +53,12 @@
 
       # Disable wakeup for PCI devices to prevent them from waking the system from sleep
       ''
-        ACTION=="add", SUBSYSTEM=="pci", ATTR{power/wakeup}="disabled"
+        ACTION=="add", SUBSYSTEM=="pci", TEST=="power/wakeup", ATTR{power/wakeup}="disabled"
       ''
 
       # Disable wakeup for USB devices to prevent USB devices from waking the system from sleep
       ''
-        ACTION=="add", SUBSYSTEM=="usb", ATTR{power/wakeup}="disabled"
+        ACTION=="add", SUBSYSTEM=="usb", TEST=="power/wakeup", ATTR{power/wakeup}="disabled"
       ''
 
       # Force deep sleep mode, does not work on omnix
