@@ -101,11 +101,11 @@
   };
 
   # Built-in automatic cleanup for coredumps
-  systemd.coredump.extraConfig = ''
-    Storage=external
-    MaxUse=1G
-    KeepFree=10G
-  '';
+  systemd.coredump.settings.Coredump = {
+    Storage = "external";
+    MaxUse = "1G";
+    KeepFree = "10G";
+  };
 
   # Ensure journal directory has correct permissions
   systemd.tmpfiles.rules = [

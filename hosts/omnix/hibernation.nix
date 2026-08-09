@@ -56,9 +56,7 @@ in
 
   # Force hibernation after 15min of suspend (default is 2h or battery-based)
   # This MUST be in sleep.conf, NOT logind.conf
-  systemd.sleep.extraConfig = ''
-    HibernateDelaySec=15min
-  '';
+  systemd.sleep.settings.Sleep.HibernateDelaySec = "15min";
 
   # Fix ELAN touchpad (i2c-ELAN06FA) failing to restore after suspend/hibernate
   # Error: "i2c_hid_acpi i2c-ELAN06FA:00: failed to change power setting" (error -121)

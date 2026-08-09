@@ -12,7 +12,6 @@
   # Display Manager (moved to top-level services.displayManager in NixOS 25.xx)
   services.displayManager.gdm = {
     enable = true;
-    wayland = true; # Enable Wayland for Niri and GNOME Wayland sessions
     autoSuspend = true;
   };
 

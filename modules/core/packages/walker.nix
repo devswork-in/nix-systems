@@ -3,6 +3,7 @@
 { inputs, ... }:
 
 {
+  disabledModules = [ "services/misc/elephant.nix" ]; # Walker still imports its own Elephant module.
   imports = [ inputs.walker.nixosModules.default ];
 
   programs.walker = {

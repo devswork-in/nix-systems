@@ -43,7 +43,7 @@
   };
 
   # Enable man page generation and caching for fish completion
-  documentation.man.generateCaches = true;
+  documentation.man.cache.enable = true;
 
   # Desktop environment configuration
   environment = {
