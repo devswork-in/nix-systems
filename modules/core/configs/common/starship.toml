@@ -4,8 +4,7 @@
 
 format = """
 [╭─](green)\\[ $directory\\] $git_branch$git_status$git_commit$python$shell$java$cpp$nix_shell
-[╰](green)$character
-"""
+[╰](green)$character"""
 
 # Timeout for commands executed by starship (ms)
 command_timeout = 500

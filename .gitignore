@@ -31,3 +31,11 @@ modules/core/configs/common/scripts/agy[0-9]*
 .antigravitycli/
 .commandcode/
 modules/core/configs/common/scripts/kimchi
+*.bak
+modules/core/configs/common/fish/completions/
+modules/core/configs/common/scripts/agent
+modules/core/configs/common/scripts/agent-project
+modules/core/configs/common/scripts/grok
+modules/core/configs/common/scripts/hermes
+modules/core/configs/common/scripts/io.github.thetumultuousunicornofdarkness.cpu-x
+modules/core/configs/common/scripts/io.webtorrent.WebTorrent
