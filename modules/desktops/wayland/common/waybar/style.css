@@ -32,7 +32,7 @@
 @define-color ws_text_active @bg;
 
 * {
-    font-family: "JetBrainsMono Nerd Font", "Fira Sans Semibold", sans-serif;
+    font-family: "FiraCode Nerd Font", "SauceCodePro Nerd Font", monospace;
     border: none;
     font-size: 13px;
     font-weight: bold;

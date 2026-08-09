@@ -217,9 +217,9 @@ check_location() {
         if [[ -n "$active_host" ]]; then
             local server_ip
             server_ip=$(ssh -G "$active_host" 2>/dev/null | awk '/^hostname / {print $2}')
-            echo "{\"text\": \"  $server_ip\", \"alt\": \"connected\", \"class\": \"connected\", \"tooltip\": \"Connected to $active_host ($server_ip)\"}"
+            echo "{\"text\": \"$server_ip\", \"alt\": \"connected\", \"class\": \"connected\", \"tooltip\": \"Connected to $active_host ($server_ip)\"}"
         else
-            echo "{\"text\": \"  Off\", \"alt\": \"disconnected\", \"class\": \"disconnected\", \"tooltip\": \"VPN Disconnected\"}"
+            echo "{\"text\": \"\", \"alt\": \"disconnected\", \"class\": \"disconnected\", \"tooltip\": \"VPN Disconnected\"}"
         fi
     else
         echo "Checking location (via ipinfo.io)..."
