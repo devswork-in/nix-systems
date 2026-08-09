@@ -34,6 +34,8 @@
   # System-specific hostname (overrides profile default)
   networking.hostName = "omnix";
 
+  nix.settings.min-free = 10 * 1024 * 1024 * 1024;
+
   # Ignore DHCP DNS servers to bypass stale local/ISP records
   # This forces use of global nameservers (8.8.8.8, etc.) defined in desktop profile
   networking.networkmanager.dns = "none";
