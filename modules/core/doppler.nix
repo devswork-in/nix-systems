@@ -37,14 +37,14 @@
     '';
   };
 
-  # Timer to refresh secrets every 5 minutes
+  # Fetch shortly after login, then refresh without constant polling.
   systemd.user.timers.doppler-secrets = {
     description = "Refresh Doppler secrets periodically";
     wantedBy = [ "timers.target" ];
     
     timerConfig = {
-      OnBootSec = "1min";
-      OnUnitActiveSec = "5min";
+      OnBootSec = "2min";
+      OnUnitActiveSec = "1h";
       Unit = "doppler-secrets.service";
     };
   };

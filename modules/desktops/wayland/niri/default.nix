@@ -52,6 +52,7 @@
     playerctl
     blueman
     swayosd
+    xwayland-satellite
     imagemagick
     (pkgs.callPackage ../../../core/packages/swiv.nix {})
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
@@ -74,7 +75,6 @@
     # Import GTK configuration for theming
     imports = [
       ../../../desktop-utils/gtk-config.nix
-      ../../../desktop-utils/kitty-daemon.nix
     ];
 
     home.packages = with pkgs; [ niri networkmanagerapplet pavucontrol ];

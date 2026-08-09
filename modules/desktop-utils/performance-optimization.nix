@@ -11,7 +11,6 @@ let
       swappiness = 60;
       minCpuFreqAC = 400000;
       cpuEPP = "balance_performance";
-      compositorPriority = -10;
       zramPercent = 50;
       enableCpuBoostAC = true;
     };
@@ -20,7 +19,6 @@ let
       swappiness = 60;
       minCpuFreqAC = 1400000;
       cpuEPP = "balance_performance";
-      compositorPriority = -15;
       zramPercent = 50;
       enableCpuBoostAC = true;
     };
@@ -29,7 +27,6 @@ let
       swappiness = 60;
       minCpuFreqAC = 400000;
       cpuEPP = "balance_power";
-      compositorPriority = -5;
       zramPercent = 50;
       enableCpuBoostAC = false;
     };
@@ -85,13 +82,6 @@ in {
     };
 
     desktop = {
-      enableCompositorPriority = mkOption {
-        type = types.bool;
-        default = true;
-        description =
-          "Boost compositor process priority for smoother animations";
-      };
-
       enableGnomeOptimizations = mkOption {
         type = types.bool;
         default = true;
@@ -233,23 +223,6 @@ in {
         '';
       };
     };
-
-    # Desktop environment optimizations - compositor priority boosting
-    systemd.user.services.compositor-priority =
-      mkIf cfg.desktop.enableCompositorPriority {
-        description = "Boost compositor process priority for smooth animations";
-        wantedBy = [ "graphical-session.target" ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-          ExecStart =
-            "${pkgs.bash}/bin/bash -c 'sleep 2; compositor_pid=$(${pkgs.procps}/bin/pgrep niri || ${pkgs.procps}/bin/pgrep mutter || ${pkgs.procps}/bin/pgrep gnome-shell || ${pkgs.procps}/bin/pgrep kwin_wayland || ${pkgs.procps}/bin/pgrep sway || true); if [ -n \"$compositor_pid\" ]; then ${pkgs.util-linux}/bin/renice -n ${
-              toString activeProfile.compositorPriority
-            } -p $compositor_pid || true; echo \"Compositor priority boosted to ${
-              toString activeProfile.compositorPriority
-            }\"; fi'";
-        };
-      };
 
     # GNOME-specific performance optimizations
     home-manager.users."${userConfig.user.name}" =

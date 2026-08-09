@@ -17,19 +17,6 @@
   # Commands that ONLY run on DESKTOP systems
   desktop = [
     {
-      name = "ensure-screenshots-dir";
-      description = "Ensure Screenshots directory exists";
-      command = "${pkgs.coreutils}/bin/mkdir -p ${userConfig.desktop.screenshotsPath or "~/Screenshots"}";
-      schedule = {
-        onBootSec = "1min";
-        onUnitActiveSec = "1min";
-      };
-      level = "user";
-      enabled = true;
-      workingDirectory = "~";
-      environment = {};
-    }
-    {
       name = "cleanup-old-screenshots";
       description = "Delete screenshots older than 30 days";
       script = ./scripts/cleanup-screenshots.sh;
