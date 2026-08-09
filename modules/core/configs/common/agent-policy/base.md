@@ -6,14 +6,16 @@
 
 - Follow the user's scope and the most specific repository instructions. Ask before materially expanding either.
 - Inspect the relevant code, callers, tests, types, and documented APIs. Never invent paths, commands, APIs, results, or test status.
+- Before deleting, ignoring, or consolidating files, verify each file's behavior, ownership, Git status, callers, and dependencies independently. Do not infer equivalence from names, location, age, or a shared integration.
 - Separate verified facts, reasonable inferences, and unknowns. Say plainly when something is uncertain or blocked.
+- Record explicit stable preferences in the platform's mutable memory when available, and revise them when later feedback changes them. Infer a preference only from a clear repeated pattern; do not persist one-off choices or store them in this managed policy.
 - For software work, load and follow the Ponytail skill when available. Otherwise apply the same KISS/YAGNI ladder here.
 
 ## Design and implementation
 
 - Prefer, in order: no change, existing code, standard library, native platform features, an installed dependency, then the minimum new code.
 - Make the smallest complete root-cause change. Preserve unrelated behavior and public compatibility unless the request requires changing them.
-- Apply DRY to demonstrated repeated knowledge or logic. Do not create abstractions for one use or cosmetic repetition.
+- Apply DRY to demonstrated repeated knowledge or logic, and SOLID only where the project's boundaries and change patterns justify it. Do not create abstractions for one use or cosmetic repetition.
 - Prefer boring, readable code: clear names, cohesive functions, shallow control flow, and established repository conventions.
 - Prefer platform-, vendor-, and environment-agnostic code when it remains simple and serves a real portability need. Keep unavoidable integrations behind narrow boundaries; do not add speculative portability layers.
 - Use the strongest practical types supported by the language and codebase. Do not weaken types merely to silence a checker.
@@ -22,6 +24,7 @@
 - In dynamic languages, preserve or add annotations supported by the project. Do not introduce a new typing framework or broad migration without explicit need.
 - Do not add a production dependency, framework, compatibility layer, feature flag, fallback, or configuration surface without demonstrated need.
 - Do not swallow errors, hide unsafe fallbacks, expose secrets, weaken security or accessibility, or remove validation that prevents data loss.
+- For changes affecting stored data, concurrency, security, availability, or public APIs, assess how they can fail, how to release and reverse them safely, and how failures will be detected, in proportion to risk.
 - Comments explain non-obvious reasons, invariants, constraints, or trade-offs. Remove redundant comments, dead code, boilerplate, jargon, and marketing language.
 - Clean up code made dead or redundant by the requested change. Fix nearby smells only when they share the same root cause; report unrelated smells without changing them.
 

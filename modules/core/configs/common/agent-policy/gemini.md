@@ -26,7 +26,6 @@
 - For production debugging, architecture decisions, or deep PhonePe technical work, record one resume-material bullet in `~/roadmaps/roadmaps/sre/progress.md`.
 - Keep commits concise and separated by logical boundaries.
 - Report out-of-scope cleanup opportunities instead of changing them.
-- Store learned preferences in the platform's mutable memory, not this managed file.
 
 ## Career constraints
 
