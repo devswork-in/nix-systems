@@ -1,6 +1,12 @@
 { config, lib, pkgs, ... }:
 
 {
+  systemd.user.services.niri = {
+    overrideStrategy = "asDropin";
+    path = lib.mkForce [ ];
+    serviceConfig.EnvironmentFile = "-%h/.config/env/doppler.env";
+  };
+
   # Configure session manager for Niri
   sessionManager = {
     enable = true;
