@@ -60,35 +60,12 @@
   outputs = { self, nixpkgs, nixpkgs-unstable, nix-flatpak, nix-snapd, nur
     , nix-repo-sync, walker, elephant, livewall, awrit, ... }@inputs:
     let
-      # Extract NixOS version from nixpkgs input URL
-      nixosVersion = let
-        # Get the nixpkgs input URL (e.g., "github:NixOS/nixpkgs/release-25.11")
-        nixpkgsUrl = inputs.nixpkgs.sourceInfo.originalUrl or "release-25.11";
-        # Extract version using regex match
-        versionMatch =
-          builtins.match ".*release-([0-9]+\\.[0-9]+).*" nixpkgsUrl;
-      in if versionMatch != null then
-        builtins.head versionMatch
-      else
-        "25.11"; # fallback
-
       # Import user configuration (easy to switch: just change which config file to import)
       userConfig = import ./config.nix { inherit (nixpkgs) lib; };
 
-      # Get flake root dynamically
-      # Priority: NIX_CONFIG_DIR > PWD > /etc/nixos > self.outPath
-      flakeRoot = let
-        nixConfigDir = builtins.getEnv "NIX_CONFIG_DIR";
-        pwd = builtins.getEnv "PWD";
-        etcNixos = "/etc/nixos";
-      in if nixConfigDir != "" then
-        nixConfigDir
-      else if pwd != "" then
-        pwd
-      else if builtins.pathExists etcNixos then
-        etcNixos
-      else
-        builtins.toString self.outPath;
+      # NIX_CONFIG_DIR intentionally permits syncing editable worktree files.
+      flakeRoot = let configuredRoot = builtins.getEnv "NIX_CONFIG_DIR";
+      in if configuredRoot != "" then configuredRoot else builtins.toString self.outPath;
 
       # Import desktop settings
       desktopSettings = import ./modules/desktop-utils/desktop-settings.nix { };
@@ -107,15 +84,32 @@
 
       # Helper function for creating system configurations
       mkSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs nixpkgs-unstable inputs nixosVersion flakeRoot;
+        inherit nixpkgs nixpkgs-unstable inputs flakeRoot;
         userConfig = finalUserConfig;
       };
 
       # Helper function for creating desktop system configurations
       mkDesktopSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs nixpkgs-unstable inputs nixosVersion flakeRoot;
+        inherit nixpkgs nixpkgs-unstable inputs flakeRoot;
         userConfig = desktopUserConfig;
       };
+
+      phoenixVmUserConfig = finalUserConfig // {
+        services = finalUserConfig.services // {
+          website = finalUserConfig.services.website // { https = false; };
+        };
+      };
+
+      mkPhoenixVmSystem = import ./lib/mkSystemConfig.nix {
+        inherit nixpkgs nixpkgs-unstable inputs flakeRoot;
+        userConfig = phoenixVmUserConfig;
+      };
+
+      phoenixModules = [
+        ./hosts/phoenix
+        ./modules/server/default.nix
+        inputs.nix-repo-sync.nixosModules.default
+      ];
     in {
       nixosConfigurations = {
         server = mkSystem {
@@ -129,38 +123,32 @@
           ];
         };
 
-        # Helper for Phoenix (Oracle Cloud) systems
-        phoenix-x86 = let
-          mkPhoenix = system:
-            mkSystem {
-              inherit system;
-              hostname = "phoenix";
-              modules = [
-                ./hosts/phoenix
-                ./modules/server/default.nix
-                # Note: No home-manager - servers use nix-repo-sync for user configs
-                inputs.nix-repo-sync.nixosModules.default
-              ];
+        # Fast local VM evaluation of the Phoenix server role.
+        phoenix-x86 = mkPhoenixVmSystem {
+          system = "x86_64-linux";
+          hostname = "phoenix";
+          modules = phoenixModules ++ [{
+            services.nix-repo-sync.enable = nixpkgs.lib.mkForce false;
+            virtualisation.oci-containers.containers = {
+              whoogle-search.autoStart = nixpkgs.lib.mkForce false;
+              leetcode.autoStart = nixpkgs.lib.mkForce false;
+              planner.autoStart = nixpkgs.lib.mkForce false;
             };
-        in mkPhoenix "x86_64-linux";
+          }];
+        };
 
         phoenix-arm = mkSystem {
           system = "aarch64-linux";
           # No buildSystem = builds natively on ARM host, using binary cache
           hostname = "phoenix";
-          modules = [
-            ./hosts/phoenix
-            ./modules/server/default.nix
-            # Note: No home-manager - servers use nix-repo-sync for user configs
-            inputs.nix-repo-sync.nixosModules.default
-          ];
+          modules = phoenixModules;
         };
 
         omnix = mkDesktopSystem {
           system = "x86_64-linux";
           hostname = "omnix";
           modules = [
-            ./hosts/omnix
+            ./hosts/omnix/configuration.nix
             ./modules/desktop-utils/default.nix
             inputs.home-manager.nixosModules.default
             inputs.nix-snapd.nixosModules.default
@@ -172,7 +160,7 @@
           system = "x86_64-linux";
           hostname = "blade";
           modules = [
-            ./hosts/blade
+            ./hosts/blade/configuration.nix
             ./modules/server/default.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
@@ -184,7 +172,7 @@
           system = "x86_64-linux";
           hostname = "cospi";
           modules = [
-            ./hosts/cospi
+            ./hosts/cospi/configuration.nix
             ./modules/desktop-utils/default.nix
             inputs.nix-snapd.nixosModules.default
             inputs.home-manager.nixosModules.default
@@ -201,16 +189,6 @@
             user = "root";
             path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos
               self.nixosConfigurations.server;
-          };
-        };
-
-        phoenix-x86 = {
-          hostname = "phoenix"; # should be same in ~/.ssh/config
-          sshUser = "root"; # should be same in ~/.ssh/config
-          profiles.system = {
-            user = "root";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos
-              self.nixosConfigurations.phoenix-x86;
           };
         };
 

@@ -7,7 +7,7 @@
       enable = true;
       settings = {
         PasswordAuthentication = lib.mkDefault true;
-        PermitRootLogin = "yes";
+        PermitRootLogin = lib.mkDefault "yes";
       };
     };
     

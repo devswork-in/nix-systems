@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-# Auto-discover and sync nix-systems repo
+# Locate the nix-systems worktree without changing /etc/nixos.
 REPO_PATH="$(nixos-config-sync 2>/dev/null)"
 if [[ -z "$REPO_PATH" ]]; then
     echo "ERROR: Could not find nix-systems repo" >&2

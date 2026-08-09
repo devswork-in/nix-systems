@@ -5,23 +5,16 @@
 let
   user = userConfig.user.name;
   homeDir = "/home/${user}";
-  configPath = "${homeDir}/.config/scheduled-scripts/scheduled-commands.nix";
-  
-  # Import scheduled commands from synced location (fallback to repo if not synced yet)
-  scheduledCommandsConfig = 
-    if builtins.pathExists configPath
-    then import configPath { inherit config pkgs lib userConfig; }
-    else import ../../../scheduled-scripts/scheduled-commands.nix { inherit config pkgs lib userConfig; };
-  
-  # Determine system type by checking if Xserver is enabled
-  isDesktop = config.services.xserver.enable;
-  isServer = !isDesktop;
+  syncedConfig = "${homeDir}/.config/scheduled-scripts/scheduled-commands.nix";
+  scheduledCommandsConfig = import
+    (if builtins.pathExists syncedConfig then syncedConfig
+     else ../../../scheduled-scripts/scheduled-commands.nix)
+    { inherit config pkgs lib userConfig; };
   
   # Select appropriate commands based on system type
   activeCommands = 
     (scheduledCommandsConfig.common or []) ++
-    (if isDesktop then (scheduledCommandsConfig.desktop or []) else []) ++
-    (if isServer then (scheduledCommandsConfig.server or []) else []);
+    (scheduledCommandsConfig.${config.nixSystems.role} or []);
   
   # Filter enabled commands
   enabledCommands = builtins.filter (cmd: cmd.enabled or true) activeCommands;
@@ -115,61 +108,12 @@ let
         WantedBy = [ "timers.target" ];
       };
     };
-  # Hot-reload script that triggers nixos-rebuild when config changes
-  reloadScript = pkgs.writeShellScript "reload-scheduled-commands" ''
-    echo "[SCHEDULED-COMMANDS-RELOAD] Config change detected at $(date -Iseconds)"
-    echo "[SCHEDULED-COMMANDS-RELOAD] Triggering nixos-rebuild switch..."
-    
-    # Run nixos-rebuild switch in background
-    sudo nixos-rebuild switch &
-    
-    echo "[SCHEDULED-COMMANDS-RELOAD] Rebuild triggered (running in background)"
-  '';
 in
 {
-  # Allow user to run nixos-rebuild without password for hot-reload
-  security.sudo.extraRules = [
-    {
-      users = [ user ];
-      commands = [
-        {
-          command = "${pkgs.nixos-rebuild}/bin/nixos-rebuild";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
-  # Hot-reload: Watch config file and trigger rebuild on changes
   home-manager.users."${user}" = { ... }: {
-    # Path unit that watches the config file
-    systemd.user.paths.scheduled-commands-watcher = {
-      Unit = {
-        Description = "Watch scheduled-commands.nix for changes";
-      };
-      Path = {
-        PathModified = "${homeDir}/.config/scheduled-scripts/scheduled-commands.nix";
-        Unit = "scheduled-commands-reload.service";
-      };
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
-    };
-    
     # Generate user-level services and timers
     systemd.user.services = lib.listToAttrs (
-      # Reload service
-      [ (lib.nameValuePair "scheduled-commands-reload" {
-          Unit = {
-            Description = "Reload scheduled commands configuration";
-          };
-          Service = {
-            Type = "oneshot";
-            ExecStart = "${reloadScript}";
-          };
-        })
-      ] ++
-      # Scheduled command services
-      (map (cmd:
+      map (cmd:
         let
           wrapper = mkCommandWrapper {
             inherit (cmd) name environment;
@@ -183,7 +127,7 @@ in
           inherit (cmd) name description;
           inherit wrapper;
         })
-      ) userCommands)
+      ) userCommands
     );
     
     systemd.user.timers = lib.listToAttrs (map (cmd:

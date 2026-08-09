@@ -1,19 +1,18 @@
-{ pkgs, userConfig, ... }:
+{ config, pkgs, ... }:
 
 {
   virtualisation.docker = {
-    enable = true;
-    enableOnBoot = false;
+    enable = config.nixSystems.role == "server";
+    enableOnBoot = config.nixSystems.role == "server";
     autoPrune = {
-      enable = true;
+      enable = config.nixSystems.role == "server";
       dates = "weekly";
       flags = [ "--all" ];
     };
     rootless = {
-      enable = true;
-      setSocketVariable = true;
+      enable = config.nixSystems.role == "desktop";
+      setSocketVariable = config.nixSystems.role == "desktop";
     };
   };
-  # users.users."${userConfig.user.name}".extraGroups = [ "docker" ]; # Removed to enforce rootless security
   environment.systemPackages = with pkgs; [ docker-compose ];
 }

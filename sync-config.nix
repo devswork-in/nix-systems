@@ -248,10 +248,6 @@ in {
       type = "git";
       source = "git@github.com:devswork-in/loomwork.git";
       dest = "~/loomwork";
-      postSync = if pkgs != null then
-        "export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock && export PATH=${pkgs.git}/bin:${pkgs.docker}/bin:${pkgs.docker-compose}/bin:${pkgs.just}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin:${pkgs.curl}/bin:/run/current-system/sw/bin:$PATH && cd ~/loomwork && git submodule update --init --remote --force --recursive && (just ps prod 2>/dev/null | grep -q Up && just --shell /bin/bash deploy prod || just --shell /bin/bash up prod)"
-      else
-        "export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock && cd ~/loomwork && git submodule update --init --remote --force --recursive && (just ps prod 2>/dev/null | grep -q Up && just deploy prod || just up prod)";
     }
   ];
 

@@ -15,10 +15,10 @@
     # Core session management
     ../../modules/core/session-manager.nix
     ../../modules/core/services/rtk-setup.nix
-    ../../modules/core/services/nixos-config-sync.nix
 
-    # Addon modules
-    ../../modules/services
+    # Omnix services
+    ../../modules/services/steam.nix
+    ../../modules/services/virtManager.nix
     ../../modules/desktops/wayland/niri
     ../../modules/desktop-utils/services.nix
     ../../modules/desktop-utils/plymouth.nix
@@ -39,20 +39,6 @@
   networking.networkmanager.dns = "none";
 
   services.tailscale.enable = true;
-
-  # Defer tailscaled start until after boot completes (VPN not needed for login)
-  systemd.services.tailscaled = {
-    after = lib.mkForce [ "multi-user.target" "NetworkManager-wait-online.service" ];
-    wantedBy = lib.mkForce [ ];
-  };
-  systemd.timers.tailscaled-delayed = {
-    description = "Delay tailscaled start until after boot";
-    wantedBy = [ "multi-user.target" ];
-    timerConfig = {
-      OnActiveSec = "10s";
-      Unit = "tailscaled.service";
-    };
-  };
 
   # System-specific packages
   environment.systemPackages = with pkgs; [ gparted ntfs3g ];
@@ -79,34 +65,13 @@
   # Note: amd-pstate-epp only supports 'performance' and 'powersave' governors.
   # Actual performance is controlled by EPP preference in TLP config.
 
-  # Defer binfmt registration until after boot (saves ~800ms on critical path)
-  # aarch64 cross-builds still work, just not during very early boot
-  systemd.services.systemd-binfmt = {
-    after = lib.mkForce [ "multi-user.target" ];
-    wantedBy = lib.mkForce [ ];
-  };
-  systemd.timers.systemd-binfmt-delayed = {
-    description = "Delay binfmt registration until after boot";
-    wantedBy = [ "multi-user.target" ];
-    timerConfig = {
-      OnActiveSec = "5s";
-      Unit = "systemd-binfmt.service";
-    };
-  };
-
-  # Fix for "sudo: PAM account management error" during boot
-  # Disable the upstream nix-repo-sync activation script which attempts to use sudo before PAM is ready
-  system.activationScripts.nixRepoSyncPreActivation.text = lib.mkForce "";
-
-  # Allow passwordless sudo for nixos-config-sync script
-  security.sudo.extraRules = [{
-    users = [ userConfig.user.name ];
-    commands = [
-      { command = "/home/${userConfig.user.name}/.local/bin/nixos-config-sync"; options = [ "NOPASSWD" ]; }
-    ];
-  }];
-
   programs.voquill.enable = true;
+
+  # Omnix is an AMD/Niri system. Keep X11 and Intel-only thermald off here,
+  # without changing the dormant Intel desktop configuration.
+  services.xserver.enable = lib.mkForce false;
+  services.xserver.displayManager.sx.enable = lib.mkForce false;
+  services.thermald.enable = lib.mkForce false;
 
   # System-specific user groups (extends profile groups)
   users.users.${userConfig.user.name}.extraGroups = [ "input" ];

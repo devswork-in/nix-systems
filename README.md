@@ -3,7 +3,8 @@
 [![NixOS](https://img.shields.io/badge/NixOS-25.11-blue.svg?logo=nixos)](https://nixos.org)
 [![Flakes](https://img.shields.io/badge/Nix-Flakes-informational.svg?logo=nixos)](https://nixos.wiki/wiki/Flakes)
 
-Opinionated NixOS configs for my devices.
+NixOS configurations for an AMD/Niri workstation, an ARM production server,
+VM validation, and preserved dormant machines.
 
 ## Layout
 
@@ -12,7 +13,6 @@ Opinionated NixOS configs for my devices.
 ├── lib/                    # Helper functions (mkSystemConfig, mkAppImage)
 ├── profiles/               # Reusable profiles (base, desktop, server)
 ├── modules/
-│   ├── addons/             # Addon modules
 │   ├── apps/               # Application modules
 │   ├── core/               # Core system modules
 │   ├── desktop-utils/      # Desktop utilities and configurations
@@ -40,27 +40,32 @@ sudo sh -c 'curl -sSL https://raw.githubusercontent.com/devswork-in/nix-systems/
 
 ## Systems
 
-[omnix](hosts/omnix/), [blade](hosts/blade/), [cospi](hosts/cospi/), [phoenix](hosts/phoenix/)
+See [CONTEXT.md](CONTEXT.md) for the active/dormant target matrix and hardware
+boundaries.
 
 ## Commands
 
 See [Usage](docs/usage.md) for full details and [Setup](docs/setup.md) for installation.
 
 ```bash
-sudo nixos-rebuild switch --flake .#<hostname> --impure  # Build & switch
-nix run nixpkgs#deploy-rs -- .#<hostname>               # Remote deploy
+sudo nixos-rebuild switch --flake .#omnix --impure       # Local workstation
+nix run github:serokell/deploy-rs -- .#phoenix-arm      # Production server only
 nix-repo-sync-force                                     # Force sync
 nix-repo-sync-logs                                      # View logs
 nix-cleanup --dry-run                                   # Cleanup preview
 nix-cleanup                                             # Full cleanup
-nix run nixpkgs#nixos-rebuild -- build-vm --flake .#<hostname> --fast  # VM test
+nixos-rebuild build-vm --flake .#omnix --impure          # GUI VM
+nixos-rebuild build-vm --flake .#phoenix-x86 --impure    # Fast headless VM
 ```
 
 ## Deployment
 
 ### Phoenix (ARM)
 
-**Remote Build** (Builds on target, fast):
+Free at least 8 GiB on Phoenix before deployment. The x86 Phoenix output is
+VM-only and is deliberately absent from `deploy.nodes`.
+
+**Remote Build** (builds on target):
 ```bash
 nixos-rebuild --flake .#phoenix-arm --target-host phoenix --build-host phoenix switch --no-reexec -S
 ```

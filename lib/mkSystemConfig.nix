@@ -2,7 +2,7 @@
 # Simplifies system creation in flake.nix by providing consistent structure
 # Supports cross-compilation when buildSystem differs from target system
 
-{ nixpkgs, nixpkgs-unstable, inputs, userConfig, nixosVersion, flakeRoot }:
+{ nixpkgs, nixpkgs-unstable, inputs, userConfig, flakeRoot }:
 
 { system, modules, hostname, buildSystem ? null }:
 
@@ -12,7 +12,7 @@ let
 in
 nixpkgs.lib.nixosSystem {
   specialArgs = {
-    inherit inputs userConfig nixosVersion flakeRoot;
+    inherit inputs userConfig flakeRoot;
     pkgs-unstable = import nixpkgs-unstable {
       inherit system;
       config.allowUnfree = true;
@@ -20,6 +20,12 @@ nixpkgs.lib.nixosSystem {
   };
   # Use nixpkgs.hostPlatform instead of deprecated system parameter
   modules = [
+    {
+      options.nixSystems.role = nixpkgs.lib.mkOption {
+        type = nixpkgs.lib.types.enum [ "desktop" "server" ];
+        description = "The machine role used for role-wide configuration.";
+      };
+    }
     # Set hostname with mkDefault to allow system-specific override
     {
       networking.hostName = nixpkgs.lib.mkDefault hostname;
@@ -28,12 +34,9 @@ nixpkgs.lib.nixosSystem {
     {
       nixpkgs.hostPlatform = system;
     }
-    # Global nixpkgs config - allow unfree and insecure packages
+    # Global nixpkgs config
     {
-      nixpkgs.config = {
-        allowUnfree = true;
-        allowInsecurePredicate = _: true;
-      };
+      nixpkgs.config.allowUnfree = true;
     }
     # Cross-compilation settings when buildSystem is specified
     (nixpkgs.lib.mkIf isCross {
@@ -41,4 +44,3 @@ nixpkgs.lib.nixosSystem {
     })
   ] ++ modules;
 }
-

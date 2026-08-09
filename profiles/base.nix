@@ -1,11 +1,14 @@
 # Base profile - Common configuration for all systems
 # This profile contains settings shared across all NixOS systems
 
-{ config, pkgs, lib, userConfig, nixosVersion, inputs, ... }:
+{ config, pkgs, lib, userConfig, inputs, ... }:
 
 {
   # Nix settings common to all systems
-  imports = [ ../modules/services/docker ../modules/core/vars/default.nix ];
+  imports = [
+    ../modules/services/docker
+    ../modules/core/vars/default.nix
+  ];
 
   nix = {
     settings = {
@@ -56,7 +59,7 @@
 
   nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ];
 
-  # nixpkgs.config (allowUnfree, allowInsecure) is set in lib/mkSystemConfig.nix
+  # nixpkgs.config.allowUnfree is set in lib/mkSystemConfig.nix
 
   # Enable fish shell globally
   programs.fish.enable = true;
@@ -109,8 +112,8 @@
     "z /var/log/journal 2755 root systemd-journal - -"
   ];
 
-  # System state version (derived from flake nixpkgs input)
-  system.stateVersion = nixosVersion;
+  # Keep this at the release first used by these machines. It is not a package version.
+  system.stateVersion = "23.11";
 
   # Ensure nix-repo-sync has access to git and ssh
   # Run it on a timer to avoid blocking boot
@@ -119,22 +122,19 @@
     wantedBy = lib.mkForce [ ]; # Don't start at boot
   };
 
-  # Create symlink for bash in /bin/bash for compatibility with scripts
-  system.activationScripts.create-bin-bash = {
-    text = ''
-      # Ensure /bin/bash exists as a symlink to the installed bash
-      mkdir -p /bin
-      rm -f /bin/bash  # Remove if it exists (whether file or broken symlink)
-      ln -s ${pkgs.bash}/bin/bash /bin/bash
-    '';
-    deps = [ ];
-  };
-
   systemd.timers.nix-repo-sync = {
     wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnBootSec = lib.mkForce "1m";
+    timerConfig = lib.mkForce {
+      OnCalendar = "weekly";
+      Persistent = true;
+      RandomizedDelaySec = "1h";
       Unit = "nix-repo-sync.service";
     };
+  };
+
+  # VM boots must not synchronize mutable user or server data.
+  virtualisation.vmVariant = {
+    services.nix-repo-sync.enable = lib.mkForce false;
+    systemd.timers.nix-repo-sync.wantedBy = lib.mkForce [ ];
   };
 }

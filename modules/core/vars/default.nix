@@ -1,4 +1,11 @@
-{ pkgs, config, userConfig, ... }: {
+{ config, lib, userConfig, ... }:
+
+let
+  user = userConfig.user.name;
+  envDir = "/home/${user}/.config/env";
+  roleFile = ./. + "/${config.nixSystems.role}.sh";
+  hostFile = ./. + "/${config.networking.hostName}.sh";
+in {
   environment.variables = {
     EDITOR = "nvim";
     VISUAL = "nvim";
@@ -12,49 +19,10 @@
     NIX_SYSTEM = config.networking.hostName;
   };
 
-  # Activation script to ensure env vars are synced even if nix-repo-sync fails
-  # This guarantees the .sh files exist for shell startup
-  system.activationScripts.syncEnvVars = {
-    text = ''
-      echo "Syncing environment variables..."
-      mkdir -p /home/${userConfig.user.name}/.config/env
-
-      # Symlink common vars
-      if [ "${config.networking.hostName}" = "phoenix" ] || [ "${config.networking.hostName}" = "server" ] || [ "${config.networking.hostName}" = "blade" ]; then
-        ln -sf ${./common.sh} /home/${userConfig.user.name}/.config/env/common.sh
-      else
-        ln -sf /etc/nixos/modules/core/vars/common.sh /home/${userConfig.user.name}/.config/env/common.sh
-      fi
-
-      # Symlink system-specific vars
-      if [ "${config.networking.hostName}" = "phoenix" ] || [ "${config.networking.hostName}" = "server" ] || [ "${config.networking.hostName}" = "blade" ]; then
-         # For Servers, verify existence in source tree (nix store)
-         if [ -f ${./.}/${config.networking.hostName}.sh ]; then
-           ln -sf ${./.}/${config.networking.hostName}.sh /home/${userConfig.user.name}/.config/env/${config.networking.hostName}.sh
-         fi
-      else
-         ln -sf /etc/nixos/modules/core/vars/${config.networking.hostName}.sh /home/${userConfig.user.name}/.config/env/${config.networking.hostName}.sh || true
-      fi
-
-      # Symlink desktop/server vars based on profile
-      if [ "${config.networking.hostName}" = "phoenix" ] || [ "${config.networking.hostName}" = "server" ] || [ "${config.networking.hostName}" = "blade" ]; then
-          if [ -f ${./desktop.sh} ]; then
-              ln -sf ${./desktop.sh} /home/${userConfig.user.name}/.config/env/desktop.sh
-          fi
-          if [ -f ${./server.sh} ]; then
-              ln -sf ${./server.sh} /home/${userConfig.user.name}/.config/env/server.sh
-          fi
-      else
-          if [ -f /etc/nixos/modules/core/vars/desktop.sh ]; then
-              ln -sf /etc/nixos/modules/core/vars/desktop.sh /home/${userConfig.user.name}/.config/env/desktop.sh
-          fi
-          if [ -f /etc/nixos/modules/core/vars/server.sh ]; then
-              ln -sf /etc/nixos/modules/core/vars/server.sh /home/${userConfig.user.name}/.config/env/server.sh
-          fi
-      fi
-
-      chown -R ${userConfig.user.name}:users /home/${userConfig.user.name}/.config/env
-    '';
-    deps = [ ];
-  };
+  systemd.tmpfiles.rules = [
+    "d ${envDir} 0755 ${user} users - -"
+    "L+ ${envDir}/common.sh - ${user} users - ${./common.sh}"
+    "L+ ${envDir}/${config.nixSystems.role}.sh - ${user} users - ${roleFile}"
+  ] ++ lib.optional (builtins.pathExists hostFile)
+    "L+ ${envDir}/${config.networking.hostName}.sh - ${user} users - ${hostFile}";
 }

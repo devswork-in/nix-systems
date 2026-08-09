@@ -6,19 +6,17 @@
     ../../profiles/server.nix
     
     # System-specific modules
-    ../server/hardware-configuration.nix
+    ./hardware.nix
     
     # Addon modules
     ../../modules/services/website
-    ../../modules/services/docker
   ];
 
   # System-specific configuration
   networking.hostName = "phoenix";
 
-  # Ensure nix-repo-sync has docker/just/git for loomwork postSync
-  systemd.services.nix-repo-sync.path = with pkgs; [ git just docker-compose docker ];
-  virtualisation.docker.enableOnBoot = lib.mkForce true;
+  # Phoenix deploys Compose workloads through its single rootful Docker daemon.
+  users.users.${userConfig.user.name}.extraGroups = [ "docker" ];
 
   environment.systemPackages = with pkgs; [
     pnpm

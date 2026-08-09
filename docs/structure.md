@@ -14,7 +14,6 @@ Repository architecture.
 │   ├── desktop.nix        # Desktop config
 │   └── server.nix         # Server config
 ├── modules/
-│   ├── addons/            # Addon modules
 │   ├── apps/              # App modules
 │   ├── core/              # Core modules
 │   ├── desktop-utils/     # Desktop configs
@@ -68,5 +67,5 @@ Repository architecture.
 
 - Profiles eliminate duplication
 - Lib functions provide reusable utilities
-- Modules have consistent structure
-- Portable across systems
+- Hardware-specific behavior stays under its host
+- Role-wide behavior is selected explicitly, not inferred from X11

@@ -4,6 +4,8 @@
 { config, pkgs, lib, userConfig, flakeRoot, ... }:
 
 {
+  nixSystems.role = "server";
+
   # Import base profile
   imports = [ ./base.nix ../modules/core/vars/server.nix ];
 
@@ -55,7 +57,7 @@
       enable = true;
       settings = {
         PasswordAuthentication = false;
-        PermitRootLogin = "yes";
+        PermitRootLogin = "prohibit-password";
       };
     };
 
@@ -105,8 +107,7 @@
   services.nix-repo-sync = let
     syncConfig = import ../sync-config.nix {
       inherit (userConfig) user paths;
-      inherit pkgs;
-      flakeRoot = ../.;
+      inherit pkgs flakeRoot;
     };
   in {
     enable = lib.mkDefault true;

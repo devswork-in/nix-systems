@@ -4,6 +4,8 @@
 { config, pkgs, lib, userConfig, flakeRoot, inputs, ... }:
 
 {
+  nixSystems.role = "desktop";
+
   # Import base profile
   imports = [
     ./base.nix
@@ -78,20 +80,15 @@
     };
   };
 
-  # Readahead service - DISABLED: negligible benefit on NVMe SSDs
-  # services.readahead.enable = lib.mkDefault true;
-  # services.readahead.fileList = lib.mkDefault [ ... ];
-
-  # Nix store pre-warm - DISABLED: negligible benefit on NVMe SSDs
-  # services.nix-store-prewarm.enable = lib.mkDefault true;
-  # services.nix-store-prewarm.packages = lib.mkDefault [ ... ];
-  # services.nix-store-prewarm.delay = lib.mkDefault 15;
+  systemd.tmpfiles.rules = [
+    "d /home/${userConfig.user.name}/Screenshots 0755 ${userConfig.user.name} users - -"
+  ];
 
   # Configuration sync service (common + desktop syncs)
   services.nix-repo-sync = let
     syncConfig = import ../sync-config.nix {
       inherit (userConfig) user paths;
-      inherit flakeRoot;
+      inherit flakeRoot pkgs;
     };
   in {
     enable = lib.mkDefault true;
@@ -100,5 +97,10 @@
       ++ (syncConfig.desktop or [ ])
       ++ (syncConfig.${config.networking.hostName} or [ ])
       ++ (lib.optionals config.programs.niri.enable (syncConfig.niri or [ ])));
+  };
+
+  virtualisation.vmVariant = {
+    systemd.timers.flatpak-managed-install.wantedBy = lib.mkForce [ ];
+    systemd.user.timers.doppler-secrets.wantedBy = lib.mkForce [ ];
   };
 }

@@ -7,7 +7,7 @@ Build, deploy, and manage systems.
 ```bash
 sudo nixos-rebuild switch --flake .#<hostname> --impure  # Build & switch
 sudo nixos-rebuild test --flake .#<hostname> --impure    # Test only
-sudo nixos-rebuild build --flake .#<hostname>            # Build only
+sudo nixos-rebuild build --flake .#<hostname> --impure   # Build only
 sudo nixos-rebuild boot --flake .#<hostname> --impure    # Next boot
 
 # From GitHub
@@ -37,17 +37,17 @@ Host phoenix
 ### Remote
 
 ```bash
-nix run nixpkgs#deploy-rs -- .#phoenix
-nix run nixpkgs#deploy-rs -- github:devswork-in/nix-systems#phoenix
-nix run nixpkgs#deploy-rs -- .#server --hostname=phoenix
+nix run github:serokell/deploy-rs -- .#phoenix-arm
 ```
 
 ### VM Test
 
 ```bash
-nix run nixpkgs#nixos-rebuild -- build-vm --flake .#phoenix --fast
+nixos-rebuild build-vm --flake .#phoenix-x86 --impure
 ./result/bin/run-*-vm
 ```
+
+`phoenix-x86` is VM-only. Never deploy it to the `phoenix` hostname.
 
 ## Systems
 
@@ -108,4 +108,3 @@ Launch Monocle in a **Popup** from anywhere:
 - **`Ctrl+Space`**: Select "Monocle (Review)" from the command palette.
 
 Monocle uses Neovim as its external editor (`Ctrl+g`).
-
