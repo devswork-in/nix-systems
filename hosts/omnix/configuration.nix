@@ -25,7 +25,7 @@
     ../../modules/desktop-utils/tlp.nix
     ../../modules/desktop-utils/performance-optimization.nix
     # ../../modules/apps/kiro
-    ../../modules/apps/voquill
+    # ../../modules/apps/voquill
   ];
 
   # Disable GDM - using TTY auto-login with session-manager
@@ -67,7 +67,7 @@
   # Note: amd-pstate-epp only supports 'performance' and 'powersave' governors.
   # Actual performance is controlled by EPP preference in TLP config.
 
-  programs.voquill.enable = true;
+  # programs.voquill.enable = true;
 
   # Omnix is an AMD/Niri system. Keep X11 and Intel-only thermald off here,
   # without changing the dormant Intel desktop configuration.
