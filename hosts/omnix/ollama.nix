@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   # Ollama service with ROCm GPU acceleration for AMD 780M iGPU
@@ -20,8 +20,10 @@
   services.ollama = {
     enable = true;
     package = import ./ollama-rocm-bin.nix { inherit pkgs; };  # v0.20.2 pre-built binary
-    acceleration = "rocm";  # Enable ROCm GPU acceleration
-    
+    user = "ollama";
+    group = "ollama";
+    home = "/home/ollama";
+    models = "/home/ollama/.local/share/ollama/models";
     # GFX version override for AMD 780M (gfx1103 → gfx1100)
     # The 780M reports as gfx1103 but ROCm requires override to gfx1100 (RDNA3)
     rocmOverrideGfx = "11.0.0";
@@ -44,6 +46,9 @@
       OLLAMA_KEEP_ALIVE = "15m";
     };
   };
+
+  users.users.ollama.createHome = true;
+  systemd.services.ollama.serviceConfig.ProtectHome = lib.mkForce "read-only";
   
   # Verification commands after starting service:
   # 1. Check ROCm detection: rocminfo | grep -A 10 "Agent 2"
