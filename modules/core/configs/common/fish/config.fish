@@ -1,7 +1,7 @@
 
 # --- vsh configuration start ---
 bind \c] 'vsh --voice; commandline -f repaint'
-if isatty 1; and begin; not set -q VSH_ACTIVE_TTY; or test "$VSH_ACTIVE_TTY" != (tty); end
+if status is-interactive; and isatty 1; and begin; not set -q VSH_ACTIVE_TTY; or test "$VSH_ACTIVE_TTY" != (tty); end
     exec vsh
 end
 # --- vsh configuration end ---
