@@ -40,3 +40,4 @@ modules/core/configs/common/scripts/hermes
 modules/core/configs/common/scripts/io.github.thetumultuousunicornofdarkness.cpu-x
 modules/core/configs/common/scripts/io.webtorrent.WebTorrent
 modules/core/configs/common/fish/config.fish.vsh.lock
+modules/core/configs/common/fish/fish_variables
