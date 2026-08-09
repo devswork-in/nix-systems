@@ -15,10 +15,17 @@ let
     name = "Zen Browser";
     comment = "A modern and fast web browser";
     categories = "Network;WebBrowser;";
-    mimeType = "x-scheme-handler/http;x-scheme-handler/https;";
+    mimeType = "text/html;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https";
     desktopActions = "NewWindow:New Window:zen-browser --new-window|NewPrivateWindow:New Private Window:zen-browser --private-window";
   };
 in
 {
   environment.systemPackages = [ zen-browser ];
+
+  xdg.mime.defaultApplications = {
+    "application/xhtml+xml" = "zen-browser.desktop";
+    "text/html" = "zen-browser.desktop";
+    "x-scheme-handler/http" = "zen-browser.desktop";
+    "x-scheme-handler/https" = "zen-browser.desktop";
+  };
 }
