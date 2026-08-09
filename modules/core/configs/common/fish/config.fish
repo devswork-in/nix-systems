@@ -1,4 +1,5 @@
 # --- vsh configuration start ---
+bind \c] 'vsh --voice; commandline -f repaint'
 if isatty 1; and begin; not set -q VSH_ACTIVE_TTY; or test "$VSH_ACTIVE_TTY" != (tty); end
     exec vsh
 end
@@ -120,7 +121,7 @@ set -gx PATH "/home/creator54/.local/bin" $PATH
 
 
 # >>> grok installer >>>
-fish_add_path $HOME/.grok/bin
+fish_add_path -g $HOME/.grok/bin
 # <<< grok installer <<<
 
 # kimi-code
