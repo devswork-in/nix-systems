@@ -1,139 +1,138 @@
 #!/bin/sh
-
-# Smart file opener based on MIME type
-# Optimized for Wayland and Kitty
+# Portable universal file previewer and opener
+# Optimized for Wayland, Kitty, and POSIX shells
 
 show_help() {
-    echo "v - Smart file opener based on MIME type"
-    echo ""
-    echo "Usage: v [options] <file|url|command>"
-    echo ""
-    echo "  <image>               : preview in kitty icat (prompts for deletion)"
-    echo "  <video/audio>         : opens in mpv"
-    echo "  <pdf>                 : opens in zathura"
-    echo "  <iso>                 : path copied to clipboard (wl-copy)"
-    echo "  <markdown>            : preview using glow"
-    echo "  <vlang source>        : passes to the V lang compiler"
-    echo "  repl | run | install  : V lang commands"
-    echo "  dir/                  : list directory contents"
-    echo "  http(s)://...         : proceeds as get function"
-    echo "  <other>               : opens with \$PAGER / bat / less"
-    echo ""
-    echo "Options:"
-    echo "  -p <file>             : force PAGER preview"
-    echo "  -h, --help            : show this help"
+    echo "v - Portable universal file previewer"
+    echo "Usage: v [file|url|directory]"
 }
 
-if [ "$#" -eq 0 ]; then
-    show_help
-    exit 0
-fi
-
-ARG="$1"
-
-# Handle flags
-case "$ARG" in
-    -p)
-        shift
-        ${PAGER:-bat} "$@"
-        exit $?
-        ;;
+case "$1" in
     -h|--help)
         show_help
         exit 0
         ;;
 esac
 
-# 1. Handle URLs purely by string match
-case "$ARG" in
+# 1. URL handling
+case "$1" in
     http://*|https://*)
-        get "$@"
+        if command -v awrit >/dev/null 2>&1; then
+            awrit "$1" >/dev/null 2>&1 &
+        else
+            xdg-open "$1" >/dev/null 2>&1 &
+        fi
         exit 0
-        ;;
-    # Handle V Lang exact commands (repl/run/install)
-    repl|run|install)
-        command v "$@"
-        exit $?
         ;;
 esac
 
-# Ensure target exists
+# 2. No arguments: interactive fzf launcher
+if [ "$#" -eq 0 ]; then
+    if command -v fzf >/dev/null 2>&1; then
+        find_cmd="find . -maxdepth 4 -not -path '*/.*'"
+        if command -v fd >/dev/null 2>&1; then
+            find_cmd="fd --hidden --exclude .git --exclude node_modules"
+        fi
+
+        selection=$(eval "$find_cmd" | fzf \
+            --multi \
+            --preview '
+                if [ -d {} ]; then tree -C -L 2 {} 2>/dev/null || ls -la {};
+                elif echo {} | grep -Eq "\.(md|markdown)$"; then glow -s dark {} 2>/dev/null || bat --color=always {};
+                elif echo {} | grep -Eq "\.json$"; then jq -C . {} 2>/dev/null | head -n 100;
+                elif command -v bat >/dev/null 2>&1; then bat --color=always --style=numbers {};
+                else cat {}; fi' \
+            --preview-window=right:60%:wrap \
+            --bind="ctrl-e:execute(nvim {})" \
+            --bind="ctrl-y:execute-silent(printf %s {} | wl-copy)" \
+            --header="Enter: preview | Ctrl-E: edit | Ctrl-Y: copy path")
+
+        if [ -n "$selection" ]; then
+            for item in $selection; do
+                "$0" "$item"
+            done
+        fi
+        exit 0
+    else
+        ls -la
+        exit 0
+    fi
+fi
+
+ARG="$1"
+
 if [ ! -e "$ARG" ]; then
-    echo "Error: '$ARG' does not exist." >&2
+    echo "v: '$ARG': No such file or directory" >&2
     exit 1
 fi
 
-# 2. Handle Directories 
+# 3. Directory preview
 if [ -d "$ARG" ]; then
-    case "$ARG" in
-        *[Pp]hoto*|*[Ss]creenshot*|*[Gg]allery*|*[Dd][Cc][Ii][Mm]*|*[Pp]ics*|*[Pp]ictures*|*[Ww]all*)
-            # Show images inside the directory
-            find "$ARG" -maxdepth 1 -type f -exec kitty +kitten icat --align left {} + 2>/dev/null
-            ;;
-        *)
-            echo "Cannot 'cd' from a standalone script. Contents of $ARG:"
-            ls -la "$ARG"
-            ;;
-    esac
+    if command -v tree >/dev/null 2>&1; then
+        tree -C -L 2 "$ARG" | head -n 40
+    else
+        ls -la "$ARG"
+    fi
     exit 0
 fi
 
-# 3. Determine MIME type for files
+# 4. MIME type preview
 MIME=$(file --mime-type -b "$ARG" 2>/dev/null)
 
 case "$MIME" in
-    # Images (Kitty kitten icat)
     image/*)
-        kitty +kitten icat "$ARG"
-        # Interactive delete prompt
-        printf "Delete %s? [y/N]: " "$ARG"
-        read -r ans </dev/tty
-        case "$ans" in
-            [Yy]|[Yy][Ee][Ss]) 
-                rm -f "$ARG"
-                echo "Deleted."
-                ;;
-        esac
-        ;;
-
-    # Media: Videos & Audio
-    video/*|audio/*)
-        mpv "$@" >/dev/null 2>&1 &
-        ;;
-
-    # PDFs
-    application/pdf)
-        zathura "$@" >/dev/null 2>&1 &
-        ;;
-
-    # ISOs
-    application/x-iso9660-image)
-        echo "Copied PATH=$ARG to clipboard"
-        if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-            printf "%s" "$ARG" | wl-copy
-        else
-            printf "%s" "$ARG" | xclip -selection clipboard
+        if command -v swiv >/dev/null 2>&1; then
+            swiv "$ARG" >/dev/null 2>&1 &
+        elif command -v sxiv >/dev/null 2>&1; then
+            sxiv "$ARG" >/dev/null 2>&1 &
+        elif [ -n "$KITTY_WINDOW_ID" ]; then
+            kitty +kitten icat "$ARG"
+        elif command -v imv >/dev/null 2>&1; then
+            imv "$ARG" >/dev/null 2>&1 &
         fi
         ;;
-
-    # Fallback/Text handling
+    video/*|audio/*)
+        if command -v mpv >/dev/null 2>&1; then
+            mpv "$ARG" >/dev/null 2>&1 &
+        fi
+        ;;
+    application/pdf)
+        if command -v zathura >/dev/null 2>&1; then
+            zathura "$ARG" >/dev/null 2>&1 &
+        fi
+        ;;
+    application/zip|application/x-tar|application/x-compressed-tar|application/x-gzip|application/x-xz)
+        if echo "$ARG" | grep -Eq "\.zip$" && command -v unzip >/dev/null 2>&1; then
+            unzip -l "$ARG"
+        elif command -v tar >/dev/null 2>&1; then
+            tar -tvf "$ARG"
+        fi
+        ;;
     *)
-        # Because MarkDown and VLang often identify as generic "text/plain", 
-        # we fallback to extension checking strictly for those specific text formats.
         case "$ARG" in
             *.md|*.MD)
-                glow "$ARG"
+                if command -v glow >/dev/null 2>&1; then
+                    glow -s dark "$ARG"
+                elif command -v bat >/dev/null 2>&1; then
+                    bat --color=always "$ARG"
+                else
+                    less "$ARG"
+                fi
                 ;;
-            *.v)
-                command v "$@"
+            *.json|*.JSON)
+                if command -v jq >/dev/null 2>&1; then
+                    jq -C . "$ARG" 2>/dev/null | head -n 100
+                elif command -v bat >/dev/null 2>&1; then
+                    bat --color=always "$ARG"
+                else
+                    less "$ARG"
+                fi
                 ;;
             *)
-                if [ -n "$PAGER" ]; then
-                    $PAGER "$@"
-                elif command -v bat >/dev/null 2>&1; then
-                    bat "$@" 2>/dev/null
+                if command -v bat >/dev/null 2>&1; then
+                    bat --color=always --style=numbers "$ARG"
                 else
-                    less "$@"
+                    less "$ARG"
                 fi
                 ;;
         esac
