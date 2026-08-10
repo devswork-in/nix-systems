@@ -43,9 +43,20 @@ in {
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/fish";
-      dest = "~/.config/fish";
+      source = "${nixSystemsRoot}/modules/core/configs/common/fish/config.fish";
+      dest = "~/.config/fish/config.fish";
     }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/fish/functions";
+      dest = "~/.config/fish/functions";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/core/configs/common/fish/completions";
+      dest = "~/.config/fish/completions";
+    }
+
     {
       type = "local";
       source = "${nixSystemsRoot}/modules/core/configs/common/npmrc";
@@ -142,15 +153,16 @@ in {
       source = "${nixSystemsRoot}/modules/desktop-utils/addon-aliases";
       dest = "~/.config/addon-aliases";
     }
+
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/desktop-utils/xplr";
-      dest = "~/.config/xplr";
+      source = "${nixSystemsRoot}/modules/desktop-utils/mpv/youtube-quality.conf";
+      dest = "~/.config/mpv/youtube-quality.conf";
     }
     {
       type = "local";
-      source = "${nixSystemsRoot}/modules/desktop-utils/mpv";
-      dest = "~/.config/mpv";
+      source = "${nixSystemsRoot}/modules/desktop-utils/mpv/scripts";
+      dest = "~/.config/mpv/scripts";
     }
     {
       type = "local";

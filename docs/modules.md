@@ -22,7 +22,7 @@ Desktop configurations. See [`modules/desktop-utils/`](../modules/desktop-utils/
 - Configs: `kitty.conf`, `gromit-mpx.ini`, `flameshot/flameshot.ini`
 - [Firefox](../modules/desktop-utils/firefox/README.md) - Custom browser with privacy extensions
 - [MPV / youtube-quality](../modules/desktop-utils/mpv/README.md) - YouTube quality selector for MPV
-- [xplr](../modules/desktop-utils/xplr/README.md) - Terminal file explorer config
+
 
 ### Environments
 

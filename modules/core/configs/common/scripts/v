@@ -36,16 +36,17 @@ if [ "$#" -eq 0 ]; then
 
         selection=$(eval "$find_cmd" | fzf \
             --multi \
-            --preview '
-                if [ -d {} ]; then tree -C -L 2 {} 2>/dev/null || ls -la {};
-                elif echo {} | grep -Eq "\.(md|markdown)$"; then glow -s dark {} 2>/dev/null || bat --color=always {};
-                elif echo {} | grep -Eq "\.json$"; then jq -C . {} 2>/dev/null | head -n 100;
-                elif command -v bat >/dev/null 2>&1; then bat --color=always --style=numbers {};
-                else cat {}; fi' \
+            --preview 'sh -c "
+                if [ -d \"{}\" ]; then tree -C -L 2 \"{}\" 2>/dev/null || ls -la \"{}\";
+                elif echo \"{}\" | grep -Eq \"\.(md|markdown)$\"; then glow -s dark \"{}\" 2>/dev/null || bat --color=always \"{}\";
+                elif echo \"{}\" | grep -Eq \"\.json$\"; then jq -C . \"{}\" 2>/dev/null | head -n 100;
+                elif command -v bat >/dev/null 2>&1; then bat --color=always --style=numbers \"{}\";
+                else cat \"{}\"; fi"' \
             --preview-window=right:60%:wrap \
             --bind="ctrl-e:execute(nvim {})" \
             --bind="ctrl-y:execute-silent(printf %s {} | wl-copy)" \
             --header="Enter: preview | Ctrl-E: edit | Ctrl-Y: copy path")
+
 
         if [ -n "$selection" ]; then
             for item in $selection; do
