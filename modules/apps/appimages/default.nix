@@ -4,5 +4,6 @@
   # Import individual AppImage modules
   imports = [
     ./zen-browser.nix
+    ./orca.nix
   ];
 }
