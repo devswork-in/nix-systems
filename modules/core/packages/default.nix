@@ -3,7 +3,7 @@
 
 {
   imports = [
-    ./awrit.nix
+    #./awrit.nix
     ./bat.nix
     ./direnv.nix
     ./fonts.nix
@@ -11,6 +11,7 @@
     ./git.nix
     ./mcfly.nix
     ./monocle.nix
+    ./nnn.nix
     ./nvim.nix
   ];
 
@@ -26,7 +27,6 @@
   home.packages = with pkgs; [
     wget
     github-cli
-    nnn
     aria2
     libclang
     gcc

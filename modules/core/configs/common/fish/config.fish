@@ -92,9 +92,6 @@ if not set -q VIRTUAL_ENV
     end
 end
 
-# Desktop-specific settings (NNN file manager)
-set -gx NNN_PLUG 'f:finder;o:fzopen;p:preview-tui;d:diffs;t:nmount;v:imgview;g:!git log;'
-set -gx NNN_FIFO '/tmp/nnn.fifo'
 
 set -l starship_bin (type -p starship)
 if test -n "$starship_bin"
