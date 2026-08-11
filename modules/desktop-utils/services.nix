@@ -1,6 +1,8 @@
 { pkgs, lib, ... }:
 
 {
+  security.wrappers.gnome-keyring-daemon.capabilities = lib.mkForce "cap_ipc_lock,cap_setpcap+ep";
+
   services = {
     xserver = {
       enable = true;

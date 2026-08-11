@@ -15,8 +15,12 @@
     sessionCommand = "${pkgs.writeShellScript "start-niri" ''
       export PATH="$HOME/.local/bin:$PATH"
 
+      if hash gnome-keyring-daemon 2>/dev/null; then
+          eval $(gnome-keyring-daemon --start --components=secrets,ssh 2>/dev/null || true)
+      fi
+
       # Define variables to import into systemd user session
-      VARS="PATH XDG_RUNTIME_DIR XDG_SESSION_TYPE XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP DESKTOP_SESSION DISPLAY WAYLAND_DISPLAY NIRI_SOCKET"
+      VARS="PATH XDG_RUNTIME_DIR XDG_SESSION_TYPE XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP DESKTOP_SESSION DISPLAY WAYLAND_DISPLAY NIRI_SOCKET SSH_AUTH_SOCK GNOME_KEYRING_CONTROL"
 
       # Only import variables that are actually set (silences "not set" warnings)
       IMPORT_LIST=""

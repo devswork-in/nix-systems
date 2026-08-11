@@ -27,6 +27,9 @@
     # TTY1 auto-login
     # services.getty.autologinUser = userConfig.user.name;
 
+    security.pam.services.greetd.enableGnomeKeyring = true;
+    security.pam.services.login.enableGnomeKeyring = true;
+
     # Use greetd for seamless auto-login
     # Note: Auto-login (`initial_session`) prevents PAM from receiving a password. 
     # Therefore, secret services like GNOME Keyring cannot be decrypted automatically.
