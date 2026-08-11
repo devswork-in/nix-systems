@@ -12,6 +12,7 @@
     serviceConfig = {
       Type = "oneshot";
       UMask = "0077";
+      EnvironmentFile = "-%h/.config/doppler/service.env";
     };
     
     script = ''
@@ -22,7 +23,7 @@
       shell_pending=$(mktemp "$env_dir/.doppler.sh.XXXXXX")
       trap 'rm -f "$env_pending" "$shell_pending"' EXIT
 
-      ${pkgs.doppler}/bin/doppler secrets download --project nix-systems --config prod --no-file --format env \
+      ${pkgs.doppler}/bin/doppler secrets download --no-check-version --project nix-systems --config prod --no-file --format env \
         > "$env_pending"
       if [ ! -s "$env_pending" ]; then
         echo "ERROR: doppler secrets download produced empty output" >&2
