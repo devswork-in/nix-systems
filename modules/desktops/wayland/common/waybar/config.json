@@ -107,7 +107,7 @@
   "custom/memory": {
     "exec": "~/.config/waybar/memory_monitor.py",
     "return-type": "json",
-    "interval": 5,
+    "interval": 1,
     "format": "{}",
     "tooltip": true
   },
