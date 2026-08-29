@@ -13,9 +13,7 @@
     # Explicitly enable PAM service for hyprlock to avoid "init first step" errors
     security.pam.services.hyprlock = { };
 
-    # Add hyprlock package
-    home-manager.users."${userConfig.user.name}".home.packages =
-      [ pkgs.hyprlock ];
+    environment.systemPackages = [ pkgs.hyprlock ];
 
     # Auto-lock systemd service (Disabled in favor of Niri spawn-at-startup for faster lock)
     # systemd.user.services.hyprlock-autolock =

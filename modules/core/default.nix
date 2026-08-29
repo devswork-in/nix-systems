@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./base
+    ./packages
     ./networking
     ./command-scheduler/command-scheduler.nix
     ./services.nix

@@ -1,5 +1,8 @@
 { config, pkgs, lib, userConfig, ... }:
 
+let toGVariantSettings = import ../../../lib/toGVariantSettings.nix { inherit lib; };
+in
+
 {
   # Vanilla GNOME Configuration (without Pop Shell)
   # Import base GNOME configuration
@@ -19,17 +22,8 @@
     gnomeExtensions.user-themes
   ];
 
-  # Home Manager configuration for vanilla GNOME
-  home-manager.users."${userConfig.user.name}" = {
-    home.packages = with pkgs.gnomeExtensions; [
-      appindicator
-      dash-to-dock
-      blur-my-shell
-      vitals
-      user-themes
-    ];
-
-    dconf.settings = {
+  programs.dconf.profiles.user.databases = [{
+    settings = toGVariantSettings {
       # Enable extensions
       "org/gnome/shell".enabled-extensions = [
         "appindicatorsupport@rgcjonas.gmail.com"
@@ -97,5 +91,5 @@
         overlay-key = "";
       };
     };
-  };
+  }];
 }

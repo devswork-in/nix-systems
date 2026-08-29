@@ -8,6 +8,6 @@
 
   config = lib.mkIf config.wayland.swaylock.enable {
     security.pam.services.swaylock = { };
-    home-manager.users."${userConfig.user.name}".home.packages = [ pkgs.swaylock-effects ];
+    environment.systemPackages = [ pkgs.swaylock-effects ];
   };
 }

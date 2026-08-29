@@ -124,6 +124,21 @@ in {
   desktop = [
     {
       type = "local";
+      source = "${nixSystemsRoot}/modules/desktop-utils/gtk/gtkrc-2.0";
+      dest = "~/.gtkrc-2.0";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktop-utils/gtk/settings.ini";
+      dest = "~/.config/gtk-3.0/settings.ini";
+    }
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktop-utils/gtk/settings.ini";
+      dest = "~/.config/gtk-4.0/settings.ini";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/modules/desktop-utils/kitty.conf";
       dest = "~/.config/kitty/kitty.conf";
     }
@@ -180,6 +195,11 @@ in {
   # Niri-specific sync items
   # Only synced when programs.niri.enable is true
   niri = [
+    {
+      type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/niri/swayosd.css";
+      dest = "~/.config/swayosd/style.css";
+    }
     {
       type = "local";
       source = "${nixSystemsRoot}/modules/desktops/wayland/niri/config.kdl";

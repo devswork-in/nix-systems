@@ -7,7 +7,7 @@
   ];
 
   # Add only desktop-specific packages
-  home.packages = with pkgs; [
+  environment.systemPackages = with pkgs; [
     # amp-cli
     bc
     openssl

@@ -6,15 +6,11 @@
   };
 
   config = lib.mkIf config.wayland.hypridle.enable {
-    # Add hypridle package
-    home-manager.users."${userConfig.user.name}" = {
-      home.packages = [ pkgs.hypridle ];
-
-      # Configure hypridle via xdg config file
-      xdg.configFile."hypridle.conf".source = ./hypridle.conf;
-
-      # Systemd service to start hypridle
-      systemd.user.services.hypridle = {
+    environment.systemPackages = [ pkgs.hypridle ];
+    systemd.tmpfiles.rules = [
+      "L+ /home/${userConfig.user.name}/.config/hypridle.conf - - - - ${./hypridle.conf}"
+    ];
+    systemd.user.services.hypridle = {
         Unit = {
           Description = "Hypridle daemon";
           After = [ "graphical-session.target" ];
@@ -28,7 +24,6 @@
         Install = {
           WantedBy = [ "graphical-session.target" ];
         };
-      };
     };
   };
 }

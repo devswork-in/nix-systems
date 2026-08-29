@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, userConfig, ... }:
 
 let
   nnnPluginsSrc = pkgs.fetchFromGitHub {
@@ -9,7 +9,7 @@ let
   };
 in
 {
-  home.packages = with pkgs; [
+  environment.systemPackages = with pkgs; [
     (nnn.override { withNerdIcons = true; })
     # Previewer dependencies for preview-tui and nnn plugins
     chafa
@@ -25,10 +25,12 @@ in
     glow
   ];
 
-  home.sessionVariables = {
+  environment.sessionVariables = {
     NNN_PREVIEWIMGPROG = "kitty";
   };
 
   # Declaratively link all plugins from jarun/nnn master branch
-  home.file.".config/nnn/plugins".source = "${nnnPluginsSrc}/plugins";
+  systemd.tmpfiles.rules = [
+    "L+ /home/${userConfig.user.name}/.config/nnn/plugins - - - - ${nnnPluginsSrc}/plugins"
+  ];
 }

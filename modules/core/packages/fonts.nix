@@ -6,11 +6,13 @@
 }:
 
 {
-  fonts.fontconfig.enable = true;
-  home.packages = with pkgs; [
-    source-code-pro
-    nerd-fonts.sauce-code-pro
-    nerd-fonts.fira-code
-    nerd-fonts.droid-sans-mono
-  ];
+  fonts = {
+    fontconfig.enable = true;
+    packages = with pkgs; [
+      source-code-pro
+      nerd-fonts.sauce-code-pro
+      nerd-fonts.fira-code
+      nerd-fonts.droid-sans-mono
+    ];
+  };
 }

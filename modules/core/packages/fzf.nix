@@ -1,9 +1,5 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
-  programs.fzf = {
-    enable = true;
-    enableFishIntegration = true; # Auto-binds Ctrl+R, Ctrl+T, Alt+C
-    enableBashIntegration = true;
-  };
+  environment.systemPackages = [ pkgs.fzf ];
 }

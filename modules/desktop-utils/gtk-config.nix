@@ -1,58 +1,30 @@
-# Centralized GTK configuration module — Gruvbox unified theme
-{ pkgs, config, ... }:
+{ pkgs, userConfig, ... }:
 
 let
-  gruvbox-theme = pkgs.gruvbox-gtk-theme;
-  themeName = "gruvbox-dark";
-in
-{
-  gtk = {
-    enable = true;
-
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
-
-    theme = {
-      name = themeName;
-      package = gruvbox-theme;
-    };
-
-    cursorTheme = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
-      size = 24;
-    };
-
-    gtk3.extraConfig = { gtk-application-prefer-dark-theme = 1; };
-
-    gtk4 = {
-      theme = config.gtk.theme;
-      extraConfig = { gtk-application-prefer-dark-theme = 1; };
-    };
-  };
-
-  # GTK 4 theme symlinks
-  xdg.configFile = {
-    "gtk-4.0/assets".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";
-    "gtk-4.0/gtk.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css";
-    "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
-  };
-
-  # Set consistent GTK theme variable
-  home.sessionVariables = { 
-    GTK_THEME = themeName;
+  toGVariantSettings = import ../../lib/toGVariantSettings.nix { lib = pkgs.lib; };
+  home = "/home/${userConfig.user.name}";
+  theme = pkgs.gruvbox-gtk-theme;
+  themePath = "${theme}/share/themes/gruvbox-dark/gtk-4.0";
+in {
+  environment.systemPackages = with pkgs; [ gruvbox-gtk-theme papirus-icon-theme bibata-cursors ];
+  environment.sessionVariables = {
+    GTK_THEME = "gruvbox-dark";
     XCURSOR_THEME = "Bibata-Modern-Ice";
     XCURSOR_SIZE = "24";
   };
-
-  # GNOME interface settings that complement GTK
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      gtk-theme = themeName;
+  programs.dconf.enable = true;
+  programs.dconf.profiles.user.databases = [{
+    settings = toGVariantSettings { "org/gnome/desktop/interface" = {
+      gtk-theme = "gruvbox-dark";
       color-scheme = "prefer-dark";
       icon-theme = "Papirus-Dark";
-    };
-  };
+      cursor-theme = "Bibata-Modern-Ice";
+      cursor-size = 24;
+    }; };
+  }];
+  systemd.tmpfiles.rules = [
+    "L+ ${home}/.config/gtk-4.0/assets - - - - ${themePath}/assets"
+    "L+ ${home}/.config/gtk-4.0/gtk.css - - - - ${themePath}/gtk.css"
+    "L+ ${home}/.config/gtk-4.0/gtk-dark.css - - - - ${themePath}/gtk-dark.css"
+  ];
 }

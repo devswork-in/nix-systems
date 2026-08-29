@@ -225,15 +225,14 @@ in {
     };
 
     # GNOME-specific performance optimizations
-    home-manager.users."${userConfig.user.name}" =
-      mkIf cfg.desktop.enableGnomeOptimizations {
-        dconf.settings = {
+    programs.dconf.profiles.user.databases = mkIf cfg.desktop.enableGnomeOptimizations [{
+        settings = (import ../../lib/toGVariantSettings.nix { inherit lib; }) {
           "org/gnome/mutter" = {
             experimental-features = [ "scale-monitor-framebuffer" ];
             dynamic-workspaces = false;
           };
         };
-      };
+      }];
 
     # TLP integration - override CPU frequency settings based on profile
     services.tlp.settings = {

@@ -1,15 +1,8 @@
 { pkgs, ... }:
 
 {
-  programs.neovim = {
-    enable = true;
-    vimAlias = true;
-    defaultEditor = true;
-    withRuby = true;
-    withPython3 = true;
-  };
-
-  home = {
-    packages = [ pkgs.luajit ]; # dep for some plugins
-  };
+  # Keep loading the repository-synced user config; the NixOS Neovim module
+  # intentionally changes that behavior.
+  environment.systemPackages = with pkgs; [ neovim luajit ];
+  environment.shellAliases = { vi = "nvim"; vim = "nvim"; };
 }

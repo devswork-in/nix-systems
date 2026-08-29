@@ -1,10 +1,13 @@
 # Complete desktop configuration
-{ lib, userConfig, ... }:
+{ lib, ... }:
 
 {
   imports = [
     ../core
     ../apps/appimages
+    ./packages
+    ./fusuma.nix
+    ./udiskie.nix
     ./nightlight.nix
   ];
 
@@ -14,12 +17,4 @@
   # CopyQ removed - using Vicinae clipboard manager instead
   # services.copyq.enable = true;
 
-  home-manager.users."${userConfig.user.name}" = { ... }: {
-    imports = [
-      ./packages
-
-      ./fusuma.nix
-      ./udiskie.nix
-    ];
-  };
 }

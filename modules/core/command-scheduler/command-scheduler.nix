@@ -75,10 +75,8 @@ let
   # Generate systemd service
   mkService = { name, description, wrapper }:
     {
-      Unit = {
-        Description = description;
-      };
-      Service = {
+      inherit description;
+      serviceConfig = {
         Type = "oneshot";
         ExecStart = "${wrapper}";
       };
@@ -100,42 +98,35 @@ let
       };
     in
     {
-      Unit = {
-        Description = "Timer for ${description}";
-      };
-      Timer = timerConfig;
-      Install = {
-        WantedBy = [ "timers.target" ];
-      };
+      description = "Timer for ${description}";
+      wantedBy = [ "timers.target" ];
+      inherit timerConfig;
     };
 in
 {
-  home-manager.users."${user}" = { ... }: {
-    # Generate user-level services and timers
-    systemd.user.services = lib.listToAttrs (
-      map (cmd:
-        let
-          wrapper = mkCommandWrapper {
-            inherit (cmd) name environment;
-            command = cmd.command or null;
-            script = cmd.script or null;
-            workingDirectory = cmd.workingDirectory or "~";
-            level = "user";
-          };
-        in
-        lib.nameValuePair "scheduled-${cmd.name}" (mkService {
-          inherit (cmd) name description;
-          inherit wrapper;
-        })
-      ) userCommands
-    );
-    
-    systemd.user.timers = lib.listToAttrs (map (cmd:
-      lib.nameValuePair "scheduled-${cmd.name}" (mkTimer {
-        inherit (cmd) name description schedule;
+  systemd.user.services = lib.listToAttrs (
+    map (cmd:
+      let
+        wrapper = mkCommandWrapper {
+          inherit (cmd) name environment;
+          command = cmd.command or null;
+          script = cmd.script or null;
+          workingDirectory = cmd.workingDirectory or "~";
+          level = "user";
+        };
+      in
+      lib.nameValuePair "scheduled-${cmd.name}" (mkService {
+        inherit (cmd) name description;
+        inherit wrapper;
       })
-    ) userCommands);
-  };
+    ) userCommands
+  );
+
+  systemd.user.timers = lib.listToAttrs (map (cmd:
+    lib.nameValuePair "scheduled-${cmd.name}" (mkTimer {
+      inherit (cmd) name description schedule;
+    })
+  ) userCommands);
   
   # Generate system-level services and timers
   systemd.services = lib.listToAttrs (map (cmd:

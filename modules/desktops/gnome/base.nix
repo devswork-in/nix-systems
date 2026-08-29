@@ -1,6 +1,10 @@
 { config, pkgs, lib, userConfig, ... }:
 
+let toGVariantSettings = import ../../../lib/toGVariantSettings.nix { inherit lib; };
+in
+
 {
+  imports = [ ../../desktop-utils/gtk-config.nix ];
   # Base GNOME Desktop Environment Configuration
   # This module contains common settings shared between vanilla GNOME and Pop Shell
 
@@ -73,10 +77,8 @@
     GNOME_SHELL_SLOWDOWN_FACTOR = "0.5";
   };
 
-  # Home Manager base configuration for GNOME
-  home-manager.users."${userConfig.user.name}" = {
-    # Base dconf settings shared across all GNOME configurations
-    dconf.settings = {
+  programs.dconf.profiles.user.databases = [{
+    settings = toGVariantSettings {
       # Mutter (Window Manager) optimizations
       "org/gnome/mutter" = {
         # Enable experimental features for better performance
@@ -146,8 +148,5 @@
         sleep-inactive-battery-type = "nothing";
       };
     };
-
-    # Import GTK configuration
-    imports = [ ../../desktop-utils/gtk-config.nix ];
-  };
+  }];
 }

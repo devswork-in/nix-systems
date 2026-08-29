@@ -3,7 +3,7 @@
 
 {
   # Desktop-specific environment variables
-  home.sessionVariables = {
+  environment.sessionVariables = {
     # Disable auto-tmux on desktop systems
     TMUX_DISABLE_AUTO_START = "1";
     XDG_CURRENT_DESKTOP = "GNOME";

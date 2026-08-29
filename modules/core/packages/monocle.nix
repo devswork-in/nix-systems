@@ -29,5 +29,5 @@ let
   };
 in
 {
-  home.packages = [ monocle ];
+  environment.systemPackages = [ monocle ];
 }

@@ -1,9 +1,12 @@
-{ pkgs, home-manager, userConfig, lib, inputs, ... }:
+{ pkgs, userConfig, lib, inputs, ... }:
+
+let toGVariantSettings = import ../../../lib/toGVariantSettings.nix { inherit lib; };
+in
 
 {
   # Pop Shell Configuration
   # Import base GNOME configuration
-  imports = [ ./base.nix ];
+  imports = [ ./base.nix ../../desktop-utils/gtk-config.nix ];
 
   # Pop Shell specific configuration
   config = let
@@ -82,12 +85,8 @@
       vitals # System monitor with disk usage and uptime
     ];
   in {
-    # ---- Home Configuration ----
-    home-manager.users.${user} = {
-      home.packages = gnomeExtensionsList;
-      home.file = {
-        # Create .desktop file for dconf settings to be applied at login
-        ".config/autostart/dconf-settings.desktop".text = ''
+    environment.etc = {
+        "xdg/autostart/dconf-settings.desktop".text = ''
           [Desktop Entry]
           Type=Application
           Exec=bash -c "dconf write /org/gnome/shell/extensions/pop-shell/active-hint-border-radius '@u 12'"
@@ -97,7 +96,7 @@
           Name=dconf Settings
           Comment=Apply dconf settings at login
         '';
-        ".config/autostart/disable-favorite-apps.desktop".text = ''
+        "xdg/autostart/disable-favorite-apps.desktop".text = ''
           [Desktop Entry]
           Type=Application
           Exec=${disableFavoriteAppShortcuts}
@@ -107,7 +106,7 @@
           Name=Disable Favorite App Shortcuts
           Comment=Disable GNOME Shell favorite app shortcuts
         '';
-        ".config/autostart/vicinae-server.desktop".text = ''
+        "xdg/autostart/vicinae-server.desktop".text = ''
           [Desktop Entry]
           Type=Application
           Exec=${
@@ -119,14 +118,18 @@
           Name=Vicinae Server
           Comment=Start Vicinae application launcher server
         '';
-        ".config/pop-shell/config.json".text = builtins.toJSON {
+    };
+
+    systemd.tmpfiles.rules = [
+      "L+ /home/${user}/.config/pop-shell/config.json - - - - ${
+        pkgs.writeText "pop-shell-config.json" (builtins.toJSON {
           float = [ { class = "Vicinae"; } { class = "vicinae"; } ];
-        };
-      };
+        })
+      }"
+    ];
 
-      imports = [ ../../desktop-utils/gtk-config.nix ];
-
-      dconf.settings = {
+    programs.dconf.profiles.user.databases = [{
+      settings = toGVariantSettings {
         #check extensions uuids via gnome-extensions list
         "org/gnome/shell".enabled-extensions =
           (map (extension: extension.extensionUuid) gnomeExtensionsList) ++ [
@@ -557,7 +560,7 @@
         # Prevent Evolution services from auto-starting
         "org/gnome/evolution-data-server" = { autostart = false; };
       };
-    };
+    }];
 
     # ---- Pop Shell Specific System Configuration ----
 
@@ -572,12 +575,12 @@
     };
 
     # Pop Shell dependencies
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = gnomeExtensionsList ++ (with pkgs; [
       rofi
       pop-launcher
       (pkgs.callPackage ../../core/packages/vicinae.nix {})
       (pkgs.callPackage ../../core/packages/vicinae-launch.nix {})
-    ];
+    ]);
 
     # Apply overlay for panel-free extension v10
     nixpkgs.overlays = [ (import ./panel-free-overlay.nix) ];

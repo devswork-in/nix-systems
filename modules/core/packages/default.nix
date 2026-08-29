@@ -15,16 +15,11 @@
     ./nvim.nix
   ];
 
-  # Simple programs.X.enable (no extra config needed)
-  programs.htop.enable = true;
-  programs.jq.enable = true;
-  programs.starship = {
-    enable = true;
-    enableFishIntegration = true;
-    enableBashIntegration = true;
-  };
-
-  home.packages = with pkgs; [
+  environment.systemPackages = with pkgs; [
+    htop
+    jq
+    lazygit
+    starship
     wget
     github-cli
     aria2
