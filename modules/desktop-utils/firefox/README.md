@@ -1,6 +1,6 @@
 # Firefox Configuration
 
-Home-manager configuration for Firefox with custom theme and extensions.
+Firefox configuration with custom theme and extensions.
 
 ## Features
 

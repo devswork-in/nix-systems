@@ -94,8 +94,7 @@
     # had direnv and startship running via bashrc due to which ssh conn in nautilus was failing
     # and sftp on cli was failing
     gvfs.enable = true;
-    gnome.gnome-keyring.enable =
-      true; # fails to save if enabled via home-manager
+    gnome.gnome-keyring.enable = true;
     #cachix-agent = {
     #  # needs /etc/cachix-agent.token fix to have CACHIX_AGENT_TOKEN=<CACHIX_AUTH_TOKEN>
     #  enable = true;

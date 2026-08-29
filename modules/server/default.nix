@@ -1,16 +1,15 @@
 # Complete server configuration
-# Note: Servers use nix-repo-sync for user configs instead of home-manager
+# Servers use nix-repo-sync for user configs.
 { userConfig, pkgs, ... }:
 
 {
-  # Import only the core modules that don't require home-manager
-  # Note: command-scheduler is excluded as it uses home-manager for user services
+  # Keep the server role intentionally smaller than the desktop core.
   imports = [
     ../core/networking
     ../core/services.nix
   ];
 
-  # Server packages (replaces home-manager home.packages)
+  # Server packages
   environment.systemPackages = with pkgs; [
     # Core utilities
     wget

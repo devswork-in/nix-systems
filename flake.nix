@@ -27,11 +27,6 @@
       inputs.flake-compat.follows = "flake-compat";
     };
 
-    home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -118,7 +113,6 @@
           modules = [
             ./modules/server/default.nix
             ./hosts/server/configuration.nix
-            # Note: No home-manager - servers use nix-repo-sync for user configs
             inputs.nix-repo-sync.nixosModules.default
           ];
         };
@@ -150,7 +144,6 @@
           modules = [
             ./hosts/omnix/configuration.nix
             ./modules/desktop-utils/default.nix
-            inputs.home-manager.nixosModules.default
             inputs.nix-snapd.nixosModules.default
             nix-repo-sync.nixosModules.default
           ];
@@ -163,7 +156,6 @@
             ./hosts/blade/configuration.nix
             ./modules/server/default.nix
             inputs.nix-snapd.nixosModules.default
-            inputs.home-manager.nixosModules.default
             inputs.nix-repo-sync.nixosModules.default
           ];
         };
@@ -175,7 +167,6 @@
             ./hosts/cospi/configuration.nix
             ./modules/desktop-utils/default.nix
             inputs.nix-snapd.nixosModules.default
-            inputs.home-manager.nixosModules.default
             inputs.nix-repo-sync.nixosModules.default
           ];
         };

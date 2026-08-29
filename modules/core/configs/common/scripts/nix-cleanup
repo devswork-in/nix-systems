@@ -333,28 +333,6 @@ cleanup_user_profiles() {
     log_info "Removed $((before - after)) user generations"
 }
 
-cleanup_home_manager() {
-    log_section "Cleaning Home Manager Generations"
-    
-    local hm_profile="${HOME}/.local/state/nix/profiles/home-manager"
-    
-    if [[ -L "$hm_profile" ]]; then
-        local before
-        before=$(nix-env --list-generations --profile "$hm_profile" 2>/dev/null | wc -l || echo "0")
-        log_info "Home Manager generations before cleanup: ${before}"
-        
-        run_command "Removing old home-manager generations" \
-            nix-env --delete-generations old --profile "$hm_profile" || true
-        
-        local after
-        after=$(nix-env --list-generations --profile "$hm_profile" 2>/dev/null | wc -l || echo "0")
-        log_info "Home Manager generations after cleanup: ${after}"
-        log_info "Removed $((before - after)) home-manager generations"
-    else
-        log_info "Home Manager profile not found, skipping"
-    fi
-}
-
 cleanup_gc_roots() {
     log_section "Cleaning GC Roots"
     
@@ -406,13 +384,6 @@ cleanup_gc_roots() {
                     fi
                 done
             fi
-        fi
-        
-        # Clean home-manager GC roots
-        local hm_gcroots="${HOME}/.local/state/home-manager/gcroots"
-        if [[ -d "$hm_gcroots" ]]; then
-            run_command "Cleaning home-manager GC roots" \
-                find "$hm_gcroots" -xtype l -delete || true
         fi
         
         # Clean result symlinks in common locations
@@ -512,12 +483,6 @@ show_statistics() {
     user_gens=$(nix-env --list-generations 2>/dev/null | wc -l || echo "0")
     log_info "User generations:         ${user_gens}"
     
-    local hm_gens
-    if [[ -L "${HOME}/.local/state/nix/profiles/home-manager" ]]; then
-        hm_gens=$(nix-env --list-generations --profile "${HOME}/.local/state/nix/profiles/home-manager" 2>/dev/null | wc -l || echo "0")
-        log_info "Home Manager generations: ${hm_gens}"
-    fi
-    
     echo ""
     log_subsection "Largest Store Paths (Top 10)"
     if nix path-info --all --json 2>/dev/null | \
@@ -593,7 +558,7 @@ main() {
     # Run cleanup operations
     log_section "PHASE 1: Cleanup Operations"
     
-    local total_steps=7
+    local total_steps=6
     local current_step=0
     
     current_step=$((current_step + 1))
@@ -610,11 +575,6 @@ main() {
     show_progress "$current_step" "$total_steps"
     log_step "$current_step" "$total_steps" "Cleaning user profiles"
     cleanup_user_profiles
-    
-    current_step=$((current_step + 1))
-    show_progress "$current_step" "$total_steps"
-    log_step "$current_step" "$total_steps" "Cleaning home-manager"
-    cleanup_home_manager
     
     current_step=$((current_step + 1))
     show_progress "$current_step" "$total_steps"

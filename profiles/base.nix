@@ -68,7 +68,6 @@
   environment.systemPackages = with pkgs; [
     git
     cachix
-    home-manager
     vim
     fishPlugins.foreign-env
     openssh

@@ -2,7 +2,7 @@
 # niri-edit-config: Edit Niri configuration
 # Usage: niri-edit-config
 
-# Target the user config which is usually where home-manager symlinks to
+# Target the repository-synced user config.
 CONFIG_PATH="$HOME/.config/niri/config.kdl"
 
 if [ -z "$EDITOR" ]; then

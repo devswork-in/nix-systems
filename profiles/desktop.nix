@@ -18,10 +18,6 @@
   # Add NUR overlay for Firefox extensions
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
-  # Home-manager configuration
-  home-manager.useGlobalPkgs = true;
-  home-manager.backupFileExtension = "backup";
-
   # Boot configuration common to desktops
   boot = {
     loader = {
