@@ -125,7 +125,6 @@
 
     systemd-udev-settle.enable = false;
     NetworkManager-wait-online.enable = false;
-    systemd-journal-flush.enable = false;
     lvm2-activation-early.enable = false;
     lvm2-activation.enable = false;
   };

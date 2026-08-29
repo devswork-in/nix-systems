@@ -13,6 +13,7 @@ in
   boot = {
     resumeDevice = "/dev/nvme0n1p3";
     kernelParams = [ "resume_offset=${toString resumeOffset}" ];
+    kernelModules = [ "i2c_hid_acpi" ];
   };
 
   # systemd-hibernate and related sleep services run inside a restricted sandbox (ProtectHome=yes) by default.
@@ -58,18 +59,27 @@ in
   # This MUST be in sleep.conf, NOT logind.conf
   systemd.sleep.settings.Sleep.HibernateDelaySec = "15min";
 
-  # Fix ELAN touchpad (i2c-ELAN06FA) failing to restore after suspend/hibernate
-  # Error: "i2c_hid_acpi i2c-ELAN06FA:00: failed to change power setting" (error -121)
-  systemd.services.fix-touchpad-resume = {
-    description = "Reload i2c_hid_acpi after resume to fix ELAN touchpad";
-    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
-    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
-    path = [ pkgs.kmod ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 1 && modprobe -r i2c_hid_acpi && sleep 0.5 && modprobe i2c_hid_acpi'";
-    };
-  };
+  # The ELAN device can disappear from ACPI if its driver remains bound while
+  # firmware enters sleep. Detach before sleep, then bind after firmware wakes.
+  powerManagement.powerDownCommands = ''
+    ${pkgs.kmod}/bin/modprobe -r i2c_hid_acpi || true
+  '';
+
+  powerManagement.resumeCommands = ''
+    ${pkgs.coreutils}/bin/sleep 1
+    ${pkgs.kmod}/bin/modprobe i2c_hid_acpi
+
+    touchpad_path=/sys/bus/i2c/devices/i2c-ELAN06FA:00
+    for _ in $(${pkgs.coreutils}/bin/seq 1 10); do
+      [ -e "$touchpad_path" ] && break
+      ${pkgs.coreutils}/bin/sleep 0.2
+    done
+
+    if [ ! -e "$touchpad_path" ]; then
+      echo "ELAN touchpad did not return after resume" >&2
+      false
+    fi
+  '';
 
   systemd.services.update-resume-offset = {
     description = "Automatically update resume-offset if swapfile offset changes";
