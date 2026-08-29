@@ -95,10 +95,7 @@ end
 
 set -l starship_bin (type -p starship)
 if test -n "$starship_bin"
-    if not test -f ~/.cache/starship_init.fish; or test $starship_bin -nt ~/.cache/starship_init.fish
-        starship init fish > ~/.cache/starship_init.fish 2>/dev/null
-    end
-    source ~/.cache/starship_init.fish
+    $starship_bin init fish | source
     set -g PROMPT_MODE starship
 else
     set -g PROMPT_MODE custom

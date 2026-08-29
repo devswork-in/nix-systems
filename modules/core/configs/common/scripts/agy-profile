@@ -230,6 +230,8 @@ def managed_link(name: str) -> Path:
 
 
 def is_managed_link(path: Path) -> bool:
+    if path.name in RESERVED_NAMES:
+        return False
     if not path.is_symlink():
         return False
     try:

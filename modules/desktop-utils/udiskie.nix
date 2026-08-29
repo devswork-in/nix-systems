@@ -9,9 +9,8 @@ in {
   environment.systemPackages = [ pkgs.udiskie ];
   systemd.user.services.udiskie = {
     description = "udiskie mount daemon";
-    after = [ "graphical-session.target" "tray.target" ];
+    after = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
-    requires = [ "tray.target" ];
     wantedBy = [ "graphical-session.target" ];
     serviceConfig.ExecStart = "${pkgs.udiskie}/bin/udiskie --config=${config}";
   };

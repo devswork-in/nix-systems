@@ -2,10 +2,24 @@
 # Sync configuration for nix-repo-sync
 # See nix-repo-sync/README.md for usage details
 
-let nixSystemsRoot = if flakeRoot != null then flakeRoot else "./.";
+let
+  nixSystemsRoot = if flakeRoot != null then flakeRoot else "./.";
+  # Only repository-owned helpers: installers own the rest of ~/.local/bin.
+  scripts = [
+    "agent-policy" "agy-profile" "clip" "delegate"
+    "nightlight-cooler" "nightlight-restart" "nightlight-toggle" "nightlight-warmer"
+    "niri-edit-config" "niri-kill-process" "niri-show-binds" "nix-cleanup"
+    "nixos-config-sync" "scratchpad-daemon" "sshfs" "sshuttle"
+    "start-vibe-kanban" "sysedit" "sysrebuild" "sysupdate"
+    "tmux-palette" "toggle-scratchpad" "v" "wallpaper-selector"
+  ];
 in {
   # Synced on all systems
-  common = [
+  common = map (name: {
+    type = "local";
+    source = "${nixSystemsRoot}/modules/core/configs/common/scripts/${name}";
+    dest = "~/.local/bin/${name}";
+  }) scripts ++ [
     {
       type = "git";
       source = "https://github.com/creator54/starter";
@@ -15,11 +29,6 @@ in {
       type = "local";
       source = "${nixSystemsRoot}/modules/core/configs/common/aliases";
       dest = "~/.config/aliases";
-    }
-    {
-      type = "local";
-      source = "${nixSystemsRoot}/modules/core/configs/common/scripts";
-      dest = "~/.local/bin";
     }
     {
       type = "local";
