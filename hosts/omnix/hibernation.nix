@@ -53,32 +53,48 @@ in
   # Ensure the directory exists with correct permissions
   systemd.tmpfiles.rules = [
     "d /var/log/journal 2755 root systemd-journal - -"
+    # Snapshot allocation failed with ENOMEM despite ample disk swap. Ask the
+    # kernel to reclaim as much memory as possible before copying the image.
+    "w /sys/power/image_size - - - - 0"
   ];
 
   # Force hibernation after 15min of suspend (default is 2h or battery-based)
   # This MUST be in sleep.conf, NOT logind.conf
   systemd.sleep.settings.Sleep.HibernateDelaySec = "15min";
 
-  # The ELAN device can disappear from ACPI if its driver remains bound while
-  # firmware enters sleep. Detach before sleep, then bind after firmware wakes.
-  powerManagement.powerDownCommands = ''
-    ${pkgs.kmod}/bin/modprobe -r i2c_hid_acpi || true
+  # Keep the ELAN sleep workaround local; it does not fix ACPI disappearance.
+  # powerDownCommands also runs at shutdown; this belongs only to sleep.
+  systemd.services.sleep-actions.preStart = ''
+    echo "ELAN: detaching driver before sleep"
+    ${pkgs.kmod}/bin/modprobe -r i2c_hid_acpi
   '';
 
-  powerManagement.resumeCommands = ''
+  # ExecStopPost also runs if the pre-sleep command fails. ExecStop does not.
+  systemd.services.sleep-actions.postStop = ''
+    echo "ELAN: restoring driver after sleep (result=$SERVICE_RESULT)"
     ${pkgs.coreutils}/bin/sleep 1
     ${pkgs.kmod}/bin/modprobe i2c_hid_acpi
 
     touchpad_path=/sys/bus/i2c/devices/i2c-ELAN06FA:00
     for _ in $(${pkgs.coreutils}/bin/seq 1 10); do
-      [ -e "$touchpad_path" ] && break
-      ${pkgs.coreutils}/bin/sleep 0.2
+      # After suspend-then-hibernate, module reload can leave ELAN unbound.
+      # Explicit binding restored the input device without a reboot.
+      if [ -d "$touchpad_path" ] && [ ! -e "$touchpad_path/driver" ]; then
+        echo "ELAN: retrying touchpad driver bind"
+        if ! echo i2c-ELAN06FA:00 > /sys/bus/i2c/drivers/i2c_hid_acpi/bind; then
+          echo "ELAN: driver bind failed; retrying within resume window" >&2
+        fi
+      fi
+      if ${pkgs.gnugrep}/bin/grep -q 'ELAN06FA:00.*Touchpad' /proc/bus/input/devices; then
+        echo "ELAN: touchpad input device restored"
+        exit 0
+      fi
+      ${pkgs.coreutils}/bin/sleep 0.5
     done
 
-    if [ ! -e "$touchpad_path" ]; then
-      echo "ELAN touchpad did not return after resume" >&2
-      false
-    fi
+    echo "ELAN: no touchpad input device after driver reload; ACPI status:" >&2
+    ${pkgs.coreutils}/bin/cat /sys/bus/acpi/devices/ELAN06FA:00/status >&2 || true
+    exit 1
   '';
 
   systemd.services.update-resume-offset = {
