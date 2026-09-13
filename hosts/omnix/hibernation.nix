@@ -32,9 +32,9 @@ in
     #https://wiki.archlinux.org/title/getty
     #NAutoVTs specifys no of tty's we can have
     settings.Login = {
-      HandleLidSwitch = "suspend-then-hibernate";
-      HandleLidSwitchDocked = "suspend-then-hibernate";
-      HandleLidSwitchExternalPower = "suspend-then-hibernate";
+      HandleLidSwitch = "suspend";
+      HandleLidSwitchDocked = "suspend";
+      HandleLidSwitchExternalPower = "suspend";
       LidSwitchIgnoreInhibited = "yes";
       HoldoffTimeoutSec = "5s"; # Allow sleep shortly after wake (default 30s)
       HandlePowerKey = "suspend";
