@@ -27,14 +27,14 @@ in
     systemd-logind.serviceConfig.ProtectHome = "read-only";
   };
 
-  # Suspend-then-hibernate everywhere
+  # Direct hibernation on lid close
   services.logind = {
     #https://wiki.archlinux.org/title/getty
     #NAutoVTs specifys no of tty's we can have
     settings.Login = {
-      HandleLidSwitch = "suspend";
-      HandleLidSwitchDocked = "suspend";
-      HandleLidSwitchExternalPower = "suspend";
+      HandleLidSwitch = "hibernate";
+      HandleLidSwitchDocked = "hibernate";
+      HandleLidSwitchExternalPower = "hibernate";
       LidSwitchIgnoreInhibited = "yes";
       HoldoffTimeoutSec = "5s"; # Allow sleep shortly after wake (default 30s)
       HandlePowerKey = "suspend";
