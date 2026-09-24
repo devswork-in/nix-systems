@@ -58,9 +58,12 @@
       # Import user configuration (easy to switch: just change which config file to import)
       userConfig = import ./config.nix { inherit (nixpkgs) lib; };
 
-      # NIX_CONFIG_DIR intentionally permits syncing editable worktree files.
-      flakeRoot = let configuredRoot = builtins.getEnv "NIX_CONFIG_DIR";
-      in if configuredRoot != "" then configuredRoot else builtins.toString self.outPath;
+      # Store-backed snapshot: always reliable across remote hosts and build targets.
+      storeFlakeRoot = builtins.toString self.outPath;
+
+      # NIX_CONFIG_DIR intentionally permits syncing editable worktree files on local desktop.
+      desktopFlakeRoot = let configuredRoot = builtins.getEnv "NIX_CONFIG_DIR";
+      in if configuredRoot != "" then configuredRoot else storeFlakeRoot;
 
       # Import desktop settings
       desktopSettings = import ./modules/desktop-utils/desktop-settings.nix { };
@@ -79,13 +82,15 @@
 
       # Helper function for creating system configurations
       mkSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs nixpkgs-unstable inputs flakeRoot;
+        inherit nixpkgs nixpkgs-unstable inputs;
+        flakeRoot = storeFlakeRoot;
         userConfig = finalUserConfig;
       };
 
       # Helper function for creating desktop system configurations
       mkDesktopSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs nixpkgs-unstable inputs flakeRoot;
+        inherit nixpkgs nixpkgs-unstable inputs;
+        flakeRoot = desktopFlakeRoot;
         userConfig = desktopUserConfig;
       };
 
@@ -96,7 +101,8 @@
       };
 
       mkPhoenixVmSystem = import ./lib/mkSystemConfig.nix {
-        inherit nixpkgs nixpkgs-unstable inputs flakeRoot;
+        inherit nixpkgs nixpkgs-unstable inputs;
+        flakeRoot = storeFlakeRoot;
         userConfig = phoenixVmUserConfig;
       };
 
