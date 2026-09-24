@@ -20,6 +20,15 @@
   };
   programs.command-not-found.enable = false;
 
+  # Enable nix-ld to execute unpatched dynamic binaries (e.g. agy CLI)
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc
+      zlib
+    ];
+  };
+
   # Optimize RAM with ZRAM
   zramSwap.enable = true;
 
