@@ -124,9 +124,7 @@
           modules = phoenixModules ++ [{
             services.nix-repo-sync.enable = nixpkgs.lib.mkForce false;
             virtualisation.oci-containers.containers = {
-              whoogle-search.autoStart = nixpkgs.lib.mkForce false;
               leetcode.autoStart = nixpkgs.lib.mkForce false;
-              planner.autoStart = nixpkgs.lib.mkForce false;
             };
           }];
         };

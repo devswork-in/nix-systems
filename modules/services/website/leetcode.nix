@@ -12,7 +12,7 @@ in
       containers.leetcode = {
         image = "creator54/leetcode";
         autoStart = true;
-        ports = [ "${leetcode.port}:3001" ];
+        ports = [ "127.0.0.1:${leetcode.port}:3001" ];
       };
     };
   };

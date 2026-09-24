@@ -62,7 +62,7 @@ let
     };
 
     whoogle = {
-      enable = true;
+      enable = false;
       host = "search.${user.domain}";
       port = "8050";
     };
@@ -95,7 +95,7 @@ let
         port = "8082";
       };
       planner = {
-        enable = true;
+        enable = false;
         port = "8083";
       };
     };

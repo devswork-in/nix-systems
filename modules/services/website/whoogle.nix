@@ -11,7 +11,7 @@ in
       containers.whoogle-search = {
         image = "benbusby/whoogle-search:1.1.2";
         autoStart = true;
-        ports = [ "${whoogle.port}:5000" ];
+        ports = [ "127.0.0.1:${whoogle.port}:5000" ];
         environment = {
           WHOOGLE_CONFIG_USE_LETA = "0";
         };
