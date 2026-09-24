@@ -57,12 +57,36 @@
       enable = true;
       settings = {
         PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
         PermitRootLogin = "prohibit-password";
       };
     };
 
+    # Brute force protection
+    fail2ban = {
+      enable = true;
+      maxretry = 3;
+      ignoreIP = [
+        "100.64.0.0/10" # Whitelist private Tailscale network
+        "127.0.0.1/8"
+        "::1"
+      ];
+    };
+
     # Journal configuration to limit disk usage
     journald.extraConfig = "SystemMaxUse=100M";
+  };
+
+  # Server substituters - prioritize official, stable binary caches
+  nix.settings = {
+    substituters = lib.mkForce [
+      "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
+    ];
+    trusted-public-keys = lib.mkForce [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
   };
 
   # Nix garbage collection for servers

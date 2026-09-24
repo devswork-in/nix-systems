@@ -117,9 +117,9 @@ in {
       dest = "${paths.base}/blog.${user.domain}";
       # Build the site after sync
       postSync = if pkgs != null then
-        "${pkgs.nix}/bin/nix-shell -I nixpkgs=${pkgs.path} -p pnpm nodejs_22 --run 'pnpm install && pnpm run build'"
+        "${pkgs.nix}/bin/nix-shell -I nixpkgs=${pkgs.path} -p pnpm nodejs_22 --run 'CI=true pnpm install && pnpm run build'"
       else
-        "nix-shell -p pnpm nodejs_22 --run 'pnpm install && pnpm run build'";
+        "nix-shell -p pnpm nodejs_22 --run 'CI=true pnpm install && pnpm run build'";
     }
     {
       type = "local";
