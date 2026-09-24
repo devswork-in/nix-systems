@@ -71,6 +71,7 @@
     vim
     fishPlugins.foreign-env
     openssh
+    android-tools
   ];
 
   # Keep vim available as a fallback; shared variables select Neovim.

@@ -41,7 +41,6 @@
     screenkey
     libnotify
     ntfs3g
-    android-tools
     efibootmgr
     websocat
     zathura
