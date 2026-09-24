@@ -61,6 +61,7 @@ in
   # Force hibernation after 15min of suspend (default is 2h or battery-based)
   # This MUST be in sleep.conf, NOT logind.conf
   systemd.sleep.settings.Sleep.HibernateDelaySec = "15min";
+  systemd.sleep.settings.Sleep.HibernateMode = "shutdown";
 
   # Keep the ELAN sleep workaround local; it does not fix ACPI disappearance.
   # powerDownCommands also runs at shutdown; this belongs only to sleep.
