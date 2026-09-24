@@ -6,8 +6,8 @@
     enableOnBoot = config.nixSystems.role == "server";
     autoPrune = {
       enable = config.nixSystems.role == "server";
-      dates = "weekly";
-      flags = [ "--all" ];
+      dates = "daily";
+      flags = [ "--all" "--volumes" ];
     };
     rootless = {
       enable = config.nixSystems.role == "desktop";
