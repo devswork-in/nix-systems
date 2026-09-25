@@ -32,5 +32,6 @@
   environment.systemPackages = with pkgs; [
     pnpm
     just
+    bun
   ];
 }
