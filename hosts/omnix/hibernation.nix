@@ -12,7 +12,10 @@ in
 {
   boot = {
     resumeDevice = "/dev/nvme0n1p3";
-    kernelParams = [ "resume_offset=${toString resumeOffset}" ];
+    kernelParams = [
+      "resume_offset=${toString resumeOffset}"
+      "zswap.enabled=0"
+    ];
     kernelModules = [ "i2c_hid_acpi" ];
   };
 
@@ -66,6 +69,16 @@ in
   # Keep the ELAN sleep workaround local; it does not fix ACPI disappearance.
   # powerDownCommands also runs at shutdown; this belongs only to sleep.
   systemd.services.sleep-actions.preStart = ''
+    echo "Sleep telemetry: memory and swap state"
+    ${pkgs.procps}/bin/free -h || true
+    ${pkgs.util-linux}/bin/swapon --show || true
+    if [ -f /sys/block/zram0/mm_stat ]; then
+      echo "zram0 mm_stat: $(${pkgs.coreutils}/bin/cat /sys/block/zram0/mm_stat)"
+    fi
+    if [ -f /sys/power/image_size ]; then
+      echo "image_size: $(${pkgs.coreutils}/bin/cat /sys/power/image_size)"
+    fi
+
     echo "ELAN: detaching driver before sleep"
     ${pkgs.kmod}/bin/modprobe -r i2c_hid_acpi
   '';

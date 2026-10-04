@@ -7,6 +7,7 @@
   imports = [
     ../core/networking
     ../core/services.nix
+    ../core/packages/direnv.nix
   ];
 
   # Server packages
@@ -22,7 +23,6 @@
     ripgrep
     smartmontools
     jq
-    direnv
     eva
     unzip
     fd

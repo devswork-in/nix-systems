@@ -14,6 +14,7 @@
 
   # System-specific configuration
   networking.hostName = "phoenix";
+  boot.binfmt.emulatedSystems = lib.mkIf (pkgs.system == "aarch64-linux") [ "x86_64-linux" ];
 
   # Phoenix deploys Compose workloads through its single rootful Docker daemon.
   users.users.${userConfig.user.name}.extraGroups = [ "docker" ];

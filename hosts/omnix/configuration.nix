@@ -95,4 +95,16 @@
 
   # Disable KSM (memory dedup for VMs) — not needed without VMs, saves boot time
   systemd.services.ksm-enable.enable = lib.mkForce false;
+
+  security.sudo.extraRules = [
+    {
+      users = [ userConfig.user.name ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/tee /sys/firmware/acpi/platform_profile";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 }
