@@ -65,8 +65,12 @@ def get_battery_info():
             text += f" ({formatted_time})"
 
         tooltip = f"State: {state}\nTime: {raw_time}"
+        
+        css_class = state
+        if state in ("discharging", "pending-charge", "unknown") and percent <= 15:
+            css_class = "critical"
 
-        return {"text": text, "tooltip": tooltip, "class": state}
+        return {"text": text, "tooltip": tooltip, "class": css_class}
 
     except Exception as e:
         return {"text": " Error", "tooltip": str(e)}

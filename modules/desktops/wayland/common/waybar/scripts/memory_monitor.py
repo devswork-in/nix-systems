@@ -98,8 +98,14 @@ def get_mem_info():
         top = get_top_processes(5)
 
         # Text: RAM used/total + live top-3 (bar redraws every interval)
-        top_bar = " · ".join(f"{n} {to_gb_val(rss)}G" for n, rss in top[:3])
-        text = f"  {to_gb_val(mem_used)}/{to_gb_val(mem_total)} GB · {top_bar}"
+        # Truncate processes to max 8 chars, no padding (allows slight jitter but keeps it compact)
+        top_bar_items = []
+        for n, rss in top[:3]:
+            top_bar_items.append(f"{n[:8]} {to_gb_val(rss)}G")
+        top_bar = " · ".join(top_bar_items)
+        mem_used_fixed = f"{to_gb_val(mem_used):>4}"
+        mem_total_fixed = f"{to_gb_val(mem_total):>4}"
+        text = f"  {mem_used_fixed}/{mem_total_fixed} GB · {top_bar}"
 
         # Tooltip: Detailed Breakdown
         tooltip = (

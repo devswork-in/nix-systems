@@ -16,13 +16,12 @@
     "custom/fill"
   ],
   "modules-right": [
-    "network",
-    "custom/memory",
-    "custom/disk",
-    "temperature",
+    "custom/network",
+    "group/hardware",
     "pulseaudio",
     "clock",
     "custom/battery",
+    "custom/power_profile",
     "custom/vpn",
     "tray"
   ],
@@ -56,12 +55,12 @@
   },
   "pulseaudio": {
     "format": "{icon}  {volume}%",
-    "format-bluetooth": "{icon}  {volume}%",
-    "format-muted": "",
+    "format-bluetooth": "{icon}\uf294  {volume}%",
+    "format-muted": "\uf026",
     "format-icons": {
       "default": [
-        "",
-        ""
+        "\uf027",
+        "\uf028"
       ]
     },
     "on-click": "pavucontrol",
@@ -70,17 +69,10 @@
     "tooltip-format": "{volume}%"
   },
   "bluetooth": {
-    "format": "",
-    "format-connected": "",
+    "format": "\uf294",
+    "format-connected": "\uf294",
     "on-click": "blueman-manager",
     "tooltip-format": "{status}"
-  },
-  "network": {
-    "interval": 1,
-    "format": " {bandwidthDownBytes}  {bandwidthUpBytes}",
-    "format-disconnected": " Disconnected",
-    "tooltip-format": "{ifname}: {ipaddr}/{cidr} via {gwaddr}",
-    "on-click": "nm-connection-editor"
   },
   "custom/vpn": {
     "exec": "~/.local/bin/sshuttle -w -j",
@@ -109,23 +101,55 @@
     "return-type": "json",
     "interval": 1,
     "format": "{}",
-    "tooltip": true
+    "tooltip": true,
+    "states": {
+      "warning": 75,
+      "critical": 90
+    }
   },
   "custom/disk": {
     "exec": "~/.config/waybar/disk_monitor.py",
     "return-type": "json",
     "interval": 30,
     "format": "{}",
+    "tooltip": true,
+    "states": {
+      "warning": 75,
+      "critical": 90
+    }
+  },
+  "custom/temperature": {
+    "exec": "~/.config/waybar/temperature_monitor.py",
+    "return-type": "json",
+    "interval": 5,
+    "format": "{}",
     "tooltip": true
   },
-  "temperature": {
+  "custom/power_profile": {
+    "exec": "~/.config/waybar/power_profile.py",
+    "return-type": "json",
     "interval": 5,
-    "format": " {temperatureC}°C",
-    "critical-threshold": 80,
-    "format-critical": " {temperatureC}°C"
+    "signal": 6,
+    "format": "{}",
+    "tooltip": true,
+    "on-click": "~/.config/waybar/power_profile.py --menu"
   },
   "tray": {
     "icon-size": 16,
     "spacing": 10
+  },
+  "group/hardware": {
+    "orientation": "horizontal",
+    "modules": [
+      "custom/memory",
+      "custom/disk",
+      "custom/temperature"
+    ]
+  },
+  "custom/network": {
+    "exec": "~/.config/waybar/network_monitor.py",
+    "return-type": "json",
+    "format": "{}",
+    "on-click": "nm-connection-editor"
   }
 }

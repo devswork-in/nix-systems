@@ -83,12 +83,15 @@ window#waybar {
 /* MODULES */
 #battery,
 #custom-battery,
-#network,
+#custom-power_profile,
+#custom-network,
 #clock,
 #tray,
 #custom-memory,
 #custom-disk,
 #temperature,
+#custom-temperature,
+#custom-power_profile,
 #group-hardware,
 #custom-vpn,
 #pulseaudio {
@@ -143,7 +146,7 @@ window#waybar {
 }
 
 /* Specifics */
-#network.disconnected {
+#custom-network.disconnected {
     color: @red;
 }
 
@@ -171,4 +174,67 @@ window#waybar {
 #battery.charging,
 #battery.fully-charged {
     color: @green;
+}
+
+#custom-temperature.critical {
+    color: @red;
+}
+
+#custom-temperature.warning {
+    color: @yellow;
+}
+
+#custom-power_profile.low-power {
+    color: @green;
+}
+
+#custom-power_profile.balanced {
+    color: @aqua;
+}
+
+#custom-power_profile.performance {
+    color: @red;
+}
+
+
+/* Transitions for modules */
+#custom-battery, #custom-network, #clock, #tray, #custom-vpn, #pulseaudio, #custom-power_profile, #custom-memory, #custom-disk, #custom-temperature {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#workspaces button {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Warnings and Criticals */
+#custom-memory.warning,
+#custom-disk.warning {
+    color: @yellow;
+}
+
+#custom-memory.critical,
+#custom-disk.critical,
+#custom-battery.critical {
+    color: @red;
+}
+
+@keyframes blink {
+    0% { background-color: rgba(50, 48, 47, 0.95); color: @red; }
+    50% { background-color: @red; color: @bg; }
+    100% { background-color: rgba(50, 48, 47, 0.95); color: @red; }
+}
+
+#custom-battery.critical {
+    animation: blink 2s infinite;
+}
+
+#group-hardware {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+#custom-power_profile {
+    padding-left: 11px;
+    padding-right: 13px;
 }
