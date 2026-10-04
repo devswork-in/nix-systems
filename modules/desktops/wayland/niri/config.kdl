@@ -206,8 +206,8 @@ binds {
 
     Mod+M { maximize-column; }
 
-    // Toggle waybar
-    Mod+B { spawn "pkill" "-SIGUSR1" "waybar"; }
+    // Toggle waybar (respawn if killed)
+    Mod+B { spawn "sh" "-c" "if pkill -0 -x .waybar-wrapped 2>/dev/null || pkill -0 -x waybar 2>/dev/null; then pkill -SIGUSR1 waybar; else waybar & fi"; }
 
     // Open awrite in kitty vsplit
     Mod+Shift+B { spawn "kitty" "sh" "-c" "kitty @ set-spacing --match=recent:0 padding=0; awrit --remote-debugging-port=9222"; }
