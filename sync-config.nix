@@ -265,6 +265,19 @@ in {
     {
       type = "local";
       source =
+        "${nixSystemsRoot}/modules/desktops/wayland/common/waybar/scripts/temperature_monitor.py";
+      dest = "~/.config/waybar/temperature_monitor.py";
+    }
+    {
+      type = "local";
+      source =
+        "${nixSystemsRoot}/modules/desktops/wayland/common/waybar/scripts/power_profile.py";
+      dest = "~/.config/waybar/power_profile.py";
+    }
+
+    {
+      type = "local";
+      source =
         "${nixSystemsRoot}/modules/desktops/wayland/common/swaync/config.json";
       dest = "~/.config/swaync/config.json";
     }
