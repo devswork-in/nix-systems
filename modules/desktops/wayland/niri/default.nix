@@ -24,6 +24,18 @@
   # Niri compositor
   programs.niri.enable = true;
 
+  systemd.user.services.walker = {
+    description = "Walker launcher background service";
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${lib.getExe config.programs.walker.package} --gapplication-service";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+  };
+
   # Bluetooth
   hardware.bluetooth = {
     enable = true;

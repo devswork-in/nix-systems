@@ -1,59 +1,90 @@
-/* Ultra-Minimal Gruvbox Walker Theme */
+/* Zen-style command palette with Niri's existing focus outline. */
 
-@define-color bg #282828;
-@define-color bg_highlight #3c3836;
-@define-color fg #ebdbb2;
-@define-color fg_dim #a89984;
-@define-color accent #d79921; 
-@define-color border #3c3836; 
+@define-color bg #1d2021;
+@define-color bg_highlight #282828;
+@define-color fg #b9b9bc;
+@define-color fg_dim #898b8e;
+@define-color accent #83a598;
+@define-color border #323436;
+
+/* Walker's layouts rely on clearing GTK's built-in widget styling. */
+* {
+    all: unset;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+}
 
 window {
     background-color: transparent;
 }
 
-#window {
+.box-wrapper {
     background-color: @bg;
     color: @fg;
-    border: 1px solid @accent;
+    border: 3px solid @accent;
+    /* Keep a 5px inner curve, like Kitty, inside the 3px outline. */
     border-radius: 8px;
-    padding: 0px; 
+    box-shadow: 0 0 15px rgba(131, 165, 152, 0.5);
+    margin: 15px;
+    padding: 0px;
 }
 
-#input {
+.input {
     background-color: transparent;
     color: @fg;
     border: none;
     border-bottom: 1px solid @border;
     border-radius: 0px;
-    padding: 16px 20px;
-    font-size: 14pt;
-    font-family: "FiraCode Nerd Font", "SauceCodePro Nerd Font", sans-serif;
+    padding: 18px 14px;
+    font-size: 16px;
     box-shadow: none;
 }
 
-#input:focus {
+.input:focus {
     outline: none;
     box-shadow: none;
 }
 
-#list {
+.input image {
+    color: #686b6e;
+    -gtk-icon-size: 16px;
+    margin-right: 12px;
+}
+
+.input placeholder {
+    color: #77797c;
+}
+
+.list {
     margin: 0px;
-    padding: 10px;
+    padding: 6px;
 }
 
-#item {
-    padding: 10px 15px;
+.item-box {
+    padding: 12px 14px;
+    min-height: 28px;
     border-radius: 5px;
-    color: @fg_dim;
-    margin-bottom: 2px;
+    color: @fg;
+    margin-bottom: 0px;
 }
 
-#item:selected {
+.item-subtext {
+    color: @fg_dim;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.item-image {
+    -gtk-icon-size: 16px;
+}
+
+.item-quick-activation {
+    color: @fg_dim;
+}
+
+child:selected .item-box,
+row:selected .item-box {
     background-color: @bg_highlight;
     color: @fg;
-}
-
-/* Hide the bottom action bar */
-#typeahead, #actions, .actions {
-    display: none;
 }
