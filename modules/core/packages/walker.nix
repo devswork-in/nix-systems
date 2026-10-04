@@ -6,7 +6,14 @@
   disabledModules = [ "services/misc/elephant.nix" ]; # Walker still imports its own Elephant module.
   imports = [ inputs.walker.nixosModules.default ];
 
+
+
+
   programs.walker = {
+    themes.gruvbox.style = builtins.readFile ../../desktops/wayland/common/walker/style.css;
+    config.theme = "gruvbox";
+
+
     enable = true;
 
     config = {
