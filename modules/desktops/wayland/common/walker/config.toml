@@ -1,6 +1,7 @@
 hide_action_hints = true
 hide_quick_activation = true
 theme = "gruvbox"
+additional_theme_location = "~/.config/walker/themes"
 
 [keybinds]
 close = ["Escape"]
