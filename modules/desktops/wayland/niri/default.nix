@@ -93,7 +93,6 @@
     imagemagick
     (pkgs.callPackage ../../../core/packages/swiv.nix {})
     (pkgs.callPackage ../../../core/packages/niri-sidebar.nix {})
-    inputs.walker.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "random-wallpaper" ''
       # Kill any existing wallpaper processes (static and live)
       ${pkgs.procps}/bin/pkill swaybg || true

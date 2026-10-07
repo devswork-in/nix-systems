@@ -2,7 +2,7 @@
   description = "Simple flake to manage my NixOS Systems";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/release-26.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     flake-compat.url = "github:edolstra/flake-compat";
@@ -37,14 +37,20 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    elephant.url = "github:abenz1267/elephant";
+    elephant = {
+      url = "github:abenz1267/elephant";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     walker = {
       url = "github:abenz1267/walker";
       inputs.elephant.follows = "elephant";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    livewall.url = "github:Creator54/livewall/v3";
+    livewall = {
+      url = "github:Creator54/livewall/v3";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     awrit = {
       url = "github:creator54/awrit";
