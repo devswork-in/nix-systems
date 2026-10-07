@@ -11,9 +11,6 @@
       };
     };
     
-    # Limit journal size to save space
-    journald.extraConfig = "SystemMaxUse=100M";
-    
     # Power management rules (some apply to servers too)
     udev.extraRules = lib.mkMerge [
       # Autosuspend USB devices to save power after a period of inactivity

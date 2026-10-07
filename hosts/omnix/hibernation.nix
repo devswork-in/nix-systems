@@ -50,7 +50,7 @@ in
   };
 
   # Enable persistent logs to debug freeze/hibernate failures
-  # (journal size limit set in desktop-utils/services.nix)
+  # (journal size limit set in profiles/base.nix)
   services.journald.storage = "persistent";
   
   # Ensure the directory exists with correct permissions
