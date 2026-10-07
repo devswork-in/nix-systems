@@ -37,6 +37,29 @@
     };
   };
 
+  systemd.user.paths.walker-config = {
+    description = "Watch editable Walker configuration";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    pathConfig = {
+      PathChanged = [
+        "%h/.config/walker/config.toml"
+        "%h/.config/walker/themes/gruvbox/style.css"
+        "%h/.config/walker/themes/gruvbox/layout.xml"
+        "%h/.config/walker/themes/gruvbox/item_desktopapplications.xml"
+      ];
+      Unit = "walker-config-reload.service";
+    };
+  };
+
+  systemd.user.services.walker-config-reload = {
+    description = "Reload Walker after configuration edits";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl --user try-restart walker.service";
+    };
+  };
+
   # Bluetooth
   hardware.bluetooth = {
     enable = true;

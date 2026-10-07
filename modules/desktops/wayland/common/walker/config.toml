@@ -1,0 +1,35 @@
+hide_action_hints = true
+hide_quick_activation = true
+theme = "gruvbox"
+
+[keybinds]
+close = ["Escape"]
+left = ["Left"]
+next = ["Down"]
+page_down = ["Page_Down"]
+page_up = ["Page_Up"]
+previous = ["Up"]
+quick_activate = ["F1", "F2", "F3", "F4"]
+resume_last_query = ["ctrl r"]
+right = ["Right"]
+show_actions = ["alt j"]
+toggle_exact = ["ctrl e"]
+
+[placeholders.default]
+input = "Search..."
+list = "No Results"
+
+[providers]
+default = [
+    "desktopapplications",
+    "clipboard",
+    "files",
+    "calc",
+    "symbols",
+    "websearch",
+    "runner",
+    "windows",
+    "todo",
+    "bookmarks",
+    "niriactions",
+]

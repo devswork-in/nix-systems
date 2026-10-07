@@ -206,6 +206,11 @@ in {
   niri = [
     {
       type = "local";
+      source = "${nixSystemsRoot}/modules/desktops/wayland/common/walker";
+      dest = "~/.config/walker";
+    }
+    {
+      type = "local";
       source = "${nixSystemsRoot}/modules/desktops/wayland/niri/swayosd.css";
       dest = "~/.config/swayosd/style.css";
     }

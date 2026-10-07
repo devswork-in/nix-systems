@@ -17,6 +17,13 @@ conflicts before activating the new configuration.
 For editable configs, explicitly pass `NIX_CONFIG_DIR` pointing to the current
 checkout when rebuilding. `/etc/nixos` may point to an older checkout.
 
+Walker config and themes live in `modules/desktops/wayland/common/walker`,
+synced to `~/.config/walker` on Niri desktops. Use the current checkout for
+the initial rebuild (`NIX_CONFIG_DIR="$PWD"`), then run `nix-repo-sync-force`.
+Subsequent file edits need no rebuild or resync: the destination links to the
+checkout. A user systemd path unit automatically restarts a running Walker
+when its config, CSS, or layouts change; Walker itself has no live config reload.
+
 ## Config
 
 - [`sync-config.nix`](../sync-config.nix)
