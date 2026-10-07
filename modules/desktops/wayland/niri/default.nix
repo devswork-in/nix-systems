@@ -26,6 +26,7 @@
 
   systemd.user.services.walker = {
     description = "Walker launcher background service";
+    path = [ config.services.elephant.package ];
     partOf = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
     wantedBy = [ "graphical-session.target" ];
