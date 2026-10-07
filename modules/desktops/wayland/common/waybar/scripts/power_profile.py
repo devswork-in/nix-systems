@@ -31,7 +31,8 @@ def show_menu():
     choices = get_choices()
     current = get_current_profile()
     
-    menu_input = "\n".join(choices)
+    entries = {f"{ICONS.get(choice, '')}\u2003{choice}": choice for choice in choices}
+    menu_input = "\n".join(entries)
     
     try:
         result = subprocess.run(
@@ -40,7 +41,9 @@ def show_menu():
             text=True,
             capture_output=True
         )
-        selected = result.stdout.strip()
+        if result.returncode != 0:
+            return
+        selected = entries.get(result.stdout.strip())
         if selected in choices and selected != current:
             subprocess.run(
                 ["sudo", "/run/current-system/sw/bin/tee", PROFILE_FILE],
