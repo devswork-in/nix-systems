@@ -20,7 +20,6 @@
       # CPU power management
       "amd_pstate=active"
       # AMD GPU optimizations
-      "amdgpu.ppfeaturemask=0xffffffff"
       "amdgpu.dc=1"
       "amdgpu.dpm=1"
       "amdgpu.gpu_recovery=1"
