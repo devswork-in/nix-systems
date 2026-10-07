@@ -169,7 +169,7 @@ in {
 
     # Boot parameter optimizations
     boot.kernelParams = mkIf cfg.kernel.enableBootOptimizations ([
-      "transparent_hugepage=always"
+      "transparent_hugepage=madvise"
       "nowatchdog" # disables all watchdogs (includes nmi_watchdog)
       "libahci.ignore_sss=1" # Ignore staggered spin-up (faster SSD boot)
       "no_timer_check" # Don't check timers (faster boot)
@@ -264,20 +264,17 @@ in {
     systemd.services.NetworkManager-wait-online.enable =
       mkIf cfg.services.disableNetworkManagerWaitOnline (mkForce false);
 
-    # Enable early OOM killer via systemd.oomd
-    systemd.oomd.enable = mkForce false;
-
-    # EarlyOOM - userspace OOM killer with aggressive thresholds
-    # Kills memory hogs before the kernel hard-lockup triggers
-    # Note: earlyoom 1.8.2 doesn't support --prefer/--avoid, so it uses default
-    # oom_score_adj logic (targets highest-scoring process, usually the memory hog)
-    services.earlyoom = {
-      enable = mkDefault true;
-      freeMemThreshold = mkDefault 2; # SIGTERM at 2% free (default 10%)
-      extraArgs = [
-        "-M 256000,128000" # SIGTERM at 256MB free, SIGKILL at 128MB free
-        "-n" # Desktop notifications via dbus
-      ];
+    # systemd-oomd kills by memory pressure before swap thrashing freezes the
+    # desktop. Only app.slice is managed, so the compositor session is never chosen.
+    systemd.oomd.enable = true;
+    systemd.user.slices.app.sliceConfig = {
+      ManagedOOMMemoryPressure = "kill";
+      ManagedOOMMemoryPressureLimit = "50%";
     };
+
+    # Keep the compositor session resident under pressure. memory.min is capped by
+    # every ancestor; user.slice carries it down via memory_recursiveprot.
+    systemd.slices.user.sliceConfig.MemoryMin = "768M";
+    systemd.user.slices.session.sliceConfig.MemoryMin = "768M";
   };
 }

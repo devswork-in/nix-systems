@@ -55,6 +55,9 @@
     hashedPassword = userConfig.user.hashedPassword;
   };
 
+  # Full magic SysRq for keyboard recovery from a frozen desktop (Alt+SysRq+F/REISUB).
+  boot.kernel.sysctl."kernel.sysrq" = 1;
+
   # Allow simultaneous multithreading (SMT/Hyper-Threading)
   security.allowSimultaneousMultithreading = true;
 
