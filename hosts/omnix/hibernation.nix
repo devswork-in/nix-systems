@@ -160,4 +160,26 @@ in
       '';
     };
   };
+
+  # Notify if kernel TTM corruption warning occurred during resume
+  systemd.services.ttm-resume-check = {
+    description = "Check for GPU TTM corruption warnings after resume";
+    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
+    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "ttm-resume-check" ''
+        ${pkgs.coreutils}/bin/sleep 2
+        if ${pkgs.util-linux}/bin/dmesg | ${pkgs.gnugrep}/bin/grep -q 'ttm_resource_add_bulk_move'; then
+          user="${userConfig.user.name}"
+          uid=$(${pkgs.coreutils}/bin/id -u "$user" 2>/dev/null || echo 1000)
+          bus="/run/user/$uid/bus"
+          if [ -e "$bus" ]; then
+            ${pkgs.su}/bin/su "$user" -s ${pkgs.bash}/bin/bash -c \
+              "DBUS_SESSION_BUS_ADDRESS=unix:path=$bus ${pkgs.libnotify}/bin/notify-send -u critical -a 'Kernel Warning' 'GPU TTM Warning Detected' 'A GPU memory bookkeeping error occurred during resume. Please save your work and reboot before the desktop freezes.'" || true
+          fi
+        fi
+      '';
+    };
+  };
 }
