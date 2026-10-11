@@ -6,5 +6,6 @@
 
   config = lib.mkIf config.wayland.swaync.enable {
     environment.systemPackages = [ pkgs.swaynotificationcenter ];
+    systemd.user.services.swaync.serviceConfig.Environment = [ "GSK_RENDERER=cairo" ];
   };
 }

@@ -34,6 +34,7 @@
       ExecStart = "${lib.getExe config.programs.walker.package} --gapplication-service";
       Restart = "on-failure";
       RestartSec = 1;
+      Environment = [ "GSK_RENDERER=cairo" ];
     };
   };
 
