@@ -77,7 +77,7 @@
   "custom/vpn": {
     "exec": "~/.local/bin/sshuttle -w -j",
     "return-type": "json",
-    "interval": 30,
+    "interval": "once",
     "signal": 5,
     "format": "{text}",
     "on-click": "kitty --class sshuttle-vpn sh -c 'exec ~/.local/bin/sshuttle -t phoenix'",
@@ -99,7 +99,7 @@
   "custom/memory": {
     "exec": "~/.config/waybar/memory_monitor.py",
     "return-type": "json",
-    "interval": 1,
+    "interval": 10,
     "format": "{}",
     "tooltip": true,
     "states": {
@@ -121,7 +121,7 @@
   "custom/temperature": {
     "exec": "~/.config/waybar/temperature_monitor.py",
     "return-type": "json",
-    "interval": 5,
+    "interval": 10,
     "format": "{}",
     "tooltip": true
   },

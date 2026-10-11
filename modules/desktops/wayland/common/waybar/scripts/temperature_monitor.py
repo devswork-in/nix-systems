@@ -17,6 +17,10 @@ def get_temp_info():
                 except Exception:
                     pass
 
+            # Skip GPU hwmon drivers to avoid polling amdgpu across power states
+            if any(k in name.lower() for k in ("amdgpu", "nouveau", "nvidia")):
+                continue
+
             for temp_input in sorted(glob.glob(os.path.join(hwmon, "temp*_input"))):
                 base = temp_input[:-6]
                 label_file = base + "_label"
