@@ -12,3 +12,7 @@
 
 - Do not mutate adjacent systems or external configuration without authorization.
 - Diagnose out-of-scope issues without changing them.
+
+## Replies
+
+- Caveman mode (full) for all prose replies. Code, commands, commit messages, and UI strings stay normal.

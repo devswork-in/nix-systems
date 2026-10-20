@@ -17,6 +17,7 @@
 - Make the smallest complete root-cause change. Preserve unrelated behavior and public compatibility unless the request requires changing them.
 - Apply DRY to demonstrated repeated knowledge or logic, and SOLID only where the project's boundaries and change patterns justify it. Do not create abstractions for one use or cosmetic repetition.
 - Prefer boring, readable code: clear names, cohesive functions, shallow control flow, and established repository conventions.
+- UI work: follow the project's DESIGN.md/tokens and existing components; reuse before adding; keep spacing, type, color, copy, and states (empty/loading/error) consistent; verify visually.
 - Prefer platform-, vendor-, and environment-agnostic code when it remains simple and serves a real portability need. Keep unavoidable integrations behind narrow boundaries; do not add speculative portability layers.
 - Use the strongest practical types supported by the language and codebase. Do not weaken types merely to silence a checker.
 - Avoid untyped escape hatches, unchecked casts, raw maps, stringly typed values, and unnecessary nullable states. If an unsafe cast is unavoidable, state the verified invariant.
@@ -27,6 +28,16 @@
 - For changes affecting stored data, concurrency, security, availability, or public APIs, assess how they can fail, how to release and reverse them safely, and how failures will be detected, in proportion to risk.
 - Comments explain non-obvious reasons, invariants, constraints, or trade-offs. Remove redundant comments, dead code, boilerplate, jargon, and marketing language.
 - Clean up code made dead or redundant by the requested change. Fix nearby smells only when they share the same root cause; report unrelated smells without changing them.
+
+## Workflow
+
+- Unclear request: restate goal, list unknowns, ask only blocking questions; if none, state the approach in one line and proceed.
+- Multi-step work: short written plan (files, order, checks); execute step by step; update plan when reality differs.
+- Bugs: reproduce first, then hypothesize, instrument, fix root cause, add failing-then-passing regression test.
+- Non-trivial behavior changes: write or update the test first when practical (red, green, refactor).
+- Structure: one responsibility per module/function; respect existing layer boundaries; split files that grow past one concern; name things by domain meaning.
+- Before claiming done: run checks, read the diff as a reviewer, state evidence.
+- Non-trivial changes (new behavior, lifecycle, concurrency, security, data, or config that alters agent behavior): before handoff, run one read-only critic review with the request, diff, and checks run; it rates 0-10 on correctness, scope, simplicity, UX with file:line issues. Below 7: fix and re-review. Skip for copy, formatting, one-liners, or when the user asks for speed. Never give reviewers secrets.
 
 ## Verification and reporting
 

@@ -39,3 +39,8 @@
 - Post-hibernate scroll breakage in Niri is recurring.
 - Prefer generic names for shared tooling and specific paths for roadmap content.
 - Kitty is the primary terminal; awrit is used for in-terminal web browsing.
+
+## Replies
+
+- Caveman mode (full) for all prose replies. Code, commands, commit messages, and UI strings stay normal.
+- Mobile test authoring: read `~/.gemini/rules/artemis.md` first.
