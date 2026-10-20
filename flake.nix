@@ -100,9 +100,24 @@
         userConfig = desktopUserConfig;
       };
 
-      phoenixVmUserConfig = finalUserConfig // {
+      phoenixUserConfig = finalUserConfig // {
         services = finalUserConfig.services // {
-          website = finalUserConfig.services.website // { https = false; };
+          loomwork = finalUserConfig.services.loomwork // { enable = false; };
+          pg = finalUserConfig.services.pg // {
+            leetcode = finalUserConfig.services.pg.leetcode // { enable = false; };
+          };
+        };
+      };
+
+      mkPhoenixSystem = import ./lib/mkSystemConfig.nix {
+        inherit nixpkgs nixpkgs-unstable inputs;
+        flakeRoot = storeFlakeRoot;
+        userConfig = phoenixUserConfig;
+      };
+
+      phoenixVmUserConfig = phoenixUserConfig // {
+        services = phoenixUserConfig.services // {
+          website = phoenixUserConfig.services.website // { https = false; };
         };
       };
 
@@ -135,13 +150,10 @@
           hostname = "phoenix";
           modules = phoenixModules ++ [{
             services.nix-repo-sync.enable = nixpkgs.lib.mkForce false;
-            virtualisation.oci-containers.containers = {
-              leetcode.autoStart = nixpkgs.lib.mkForce false;
-            };
           }];
         };
 
-        phoenix-arm = mkSystem {
+        phoenix-arm = mkPhoenixSystem {
           system = "aarch64-linux";
           # No buildSystem = builds natively on ARM host, using binary cache
           hostname = "phoenix";
