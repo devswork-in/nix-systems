@@ -23,7 +23,6 @@
         "https://nix-community.cachix.org"
         "https://cache.iog.io"
         "https://numtide.cachix.org"
-        "https://attic.xuyh0120.win/lantian"
       ];
 
       # Trusted public keys for binary caches
@@ -33,7 +32,6 @@
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
         "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
-        "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
       ];
 
       # Automatically optimize store by hard-linking identical files

@@ -8,6 +8,18 @@ let
   cleanContent = lib.replaceStrings ["\n" " " "\r"] ["" "" ""] fileContent;
   # Default to 0 if empty or invalid
   resumeOffset = if cleanContent == "" then 0 else lib.toInt cleanContent;
+  elanSnapshot = pkgs.writeShellScript "elan-snapshot" ''
+    echo "ELAN snapshot: $1"
+    ${pkgs.gnugrep}/bin/grep -H . \
+      /sys/bus/acpi/devices/ELAN06FA:00/status \
+      /sys/bus/acpi/devices/ELAN06FA:00/power_state \
+      /sys/bus/platform/devices/AMDI0010:00/power/control \
+      /sys/bus/platform/devices/AMDI0010:00/power/runtime_status || true
+    ${pkgs.coreutils}/bin/ls -ld \
+      /sys/bus/i2c/devices/i2c-ELAN06FA:00 \
+      /sys/bus/i2c/devices/i2c-ELAN06FA:00/driver || true
+    ${pkgs.gnugrep}/bin/grep 'ELAN06FA' /proc/bus/input/devices || true
+  '';
 in
 {
   boot = {
@@ -66,6 +78,11 @@ in
   systemd.sleep.settings.Sleep.HibernateDelaySec = "15min";
   systemd.sleep.settings.Sleep.HibernateMode = "shutdown";
 
+  # Test controller runtime PM without changing its system sleep handling.
+  services.udev.extraRules = ''
+    ACTION=="add|bind", SUBSYSTEM=="platform", KERNEL=="AMDI0010:00", TEST=="power/control", ATTR{power/control}="on"
+  '';
+
   # Keep the ELAN sleep workaround local; it does not fix ACPI disappearance.
   # powerDownCommands also runs at shutdown; this belongs only to sleep.
   systemd.services.sleep-actions.preStart = ''
@@ -79,13 +96,16 @@ in
       echo "image_size: $(${pkgs.coreutils}/bin/cat /sys/power/image_size)"
     fi
 
+    ${elanSnapshot} before-unload
     echo "ELAN: detaching driver before sleep"
     ${pkgs.kmod}/bin/modprobe -r i2c_hid_acpi
+    ${elanSnapshot} after-unload
   '';
 
   # ExecStopPost also runs if the pre-sleep command fails. ExecStop does not.
   systemd.services.sleep-actions.postStop = ''
     echo "ELAN: restoring driver after sleep (result=$SERVICE_RESULT)"
+    ${elanSnapshot} wake-before-reload
     ${pkgs.coreutils}/bin/sleep 1
     ${pkgs.kmod}/bin/modprobe i2c_hid_acpi
 
@@ -101,12 +121,14 @@ in
       fi
       if ${pkgs.gnugrep}/bin/grep -q 'ELAN06FA:00.*Touchpad' /proc/bus/input/devices; then
         echo "ELAN: touchpad input device restored"
+        ${elanSnapshot} recovery-success
         exit 0
       fi
       ${pkgs.coreutils}/bin/sleep 0.5
     done
 
     echo "ELAN: no touchpad input device after driver reload; ACPI status:" >&2
+    ${elanSnapshot} recovery-failure
     ${pkgs.coreutils}/bin/cat /sys/bus/acpi/devices/ELAN06FA:00/status >&2 || true
     exit 1
   '';
