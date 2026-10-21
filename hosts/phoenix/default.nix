@@ -7,6 +7,7 @@
     
     # System-specific modules
     ./hardware.nix
+    ./gateway.nix
     
     # Addon modules
     ../../modules/services/website
