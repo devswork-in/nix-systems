@@ -34,7 +34,7 @@
   systemd.timers.gateway-model-refresh = {
     wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnCalendar = "daily";
+      OnCalendar = "0/12:00";
       RandomizedDelaySec = "30min";
       Persistent = true;
     };
