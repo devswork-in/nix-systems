@@ -1,10 +1,6 @@
 
-# --- vsh configuration start ---
+# vsh is opt-in: Ctrl+] starts voice mode (no exec on every shell)
 bind \c] 'vsh --voice; commandline -f repaint'
-if status is-interactive; and isatty 1; and type -q vsh; and begin; not set -q VSH_ACTIVE_TTY; or test "$VSH_ACTIVE_TTY" != (tty); end
-    exec vsh
-end
-# --- vsh configuration end ---
 
 # Source general aliases
 source ~/.config/aliases 2>/dev/null
