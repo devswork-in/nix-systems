@@ -96,10 +96,9 @@ in
       echo "image_size: $(${pkgs.coreutils}/bin/cat /sys/power/image_size)"
     fi
 
-    ${elanSnapshot} before-unload
-    echo "ELAN: detaching driver before sleep"
-    ${pkgs.kmod}/bin/modprobe -r i2c_hid_acpi
-    ${elanSnapshot} after-unload
+    # Experiment: keep the driver bound. Snapshots showed ELAN healthy after
+    # unload but ACPI-absent at wake, so test whether the unload causes it.
+    ${elanSnapshot} before-sleep
   '';
 
   # ExecStopPost also runs if the pre-sleep command fails. ExecStop does not.
