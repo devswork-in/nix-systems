@@ -164,6 +164,14 @@ oci compute instance-console-connection delete \
   not start a shell.
 - **Recovery:** `RESET`, then the VNC console, then the previous generation in
   GRUB.
-- **Fix:** restore `fish` to the package list. An evaluation assertion in
-  `profiles/base.nix` now fails the build when a login shell is missing from
-  the system profile.
+- **Incomplete fix:** restoring only `fish` allowed login, but left core
+  commands and D-Bus policy files missing. Activation failed with
+  `Sender is not authorized to send message` and the gateway stayed down.
+- **Fix:** remove the forced package list, retaining NixOS module defaults.
+  Assertions in `profiles/base.nix` require login shells, coreutils, systemd
+  and D-Bus in the system profile. Evaluation alone does not prove a safe
+  switch: verify a fresh SSH login, service state and gateway health.
+- **Gateway rollback:** native services and old containers use different
+  state owners. Stop both before changing ownership, preserve tokens, and
+  verify the target service user can read state. The pinned Headroom package
+  needs `HEADROOM_HTTP2=false` because it lacks `h2`.

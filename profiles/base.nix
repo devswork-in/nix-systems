@@ -68,7 +68,12 @@
     assertion = !(lib.isDerivation user.shell)
       || lib.elem user.shell config.environment.systemPackages;
     message = "Login shell of user '${name}' (${user.shell.name}) is not in environment.systemPackages; logins and SSH would fail.";
-  }) (lib.filterAttrs (_: u: u.isNormalUser || u.name == "root") config.users.users);
+  }) (lib.filterAttrs (_: u: u.isNormalUser || u.name == "root") config.users.users)
+  ++ [{
+    assertion = lib.all (p: lib.elem p config.environment.systemPackages)
+      [ pkgs.coreutils-full pkgs.systemd pkgs.dbus ];
+    message = "environment.systemPackages must retain coreutils, systemd and dbus; full package-list overrides break login and activation.";
+  }];
 
   # Base packages for all systems
   environment.systemPackages = with pkgs; [

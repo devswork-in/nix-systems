@@ -36,19 +36,6 @@
   # Disable nix-repo-sync on this host; dotfiles are managed manually.
   services.nix-repo-sync.enable = lib.mkForce false;
 
-  # Override all server/base packages for Phoenix: drop bat-extras (brings in
-  # rustc+clang = 3.8 GiB), prettybat, python3, nodejs, nix-index, fff, pnpm,
-  # bun, cachix, docker-compose. Keep only what this host actually needs.
-  environment.systemPackages = lib.mkForce (with pkgs; [
-    # From base.nix
-    # mkForce also drops module-added packages; fish is the login shell and
-    # sshd rejects users whose shell is missing.
-    git vim fish fishPlugins.foreign-env openssh android-tools
-    # From server profile (trimmed)
-    wget htop github-cli starship aria2 fzf ripgrep jq
-    unzip fd progress lm_sensors duf gdu dig pciutils
-    entr glow acpi axel tree lsof bat mcfly
-    # Phoenix-specific
-    just jekyll bundler
-  ]);
+  # Extend module defaults: overriding them removes essential login/system tools.
+  environment.systemPackages = with pkgs; [ just jekyll bundler ];
 }
