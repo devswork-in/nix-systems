@@ -17,8 +17,11 @@
   virtualisation.docker.enable = lib.mkForce false;
   virtualisation.docker.enableOnBoot = lib.mkForce false;
   virtualisation.docker.autoPrune.enable = lib.mkForce false;
-  users.users.${userConfig.user.name}.extraGroups =
-    lib.mkForce [ "wheel" ];
+  users.users.${userConfig.user.name} = {
+    extraGroups = lib.mkForce [ "wheel" ];
+    # Keep a user manager so switch-to-configuration can reload user units.
+    linger = true;
+  };
 
   # Storage safeguards: require >= 8 GiB free before any build.
   nix.settings = {

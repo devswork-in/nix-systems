@@ -1,4 +1,4 @@
-{ config, lib, userConfig, ... }:
+{ config, lib, pkgs, userConfig, ... }:
 {
   services.llm-gateway = {
     enable    = true;
@@ -8,6 +8,21 @@
 
   # The pinned Headroom package lacks h2; use HTTP/1.1 until it includes it.
   systemd.services.llm-gateway-headroom.environment.HEADROOM_HTTP2 = "false";
+
+  # ocx skips its token check on a loopback bind, and headroom relays remote
+  # traffic to the hub, so refuse to start rather than run unauthenticated.
+  systemd.services.llm-gateway-hub.serviceConfig.ExecStartPre = [
+    (pkgs.writeShellScript "llm-gateway-require-auth" ''
+      f="$OPENCODEX_HOME/config.json"
+      [ -f "$f" ] || exit 0
+      host="$(${pkgs.jq}/bin/jq -r '.hostname // ""' "$f")"
+      case "$host" in
+        ""|localhost|127.*|::1|"[::1]")
+          echo "refusing to start: hostname '$host' in $f disables API auth" >&2
+          exit 1 ;;
+      esac
+    '')
+  ];
 
   # Keep the hub non-loopback so ocx enforces its token: headroom relays public
   # traffic to it. Drop non-local traffic in raw, before tailscale's ts-input accepts it.
