@@ -9,16 +9,7 @@ end
 # Source general aliases
 source ~/.config/aliases 2>/dev/null
 
-# Source fzf keybindings (Ctrl+R history, Ctrl+T files, Alt+C cd)
-if status is-interactive
-    for fzf_path in ~/.nix-profile/share/fzf /run/current-system/sw/share/fzf
-        if test -f $fzf_path/key-bindings.fish
-            source $fzf_path/key-bindings.fish
-            fzf_key_bindings
-            break
-        end
-    end
-end
+# mcfly init is in fish_user_key_bindings
 
 # System Identity (Native Fish - ADDED BY REFUSE TO FAIL)
 set -gx NIX_CONFIG_DIR "/etc/nixos"
