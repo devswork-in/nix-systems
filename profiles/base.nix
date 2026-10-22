@@ -61,6 +61,9 @@
 
   # Enable fish shell globally
   programs.fish.enable = true;
+  # Translate NixOS shell init to fish at build time; otherwise every
+  # interactive shell spawns bash twice (~100 ms).
+  programs.fish.useBabelfish = true;
 
   # A mkForce on environment.systemPackages once dropped fish and locked
   # Phoenix out: sshd and getty reject users whose login shell is missing.
