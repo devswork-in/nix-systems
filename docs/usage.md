@@ -49,6 +49,30 @@ nixos-rebuild build-vm --flake .#phoenix-x86 --impure
 
 `phoenix-x86` is VM-only. Never deploy it to the `phoenix` hostname.
 
+## Phoenix gateway model refresh
+
+`gateway-model-refresh.timer` refreshes the OpenCode CLI free-model catalog daily,
+with up to 30 minutes of randomized delay and catch-up after downtime. It uses the
+running hub's bundled CLI and updates the catalog through the management API.
+Other providers and combo definitions are unchanged; unavailable combo targets
+are reported in the journal. Refreshes perform discovery only, not inference.
+An empty, failed, or unverifiably free discovery leaves the gateway catalog intact.
+This service manages the entire `opencode-cli` model selection; manual selections
+are replaced on its next successful run. Avoid editing that provider during refresh.
+
+After deploying the configuration, refresh manually and inspect the result:
+
+```bash
+ssh phoenix sudo systemctl start gateway-model-refresh.service
+ssh phoenix systemctl status gateway-model-refresh.service
+ssh phoenix journalctl -u gateway-model-refresh.service -n 30 --no-pager
+ssh phoenix systemctl list-timers gateway-model-refresh.timer
+```
+
+Each completed oneshot can be started again; concurrent starts do not launch a
+second refresh. Disable scheduled refresh with
+`sudo systemctl stop gateway-model-refresh.timer` on Phoenix; manual starts still work.
+
 ## Systems
 
 ### New System

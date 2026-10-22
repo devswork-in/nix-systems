@@ -1,4 +1,4 @@
-{ pkgs, lib, userConfig, ... }:
+{ config, pkgs, lib, userConfig, ... }:
 
 {
   imports = [
@@ -36,7 +36,12 @@
     options = "--delete-older-than 3d";
   };
 
-  # Disable nix-repo-sync on this host; dotfiles are managed manually.
+  # Keep tmux reproducible without enabling the full dotfile sync service.
+  systemd.tmpfiles.rules = [
+    "L+ ${config.users.users.${userConfig.user.name}.home}/.tmux.conf - - - - ${../../modules/core/configs/common/tmux.conf}"
+  ];
+
+  # Other dotfiles remain manually managed on this host.
   services.nix-repo-sync.enable = lib.mkForce false;
 
   # Extend module defaults: overriding them removes essential login/system tools.

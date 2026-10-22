@@ -6,6 +6,40 @@
     port      = 10204;
   };
 
+  # One service handles both scheduled and manual refreshes; systemd serializes starts.
+  systemd.services.gateway-model-refresh = {
+    description = "Refresh the OpenCode CLI free-model catalog";
+    requires = [ "llm-gateway-hub.service" ];
+    after = [ "llm-gateway-hub.service" ];
+    environment = {
+      HOME = "/var/lib/${config.services.llm-gateway.stateDir}";
+      OPENCODEX_HOME = "/var/lib/${config.services.llm-gateway.stateDir}/ocx";
+      HUB_PORT = toString config.services.llm-gateway.hubPort;
+      SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      User = "llm-gateway";
+      WorkingDirectory = "/var/lib/${config.services.llm-gateway.stateDir}";
+      ExecStart = "${pkgs.python3}/bin/python3 ${./refresh-models.py}";
+      TimeoutStartSec = "3min";
+      UMask = "0077";
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+      ProtectSystem = "strict";
+      ProtectHome = true;
+      ReadWritePaths = [ "/var/lib/${config.services.llm-gateway.stateDir}" ];
+    };
+  };
+  systemd.timers.gateway-model-refresh = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "daily";
+      RandomizedDelaySec = "30min";
+      Persistent = true;
+    };
+  };
+
   # The pinned Headroom package lacks h2; use HTTP/1.1 until it includes it.
   systemd.services.llm-gateway-headroom.environment.HEADROOM_HTTP2 = "false";
 
