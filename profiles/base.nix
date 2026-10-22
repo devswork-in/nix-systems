@@ -65,6 +65,9 @@
   # interactive shell spawns bash twice (~100 ms).
   programs.fish.useBabelfish = true;
 
+  # Pi: keep the provider prompt cache for the long retention tier.
+  environment.variables.PI_CACHE_RETENTION = "long";
+
   # A mkForce on environment.systemPackages once dropped fish and locked
   # Phoenix out: sshd and getty reject users whose login shell is missing.
   assertions = lib.mapAttrsToList (name: user: {
