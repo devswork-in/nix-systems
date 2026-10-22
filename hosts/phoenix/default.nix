@@ -41,7 +41,9 @@
   # bun, cachix, docker-compose. Keep only what this host actually needs.
   environment.systemPackages = lib.mkForce (with pkgs; [
     # From base.nix
-    git vim fishPlugins.foreign-env openssh android-tools
+    # mkForce also drops module-added packages; fish is the login shell and
+    # sshd rejects users whose shell is missing.
+    git vim fish fishPlugins.foreign-env openssh android-tools
     # From server profile (trimmed)
     wget htop github-cli starship aria2 fzf ripgrep jq
     unzip fd progress lm_sensors duf gdu dig pciutils

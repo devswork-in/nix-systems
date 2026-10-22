@@ -17,6 +17,9 @@ Read `CONTEXT.md` before changing system composition.
 - Keep `nix-repo-sync` editable via `NIX_CONFIG_DIR`. Do not add automatic sudo
   rebuilds or application deployment hooks to synchronization.
 - Never deploy Phoenix while its root filesystem lacks at least 8 GiB free.
+- Do not `mkForce` `environment.systemPackages` without keeping every login
+  shell; base asserts this. If Phoenix SSH breaks, follow
+  `docs/phoenix-recovery.md`.
 - Do not use sudo during repository validation. The operator performs
   `nixos-rebuild test/switch` after build validation.
 

@@ -82,3 +82,4 @@ nixos-rebuild --flake .#phoenix-arm --target-host phoenix switch --no-reexec
 - [Modules](docs/modules.md)
 - [Structure](docs/structure.md)
 - [Repo-Sync](docs/repo-sync.md)
+- [Phoenix recovery](docs/phoenix-recovery.md)
