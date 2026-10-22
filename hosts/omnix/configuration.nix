@@ -42,6 +42,10 @@
 
   services.tailscale.enable = true;
 
+  # The public record for llm.devswork.in is blocked by Phoenix's nginx;
+  # clients on the tailnet must resolve it to Phoenix's tailnet address.
+  networking.hosts."100.72.57.14" = [ "llm.devswork.in" ];
+
   # System-specific packages
   environment.systemPackages = with pkgs; [ gparted ntfs3g ];
 
