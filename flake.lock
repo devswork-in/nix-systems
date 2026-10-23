@@ -182,11 +182,11 @@
         "opencodex-src": "opencodex-src"
       },
       "locked": {
-        "lastModified": 1792601344,
-        "narHash": "sha256-tAMKoufVTUHQIJqQbiHaWVaryo6vJcYPHGLHufYNbf8=",
+        "lastModified": 1792780110,
+        "narHash": "sha256-/MT2zuCVJkLHjqxd4sf9ph6wWIOhvDhJSD23RPYhTrc=",
         "owner": "Creator54",
         "repo": "llm-gateway",
-        "rev": "8bbe8c0e9c0e92346ad25485e85be2c3716727c7",
+        "rev": "e1aa02f3fbca927b189cfbd05586380b35ebdf43",
         "type": "github"
       },
       "original": {
@@ -396,11 +396,11 @@
     "opencodex-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1792426287,
-        "narHash": "sha256-wOI41y5ChUXiM9dwUpigk/ZbJKmIxe1eXzro/EWbdTM=",
+        "lastModified": 1792780001,
+        "narHash": "sha256-RiJx/pb+vQbwrJgr9ddE9qSnKXZhkhVhtzAZ0RgtGMc=",
         "owner": "Creator54",
         "repo": "opencodex",
-        "rev": "a2a9e557d98c824088642632567b651cc8573aa8",
+        "rev": "21b9378f95862ad3ab42ece3739cab41db688777",
         "type": "github"
       },
       "original": {
