@@ -1,4 +1,4 @@
-{ userConfig, lib, ... }:
+{ config, userConfig, lib, ... }:
 
 let
   services = userConfig.services;
@@ -8,6 +8,8 @@ let
   hosts = [
     (if (services ? openclaw && services.openclaw.enable) then "${tsIp} ${services.openclaw.host}" else "")
     (if (services ? windmill && services.windmill.enable) then "${tsIp} ${services.windmill.host}" else "")
+    # Tailnet-only vhost (see hosts/phoenix/gateway.nix): the public record is denied by nginx.
+    (if config.services.llm-gateway.enable then "${tsIp} llm.${domain}" else "")
   ];
   
   activeHosts = lib.filter (h: h != "") hosts;
