@@ -6,5 +6,8 @@
 }:
 
 {
-  environment.systemPackages = [ pkgs.mcfly ];
+  environment.systemPackages = [
+    pkgs.mcfly
+    pkgs.mcfly-fzf
+  ];
 }

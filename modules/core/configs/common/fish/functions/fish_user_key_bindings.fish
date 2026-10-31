@@ -40,8 +40,11 @@ function fish_user_key_bindings
     # Disable terminal flow control to allow ctrl+s
     stty -ixon 2>/dev/null
 
-    # fzf: Ctrl+T files, Ctrl+R history, Alt+C directories
+    # fzf: Ctrl+T files, Alt+C directories. Ctrl+R is fzf over mcfly's ranked
+    # history (mcfly must be initialised before mcfly-fzf).
     fzf --fish 2>/dev/null | source
+    mcfly init fish 2>/dev/null | source
+    mcfly-fzf init fish 2>/dev/null | source
 
     bind '!' bind_bang
     bind '$' bind_dollar
