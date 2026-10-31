@@ -10,6 +10,7 @@
     fontconfig.enable = true;
     packages = with pkgs; [
       source-code-pro
+      noto-fonts
       nerd-fonts.sauce-code-pro
       nerd-fonts.fira-code
       nerd-fonts.droid-sans-mono
