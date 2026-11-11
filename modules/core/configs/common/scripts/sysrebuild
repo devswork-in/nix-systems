@@ -4,8 +4,9 @@
 
 set -euo pipefail
 
-# Locate the nix-systems worktree without changing /etc/nixos.
-REPO_PATH="$(nixos-config-sync 2>/dev/null)"
+# Resolve the editable checkout before elevating privileges.
+SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+REPO_PATH="$(bash "$SCRIPT_DIR/nixos-config-sync")"
 if [[ -z "$REPO_PATH" ]]; then
     echo "ERROR: Could not find nix-systems repo" >&2
     exit 1
@@ -14,5 +15,40 @@ fi
 FLAKE_DIR="$REPO_PATH"
 SYSTEM_NAME="${NIX_SYSTEM:-$(hostname)}"
 
-echo "Rebuilding system '$SYSTEM_NAME' from '$FLAKE_DIR'..."
-exec sudo NIX_CONFIG_DIR="$FLAKE_DIR" nixos-rebuild switch --flake "$FLAKE_DIR#$SYSTEM_NAME" --impure "$@"
+# Never replace a real configuration directory or an ordinary file.
+if [[ -e /etc/nixos && ! -L /etc/nixos ]]; then
+    echo "ERROR: /etc/nixos is not a symlink; refusing to replace it" >&2
+    exit 1
+fi
+
+# Snapshot this script before sync can replace its own source link.
+rebuild_and_sync() {
+    echo "Rebuilding system '$SYSTEM_NAME' from '$FLAKE_DIR'..."
+    if ! sudo NIX_CONFIG_DIR="$FLAKE_DIR" nixos-rebuild switch --flake "$FLAKE_DIR#$SYSTEM_NAME" --impure "$@"; then
+        echo "ERROR: Rebuild failed; /etc/nixos and repo sync were left untouched" >&2
+        return 1
+    fi
+
+    # Dry runs must not change links or launch the full sync.
+    local arg
+    for arg in "$@"; do
+        if [[ "$arg" == --dry-run ]]; then
+            return 0
+        fi
+    done
+
+    if ! sudo ln -sfnT -- "$FLAKE_DIR" /etc/nixos; then
+        echo "ERROR: System switched, but updating /etc/nixos failed; sync was not run" >&2
+        return 1
+    fi
+
+    echo "System switched. Running full repo sync (including Git updates and hooks)..."
+    # A synchronous restart waits for the newly installed oneshot service.
+    if ! sudo systemctl restart nix-repo-sync.service; then
+        echo "ERROR: System switched, but repo sync failed. Check: journalctl -u nix-repo-sync.service" >&2
+        return 1
+    fi
+}
+
+rebuild_and_sync "$@"
+exit "$?"

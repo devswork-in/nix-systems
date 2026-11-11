@@ -4,7 +4,7 @@
 set -euo pipefail
 
 CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/nix-systems-repo"
-HOSTNAME="$(hostname)"
+HOSTNAME="${NIX_SYSTEM:-$(hostname)}"
 TARGET_CONFIG="hosts/${HOSTNAME}"
 
 # Validate cached repo path
@@ -17,14 +17,6 @@ validate_repo() {
 discover_repo() {
     local found=""
     local newest_time=0
-
-    # Prefer the current Git worktree.
-    local current
-    current="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-    if validate_repo "$current"; then
-        echo "$current"
-        return
-    fi
 
     # Fall back to a bounded home-directory search.
     while IFS= read -r flake; do
@@ -48,15 +40,24 @@ discover_repo() {
 main() {
     local repo=""
 
-    # Try cache first
-    if [[ -f "$CACHE_FILE" ]]; then
+    # The checkout being operated on takes precedence over a stale cache.
+    repo="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+    if ! validate_repo "$repo"; then
+        repo=""
+    fi
+
+    if [[ -z "$repo" && -f "$CACHE_FILE" ]]; then
         repo="$(cat "$CACHE_FILE")"
         if ! validate_repo "$repo"; then
             repo=""
         fi
     fi
 
-    # Re-discover if cache invalid
+    # Prefer the system's selected checkout before searching the home directory.
+    if [[ -z "$repo" ]] && validate_repo /etc/nixos; then
+        repo="$(readlink -f /etc/nixos)"
+    fi
+
     if [[ -z "$repo" ]]; then
         repo="$(discover_repo)"
         if [[ -z "$repo" ]]; then
@@ -64,12 +65,10 @@ main() {
             echo "Searched under $HOME for flake.nix + $TARGET_CONFIG" >&2
             exit 1
         fi
-        # Update cache
-        mkdir -p "$(dirname "$CACHE_FILE")"
-        echo "$repo" > "$CACHE_FILE"
-        echo "INFO: Discovered nix-systems repo at $repo" >&2
     fi
 
+    mkdir -p "$(dirname "$CACHE_FILE")"
+    echo "$repo" > "$CACHE_FILE"
     echo "$repo"
 }
 

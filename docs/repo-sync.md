@@ -14,12 +14,22 @@ snapshots. When migrating an existing directory symlink, stop the old sync
 timer first, back up the symlink, and restore local tools without overwriting
 conflicts before activating the new configuration.
 
-For editable configs, explicitly pass `NIX_CONFIG_DIR` pointing to the current
-checkout when rebuilding. `/etc/nixos` may point to an older checkout.
+Run `sysrebuild` from the desired checkout for editable configs. It prefers the
+current Git worktree over the cached path and explicitly passes `NIX_CONFIG_DIR`
+through sudo. After a successful switch, it updates the `/etc/nixos` symlink and
+runs the full sync service, waiting for completion. It refuses to replace a real
+`/etc/nixos` directory or file. Failed rebuilds and dry runs do not relink or sync.
+A sync failure is reported separately: the system has already switched.
+
+Full sync includes Git updates (including hard resets of managed checkouts) and
+post-sync hooks. The weekly timer remains enabled. A raw `nixos-rebuild` command
+bypasses this helper workflow; `--impure` alone does not preserve `NIX_CONFIG_DIR`
+through sudo.
 
 Walker config and themes live in `modules/desktops/wayland/common/walker`,
-synced to `~/.config/walker` on Niri desktops. Use the current checkout for
-the initial rebuild (`NIX_CONFIG_DIR="$PWD"`), then run `nix-repo-sync-force`.
+synced to `~/.config/walker` on Niri desktops. Run `sysrebuild` from the checkout
+to rebuild and sync. To bootstrap before the updated helper is installed, use
+`bash modules/core/configs/common/scripts/sysrebuild` from the checkout.
 Subsequent file edits need no rebuild or resync: the destination links to the
 checkout. A user systemd path unit automatically restarts a running Walker
 when its config, CSS, or layouts change; Walker itself has no live config reload.
@@ -32,8 +42,8 @@ when its config, CSS, or layouts change; Walker itself has no live config reload
 ## Commands
 
 ```bash
-sudo nixos-rebuild switch --flake .#<hostname> --impure  # Rebuild with --impure flag
-nix-repo-sync-force                                     # Force sync
-nix-repo-sync-logs                                      # View logs
-systemctl status nix-repo-sync.service                  # Service status
+sysrebuild                             # Switch, update /etc/nixos, and sync
+nix-repo-sync-force                     # Sync without rebuilding
+nix-repo-sync-logs                      # View logs
+systemctl status nix-repo-sync.service  # Service status
 ```
