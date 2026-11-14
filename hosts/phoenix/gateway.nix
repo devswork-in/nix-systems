@@ -40,6 +40,27 @@
     };
   };
 
+  # Run the ocx CLI against the hub's own state as the service user. Provider logins
+  # write credentials into the state dir, so running ocx as the interactive user
+  # silently creates a second, unusable credential store (observed: a plain
+  # `sudo -u llm-gateway ocx login` inherits the caller's HOME and writes to
+  # /home/<user>/.opencodex). Resolving the binary through the module option keeps
+  # this working across deploys, when the store path changes. sudo keeps the TTY, so
+  # interactive OAuth still works; it asks for the caller's password (no NOPASSWD).
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "ocx-gw" ''
+      set -eu
+      state=/var/lib/${config.services.llm-gateway.stateDir}
+      exec ${config.security.wrapperDir}/sudo -u llm-gateway -- \
+        ${pkgs.coreutils}/bin/env -i \
+          HOME="$state" \
+          OPENCODEX_HOME="$state/ocx" \
+          SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
+          PATH=${lib.makeBinPath [ pkgs.coreutils ]} \
+          ${config.services.llm-gateway.package}/bin/ocx "$@"
+    '')
+  ];
+
   # The pinned Headroom package lacks h2; use HTTP/1.1 until it includes it.
   systemd.services.llm-gateway-headroom.environment.HEADROOM_HTTP2 = "false";
 
