@@ -39,12 +39,41 @@
   # Ignore DHCP DNS servers to bypass stale local/ISP records
   # This forces use of global nameservers (8.8.8.8, etc.) defined in desktop profile
   networking.networkmanager.dns = "none";
+  networking.networkmanager.wifi.powersave = false;
 
-  services.tailscale.enable = true;
+  # Local caching resolver: serves stale answers while the hotspot link stalls,
+  # so short outages don't surface as "could not resolve host".
+  services.unbound = {
+    enable = true;
+    settings = {
+      server = {
+        interface = [ "127.0.0.1" "::1" ];
+        prefetch = true;
+        serve-expired = true;
+        serve-expired-ttl = 86400;
+      };
+      forward-zone = [{
+        name = ".";
+        forward-addr = [ "8.8.8.8" "9.9.9.9" "1.1.1.1" "8.8.4.4" ];
+      }];
+    };
+  };
+
+  nix.settings = {
+    download-attempts = 10;
+    connect-timeout = 30;
+  };
+
+  # Tailscale's DNS proxy goes stale after suspend/resume on hotspot links and
+  # breaks all lookups. Use the global nameservers; tailnet names are pinned below.
+  services.tailscale = {
+    enable = true;
+    extraSetFlags = [ "--accept-dns=false" ];
+  };
 
   # The public record for llm.devswork.in is blocked by Phoenix's nginx;
   # clients on the tailnet must resolve it to Phoenix's tailnet address.
-  networking.hosts."100.72.57.14" = [ "llm.devswork.in" ];
+  networking.hosts."100.72.57.14" = [ "llm.devswork.in" "windmill.devswork.in" ];
 
   # System-specific packages
   environment.systemPackages = with pkgs; [ gparted ntfs3g ];

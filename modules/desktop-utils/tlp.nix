@@ -71,9 +71,9 @@
       PCIE_ASPM_ON_AC = "default";
       PCIE_ASPM_ON_BAT = "powersupersave";
 
-      # WiFi power saving
+      # WiFi power saving causes latency spikes on phone hotspots (mt7921e)
       WIFI_PWR_ON_AC = "off";
-      WIFI_PWR_ON_BAT = "on";
+      WIFI_PWR_ON_BAT = "off";
 
       # Disable wake on LAN
       WOL_DISABLE = "Y";
