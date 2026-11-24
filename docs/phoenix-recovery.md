@@ -19,7 +19,7 @@ Run from a workstation:
 ```bash
 ping -c2 $PUBLIC_IP
 tailscale ping phoenix
-curl -sk -o /dev/null -w '%{http_code}\n' https://$GATEWAY_HOST/healthz
+curl -sk -o /dev/null -w '%{http_code}\n' https://$GATEWAY_HOST/health
 ssh -v -o BatchMode=yes -o IdentitiesOnly=yes -i $KEY \
   $USER_NAME@$TS_IP true 2>&1 | grep -E 'Remote protocol|Offering|denied|kex_exchange'
 ```
@@ -171,7 +171,6 @@ oci compute instance-console-connection delete \
   Assertions in `profiles/base.nix` require login shells, coreutils, systemd
   and D-Bus in the system profile. Evaluation alone does not prove a safe
   switch: verify a fresh SSH login, service state and gateway health.
-- **Gateway rollback:** native services and old containers use different
-  state owners. Stop both before changing ownership, preserve tokens, and
-  verify the target service user can read state. The pinned Headroom package
-  needs `HEADROOM_HTTP2=false` because it lacks `h2`.
+- **Gateway rollback:** the gw unit owns `/var/lib/llm-gateway` as
+  `llm-gateway`. Preserve `credentials.json` and verify that user can read
+  state after any ownership change.
