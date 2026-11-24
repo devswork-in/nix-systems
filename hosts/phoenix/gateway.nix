@@ -1,97 +1,10 @@
-{ config, lib, pkgs, userConfig, ... }:
+{ config, lib, userConfig, ... }:
 {
+  # gw: single Rust binary; accounts live in /var/lib/llm-gateway.
   services.llm-gateway = {
-    enable    = true;
+    enable     = true;
     apiKeyFile = "/var/lib/llm-gateway/api-key";
-    port      = 10204;
-  };
-
-  # One service handles both scheduled and manual refreshes; systemd serializes starts.
-  systemd.services.gateway-model-refresh = {
-    description = "Refresh the OpenCode CLI free-model catalog";
-    requires = [ "llm-gateway-hub.service" ];
-    after = [ "llm-gateway-hub.service" ];
-    environment = {
-      HOME = "/var/lib/${config.services.llm-gateway.stateDir}";
-      OPENCODEX_HOME = "/var/lib/${config.services.llm-gateway.stateDir}/ocx";
-      HUB_PORT = toString config.services.llm-gateway.hubPort;
-      SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-    };
-    serviceConfig = {
-      Type = "oneshot";
-      User = "llm-gateway";
-      WorkingDirectory = "/var/lib/${config.services.llm-gateway.stateDir}";
-      ExecStart = "${pkgs.python3}/bin/python3 ${./refresh-models.py}";
-      TimeoutStartSec = "3min";
-      UMask = "0077";
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectSystem = "strict";
-      ProtectHome = true;
-      ReadWritePaths = [ "/var/lib/${config.services.llm-gateway.stateDir}" ];
-    };
-  };
-  systemd.timers.gateway-model-refresh = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "0/12:00";
-      RandomizedDelaySec = "30min";
-      Persistent = true;
-    };
-  };
-
-  # Run the ocx CLI against the hub's own state as the service user. Provider logins
-  # write credentials into the state dir, so running ocx as the interactive user
-  # silently creates a second, unusable credential store (observed: a plain
-  # `sudo -u llm-gateway ocx login` inherits the caller's HOME and writes to
-  # /home/<user>/.opencodex). Resolving the binary through the module option keeps
-  # this working across deploys, when the store path changes. sudo keeps the TTY, so
-  # interactive OAuth still works; it asks for the caller's password (no NOPASSWD).
-  environment.systemPackages = [
-    (pkgs.writeShellScriptBin "ocx-gw" ''
-      set -eu
-      state=/var/lib/${config.services.llm-gateway.stateDir}
-      exec ${config.security.wrapperDir}/sudo -u llm-gateway -- \
-        ${pkgs.coreutils}/bin/env -i \
-          HOME="$state" \
-          OPENCODEX_HOME="$state/ocx" \
-          SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
-          PATH=${lib.makeBinPath [ pkgs.coreutils ]} \
-          ${config.services.llm-gateway.package}/bin/ocx "$@"
-    '')
-  ];
-
-  # The pinned Headroom package lacks h2; use HTTP/1.1 until it includes it.
-  systemd.services.llm-gateway-headroom.environment.HEADROOM_HTTP2 = "false";
-
-  # ocx skips its token check on a loopback bind, and headroom relays remote
-  # traffic to the hub, so refuse to start rather than run unauthenticated.
-  systemd.services.llm-gateway-hub.serviceConfig.ExecStartPre = [
-    (pkgs.writeShellScript "llm-gateway-require-auth" ''
-      f="$OPENCODEX_HOME/config.json"
-      [ -f "$f" ] || exit 0
-      host="$(${pkgs.jq}/bin/jq -r '.hostname // ""' "$f")"
-      case "$host" in
-        ""|localhost|127.*|::1|"[::1]")
-          echo "refusing to start: hostname '$host' in $f disables API auth" >&2
-          exit 1 ;;
-      esac
-    '')
-  ];
-
-  # Keep the hub non-loopback so ocx enforces its token: headroom relays public
-  # traffic to it. Drop non-local traffic in raw, before tailscale's ts-input accepts it.
-  networking.firewall = let
-    hubRule = "PREROUTING -p tcp --dport ${toString config.services.llm-gateway.hubPort} ! -i lo -j DROP";
-  in {
-    extraCommands = ''
-      iptables -t raw -I ${hubRule}
-      ip6tables -t raw -I ${hubRule}
-    '';
-    extraStopCommands = ''
-      iptables -t raw -D ${hubRule} || true
-      ip6tables -t raw -D ${hubRule} || true
-    '';
+    port       = 10204;
   };
 
   services.nginx.virtualHosts = {
@@ -103,7 +16,7 @@
       enableACME = userConfig.services.website.https;
       forceSSL   = userConfig.services.website.https;
       locations."/" = {
-        proxyPass      = "http://127.0.0.1:${toString config.services.llm-gateway.port}";
+        proxyPass       = "http://127.0.0.1:${toString config.services.llm-gateway.port}";
         proxyWebsockets = true;
         # Tailnet and local clients only; ACME challenges keep their own public location.
         extraConfig = ''

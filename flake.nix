@@ -6,7 +6,7 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     flake-compat.url = "github:edolstra/flake-compat";
-    llm-gateway.url = "github:Creator54/llm-gateway";
+    llm-gateway.url = "github:Creator54/llm-gateway/rust-gateway";
 
     deploy-rs = {
       url = "github:serokell/deploy-rs";
