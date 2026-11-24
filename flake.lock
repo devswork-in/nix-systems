@@ -182,15 +182,16 @@
         "opencodex-src": "opencodex-src"
       },
       "locked": {
-        "lastModified": 1792780110,
-        "narHash": "sha256-/MT2zuCVJkLHjqxd4sf9ph6wWIOhvDhJSD23RPYhTrc=",
+        "lastModified": 1795531166,
+        "narHash": "sha256-xWUa39sXi/Ug0egIAnVazBSuBlRkm2zZxZj61zF+rzU=",
         "owner": "Creator54",
         "repo": "llm-gateway",
-        "rev": "e1aa02f3fbca927b189cfbd05586380b35ebdf43",
+        "rev": "4f42ec1c646c576fb59f224b35fc5ded01cbfbc2",
         "type": "github"
       },
       "original": {
         "owner": "Creator54",
+        "ref": "rust-gateway",
         "repo": "llm-gateway",
         "type": "github"
       }
